@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AttendanceActivity">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sheet_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/course_name"
+                android:textAllCaps="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="BCA"
+                android:layout_gravity="center"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:fontFamily="@font/roboto_mono"
+                android:textSize="25sp"
+                android:textColor="@color/colorPrimary"
+                />
+
+            <TextView
+                android:id="@+id/lecture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="III Lecture "
+                android:textAppearance="?android:textAppearanceSmall"
+                android:fontFamily="@font/roboto_mono"
+                android:layout_gravity="center"
+                android:textColor="#000"
+                />
+
+            <TextView
+                android:id="@+id/subject"
+                android:textAllCaps="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_mono"
+                android:layout_gravity="center"
+                tools:text="Artificial Intelligence"
+                android:textColor="@color/colorAccent"
+                />
+
+            <TextView
+                android:id="@+id/teacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="By L.S Awasthi"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:layout_gravity="center"
+                android:textColor="#000"
+                />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/student_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            tools:listitem="@layout/student_item"
+            />
+
+        <TextView
+            android:id="@+id/empty_no_student"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Students"
+            android:layout_centerInParent="true"
+            android:paddingBottom="100dp"
+            android:fontFamily="@font/roboto_mono"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

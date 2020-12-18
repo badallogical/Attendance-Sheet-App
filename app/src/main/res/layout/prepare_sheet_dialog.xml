@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@drawable/round_corners"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:gravity="center"
+        >
+
+        <LinearLayout
+            android:id="@+id/lecture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:layout_marginHorizontal="16dp"
+            android:layout_gravity="center_horizontal"
+            >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Lecture"
+            android:layout_weight="1"
+            style="@style/tag_style"
+            />
+
+            <Spinner
+                android:id="@+id/lecture_spinner"
+                android:gravity="center"
+                android:layout_width="0dp"
+                tools:listitem="@layout/spinner_item_layout"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:entries="@array/lectures"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/teacher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:layout_marginHorizontal="16dp"
+            android:layout_below="@+id/lecture"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Teacher"
+                style="@style/tag_style"
+                />
+
+            <Spinner
+                android:id="@+id/teacher_spinner"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                tools:listitem=""
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:spinnerMode="dropdown"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:layout_below="@+id/teacher"
+            android:layout_marginHorizontal="16dp"
+
+            >
+
+            <TextView
+                android:id="@+id/subject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subject"
+                style="@style/tag_style"
+                />
+
+            <EditText
+                android:id="@+id/edit_subject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoComplete"
+                android:labelFor="@id/subject"
+                android:autofillHints="Subject" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
