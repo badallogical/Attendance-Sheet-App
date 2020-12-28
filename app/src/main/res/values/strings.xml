@@ -18,5 +18,6 @@
     <string name="normal">NORMAL</string>
     <string name="edit">EDIT</string>
     <string name="editToNormal">EDITTONORMAL</string>
+    <string name="no_history_available">No History Available</string>
 
 </resources>

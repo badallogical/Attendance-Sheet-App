@@ -21,7 +21,6 @@ import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.fragments.SheetList;
 import com.passion.attendancesheet.room.SheetViewModel;
 import com.passion.attendancesheet.room.entity.Course;
-import com.passion.attendancesheet.room.entity.Teacher;
 import com.passion.attendancesheet.room.view.CourseTeacherView;
 
 import java.util.ArrayList;

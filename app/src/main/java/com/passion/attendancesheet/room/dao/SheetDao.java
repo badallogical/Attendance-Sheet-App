@@ -82,9 +82,6 @@ public interface SheetDao {
    @Update
    void updateCourse( Course course );
 
-//   @Query("Select course_id from course_table where name = :name limit 1")
-//   int getCourseIdByName( String name );
-
    // insert the student
    @Insert(entity = Student.class)
    void insertStudent( Student student );

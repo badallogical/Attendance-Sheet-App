@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.SheetListAdapter;
@@ -27,6 +28,8 @@ public class SheetList extends Fragment {
     RecyclerView  sheetlist;
     SheetListAdapter sheetListAdapter;
     SheetViewModel sheetViewModel;
+
+    LinearLayout no_classes;
 
     Context context;
 
@@ -51,21 +54,22 @@ public class SheetList extends Fragment {
 
 //        TeacherListAdapter teacherListAdapter = new TeacherListAdapter(context);
 
+        no_classes = getView().findViewById(R.id.no_classes);
         sheetlist = getView().findViewById( R.id.sheet_list );
         sheetListAdapter = new SheetListAdapter( context, SheetList.this );
         sheetlist.setAdapter( sheetListAdapter );
         sheetlist.setLayoutManager( new LinearLayoutManager(context));
         sheetViewModel.getllCourse().observe( this, (courses)-> {
             sheetListAdapter.setCourseList(courses);
+            if( courses.isEmpty() ){
+                no_classes.setVisibility(View.VISIBLE);
+                sheetlist.setVisibility(View.GONE);
+            }
+            else{
+                no_classes.setVisibility(View.GONE);
+                sheetlist.setVisibility(View.VISIBLE);
+            }
         });
-
-
-//        sheetViewModel.getTeacherFromCourse().observe(this, new Observer<List<CourseWithTeacher>>() {
-//            @Override
-//            public void onChanged(List<CourseWithTeacher> courseWithTeachers) {
-//                teacherListAdapter.setTeachers( courseWithTeachers.get(0).teachers );
-//            }
-//        });
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -75,6 +79,7 @@ public class SheetList extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                //TODO: Delete the sheet
 
             }
         }).attachToRecyclerView(sheetlist);
