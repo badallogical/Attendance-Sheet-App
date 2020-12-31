@@ -2,22 +2,26 @@ package com.passion.attendancesheet;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -25,8 +29,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.passion.attendancesheet.adapters.PageAdapter;
 import com.passion.attendancesheet.room.SheetViewModel;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
+import com.passion.attendancesheet.room.entity.Course;
+import com.passion.attendancesheet.room.entity.CourseTeacherCrossRef;
+import com.passion.attendancesheet.room.entity.Student;
+import com.passion.attendancesheet.room.entity.Teacher;
+import com.passion.attendancesheet.utils.Accessory_tool;
+import androidx.lifecycle.*;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -34,46 +42,59 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int READ_REQUEST_CODE = 2;
+    private static final int READ_REQUEST_CODE = 1;
+    static int CUR_READ_TYPE = 0;
 
     ViewPager viewPager;
     PageAdapter pagerAdapter;
     SheetViewModel viewModel;
     FloatingActionButton fab;
 
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor sharedPreferenceEditor;
+
+    String curCourse;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // SharedPreferences
+        sharedPreferences = getSharedPreferences(getString(R.string.sharedPreference1), Context.MODE_PRIVATE);
+        sharedPreferenceEditor = sharedPreferences.edit();
+
+        // ViewModel
+        viewModel = ViewModelProviders.of(this).get(SheetViewModel.class);
+
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
             //  TODO : import sheet.
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Ask for permission check
-                if( checkPermission() ){
-                    importSheet();
-                }
-                else{
+                if (checkPermission()) {
+//                    importSheet();
+                    new AsyncImport(this).execute();
+                } else {
                     requestForPermission();
                 }
-            }
-            else{
+            } else {
                 // Go ahead
-                importSheet();
+//                importSheet();
+                new AsyncImport(this).execute();
             }
 
         });
 
-        // ViewModel
-        viewModel = ViewModelProviders.of(this).get(SheetViewModel.class);
 
         viewPager = findViewById(R.id.viewpager);
         pagerAdapter = new PageAdapter(getSupportFragmentManager(), viewModel);
@@ -85,48 +106,84 @@ public class MainActivity extends AppCompatActivity {
 
 
     private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission( this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         return result == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestForPermission() {
-        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission Needed")
                     .setMessage("This Permission is needed to read file from your storage.")
                     .setPositiveButton("ok", (dialog, which) -> {
                         // Request Permission
-                        ActivityCompat.requestPermissions( MainActivity.this, new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
                     })
-                    .setNegativeButton("cancel", (dialog, which ) -> {
+                    .setNegativeButton("cancel", (dialog, which) -> {
                         dialog.dismiss();
                     }).create().show();
-        }
-        else{
+        } else {
             // Request Permission
-            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if( requestCode == READ_REQUEST_CODE ){
-            if( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ){
+        if (requestCode == READ_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Show popup and perform operation safely.
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                importSheet();
-            }
-            else{
+//                importSheet();
+                new AsyncImport(this).execute();
+            } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void importSheet() {
-        Intent filePickerIntent = new Intent( Intent.ACTION_OPEN_DOCUMENT );
-        filePickerIntent.addCategory( Intent.CATEGORY_OPENABLE );
-        filePickerIntent.setType("application/vnd.ms-excel");
-        startActivityForResult( filePickerIntent, READ_REQUEST_CODE );
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    private void importSheet(Context context) {
+
+        if( viewModel.sheetRepository.sheetDao.getTeachersCount() == 0 ){
+            CUR_READ_TYPE = 0;
+
+            // Pop up to import courses and teachers
+            context.getMainExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    new AlertDialog.Builder(context)
+                            .setTitle("Import Basic Sheet ")
+                            .setMessage("In order to use this attendance sheet app, you first need to import the basic sheet that consist courses and teachers information ")
+                            .setPositiveButton("Ok", (dialog, which) -> {
+                                // Import course and teachers sheet
+                                Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                                filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                                filePickerIntent.setType("application/vnd.ms-excel");
+                                ((MainActivity)context).startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
+                            })
+                            .setNegativeButton("cancel", (dialog, which) -> {
+                                // dismiss
+                            }).create().show();
+                }
+            });
+
+        }else{
+            CUR_READ_TYPE = 1;
+            // Import Student list
+            Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            filePickerIntent.setType("application/vnd.ms-excel");
+            ((MainActivity)context).startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
+
+        }
+//        // check for teacher and courses tables
+//        viewModel.getAllTeachers().observe(this, (teachers) -> {
+//            if (teachers.isEmpty()) {
+//
+//            } else {
+//}
+//        });
     }
 
 
@@ -134,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
 
-        if ( requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK ) {
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = null;
             if (resultData != null) {
                 uri = resultData.getData();
@@ -143,32 +200,176 @@ public class MainActivity extends AppCompatActivity {
                     File xl_file = new File(Environment.getExternalStorageDirectory() + "/" + Objects.requireNonNull(uri.getPath()).split(":")[1]);
                     FileInputStream myInput = new FileInputStream(xl_file);
 
-                    // Create a POIFSFileSystem object 
+                    // Create a POIFSFileSystem object
                     POIFSFileSystem myFileSystem = new POIFSFileSystem(myInput);
 
-                    // Create a workbook using the File System 
+                    // Create a workbook using the File System
                     HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
 
-                    // Get the first sheet from workbook 
+                    // Get the first sheet from workbook
                     HSSFSheet mySheet = myWorkBook.getSheetAt(0);
 
-                    Iterator rowIter = mySheet.rowIterator();
+                    Iterator rowIter;
+                    HSSFRow cur_row;
+                    HSSFRow verifyRow;
 
-                    while (rowIter.hasNext()) {
-                        HSSFRow myRow = (HSSFRow) rowIter.next();
-                        Iterator cellIter = myRow.cellIterator();
-                        while (cellIter.hasNext()) {
-                            HSSFCell myCell = (HSSFCell) cellIter.next();
-                            Log.d("XL file", "Cell Value: " + myCell.toString());
-                            Toast.makeText(this, "cell Value: " + myCell.toString(), Toast.LENGTH_SHORT).show();
+                    // verify sheet ???? need to have strong verification
+                    if (CUR_READ_TYPE == 0) {
+                        // Read basic sheet
+                        verifyRow = mySheet.getRow(0);
+                        boolean verification = false;
+                        if ( (verifyRow.getCell(0).toString().toUpperCase().equalsIgnoreCase("COURSE")
+                                || verifyRow.getCell(0).toString().toUpperCase().equalsIgnoreCase("COURSES") ) && verifyRow.getPhysicalNumberOfCells() == 1 ) {
+
+                            verification = true;
+                            // read all courses name
+                            Set<String> courses = new HashSet<String>();
+                            List<String> teachers_with_courses = new ArrayList<String>();
+                            rowIter = mySheet.rowIterator();
+                            rowIter.next();
+
+                            int row = 1;
+                            while (rowIter.hasNext()) {
+                                cur_row = (HSSFRow) rowIter.next();
+                                if (cur_row.getCell(0).toString().equalsIgnoreCase("ID")) {
+
+                                    // save courses to sharedPreferences
+                                    sharedPreferenceEditor.putStringSet( getString(R.string.courses), courses ).commit();
+
+                                    while (rowIter.hasNext()) {
+                                        cur_row = (HSSFRow) rowIter.next();
+                                        teachers_with_courses.add((int) cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString() + "/" + cur_row.getCell(2));
+                                    }
+
+                                } else {
+                                    courses.add(mySheet.getRow(row).getCell(0).toString());
+                                    row++;
+                                }
+                            }
+
+
+                            // show
+                            StringBuilder temp = new StringBuilder();
+                            for (String course : courses) {
+                                temp.append(course).append(",");
+                            }
+                            Log.i("Debug Output : ", temp.toString());
+
+                            for (String teacherCourse : teachers_with_courses) {
+                                Log.i("Debug Output Teacher : ", teacherCourse);
+                                // insert to database
+                                teacherCourse = teacherCourse.trim();
+                                String[] info = teacherCourse.split("/");
+                                viewModel.insertTeacher( new Teacher( Integer.parseInt(info[0]) , info[1] ) );
+
+                                // insert all the courses mapping for this teacher
+                                String[] coursesTought = info[2].split(",");
+                                for( String courseTought : coursesTought ){
+                                    List<String> semestersWise = Accessory_tool.fetchCourseSemester(courseTought);
+                                    for( String courseSemster : semestersWise ){
+                                        viewModel.insertCourseWithTeacherRef( new CourseTeacherCrossRef(courseSemster, Integer.parseInt(info[0])));
+                                    }
+                                }
+
+                            }
+
+                            Toast.makeText(this, "courses and teacher are readed successfully", Toast.LENGTH_LONG).show();
+
+                        } else {
+                           invalidSheetPopup();
                         }
                     }
+                    else{
+                        String cur_courseReadied = "";
+                        List<String> student_list = new ArrayList<>();
+                        verifyRow = mySheet.getRow(0);
+                        if( verifyRow.getPhysicalNumberOfCells() == 2 && verifyRow.getCell(0).toString().equalsIgnoreCase("course") && verifyRow.getCell(1).toString().equalsIgnoreCase("semester") ){
+
+                            // read course
+                            cur_row = mySheet.getRow(1);
+                            boolean course_readied = false;
+                            if( cur_row.getPhysicalNumberOfCells() == 2 ) {
+                                cur_courseReadied = cur_row.getCell(0).toString() + "-" + (int)cur_row.getCell(1).getNumericCellValue();
+                                course_readied = true;
+                            }
+
+                            // read student list now
+                            if( course_readied ){
+                                rowIter = mySheet.rowIterator();
+                                rowIter.next();
+                                rowIter.next();
+                                rowIter.next();
+                                cur_row = (HSSFRow)rowIter.next();
+
+                                // verify student entry
+                                if( cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("roll") && cur_row.getCell(1).toString().equalsIgnoreCase("name")){
+                                    while( rowIter.hasNext()){
+                                        cur_row = (HSSFRow) rowIter.next();
+                                        student_list.add( (int)cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString() );
+                                    }
+                                }
+
+                                // courses readied successfully
+                                for( String student : student_list ){
+                                    String[] student_data = student.split("/");
+                                    Log.i( "Debug student list : ", student);
+                                    viewModel.insertStudents( new Student( cur_courseReadied, Integer.parseInt(student_data[0]), student_data[1]));
+                                }
+
+                                curCourse = cur_courseReadied;
+                                viewModel.getAllStudents(cur_courseReadied).observe( this, students -> {
+                                    if( students.isEmpty() ){
+                                        invalidSheetPopup();
+                                    }
+                                    else{
+                                        // insert the student list as course added
+                                        viewModel.insertCourses( new Course(curCourse));
+                                    }
+                                });
+
+                            }
+
+                        }
+                        else{
+                            // pop up invalid sheet dialog
+                            invalidSheetPopup();
+                        }
+
+
+                    }
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
 
+        }
+    }
+
+    private void invalidSheetPopup() {
+        // pop up alert , Corrupt xl file
+        new AlertDialog.Builder(this)
+                .setTitle("Invalid Sheet")
+                .setMessage("You have selected different sheet please select the basic sheet consist of teacher and course information")
+                .setPositiveButton("Ok", (dialog, which)->{
+                    dialog.dismiss();
+                }).create().show();
+    }
+
+    class AsyncImport extends AsyncTask<Void, Void,Void>{
+
+        Context context;
+
+        AsyncImport(Context context ){
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+           importSheet(context);
+           return null;
         }
     }
 }

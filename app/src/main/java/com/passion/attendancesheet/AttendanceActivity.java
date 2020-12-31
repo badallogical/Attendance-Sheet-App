@@ -71,13 +71,12 @@ public class AttendanceActivity extends AppCompatActivity {
     CardView header;
     Intent sheet_intent;
 
-    int curCourseId;
-    int sheet_id;
+    String curCourseId;
     String curCourseName;
     int curTeacherId;
     String curTeacherName;
     int curLecture;
-    int curSem;
+    String curSem;
     String curSubject;
     static String dateTime;
     String mode;
@@ -112,34 +111,32 @@ public class AttendanceActivity extends AppCompatActivity {
         // get data of header
         try {
             if (mode.equals(getString(R.string.normal))) {
-                curCourseName = ((Course) Objects.requireNonNull(sheet_intent.getSerializableExtra(COURSE))).name;
-                curCourseName += " " + ((Course) Objects.requireNonNull(sheet_intent.getSerializableExtra(COURSE))).semester;
-
                 curCourseId = ((Course) Objects.requireNonNull(sheet_intent.getSerializableExtra(COURSE))).course_id;
+                curCourseName = curCourseId.split("-")[0];
                 curTeacherName = ((CourseTeacherView) Objects.requireNonNull(sheet_intent.getSerializableExtra(TEACHER))).teacher_name;
                 curTeacherId = ((CourseTeacherView) Objects.requireNonNull(sheet_intent.getSerializableExtra(TEACHER))).teacher_id;
                 curLecture = Accessory_tool.getIntFromRoman(Objects.requireNonNull(sheet_intent.getExtras().get(LECTURE)).toString());
                 curSubject = Objects.requireNonNull(sheet_intent.getExtras().get(SUBJECT)).toString();
-                curSem = ((Course) Objects.requireNonNull(sheet_intent.getSerializableExtra(COURSE))).semester;
+                curSem = curCourseId.split("-")[1];
 
             } else {
                 // load edit tab for edit and udpate
                 sheetDetails = (SheetDetailView) sheet_intent.getExtras().get(HISTORY_DETAILS);
                 assert sheetDetails != null;
                 curCourseId = sheetDetails.course_id;
-                curCourseName = sheetDetails.course_name;
+                curCourseName = sheetDetails.course_id.split("-")[0];
                 curTeacherId = sheetDetails.teacher_id;
                 curTeacherName = sheetDetails.teacher_name;
                 curLecture = sheetDetails.lecture;
                 curSubject = sheetDetails.subject_name;
-                curSem = sheetDetails.semester;
+                curSem = sheetDetails.course_id.split("-")[1];
             }
         } catch (NullPointerException e) {
             Log.d(LOG, Objects.requireNonNull(e.getMessage()));
         }
 
         // fill data
-        course.setText(curCourseName + " " + Accessory_tool.getRomanFromInt(curSem));
+        course.setText(curCourseName + " " + Accessory_tool.getRomanFromInt(Integer.parseInt(curSem)));
         lecture.setText("Lecture " + curLecture);
         teacher.setText("By " + curTeacherName);
         subject.setText(curSubject);
@@ -262,7 +259,7 @@ public class AttendanceActivity extends AppCompatActivity {
             c.setCellStyle(cs);
 
             c = row.createCell(1);
-            c.setCellValue(curCourseName + " " + Accessory_tool.getRomanFromInt(curSem));
+            c.setCellValue(curCourseName);
             c.setCellStyle(cs);
 
             if (mode.equals("normal")) {
@@ -274,7 +271,7 @@ public class AttendanceActivity extends AppCompatActivity {
                         // add to sheet
                         row = sheet1.createRow(row.getRowNum() + 1);
                         row.createCell(0).setCellValue(j++);
-                        row.createCell(1).setCellValue(studentList.get(i).student_id);
+                        row.createCell(1).setCellValue(studentList.get(i).student_no);
                         row.createCell(2).setCellValue(studentList.get(i).name);
 
                     }
@@ -284,7 +281,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 for (int i = 0; i < stu_presents.size(); i++) {
                     row = sheet1.createRow(row.getRowNum() + 1);
                     row.createCell(0).setCellValue(i);
-                    row.createCell(1).setCellValue(stu_presents.get(i).student_id);
+                    row.createCell(1).setCellValue(stu_presents.get(i).student_no);
                     row.createCell(2).setCellValue(stu_presents.get(i).student_name);
                 }
             }
@@ -392,7 +389,7 @@ public class AttendanceActivity extends AppCompatActivity {
 
                         if (StudentListAdapter.studentPresentIndex.contains(i)) {
                             Student s = studentList.get(i);
-                            viewModel.insertAttendance(new Attendance(newSheet_id, s.student_id));
+                            viewModel.insertAttendance(new Attendance( newSheet_id, s.course_id, s.student_no));
                         }
                     }
                 }

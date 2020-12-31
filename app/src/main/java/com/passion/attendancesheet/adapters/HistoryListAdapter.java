@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.passion.attendancesheet.AttendanceActivity;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.room.view.SheetDetailView;
+import com.passion.attendancesheet.utils.Accessory_tool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +43,9 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         holder.time.setText( date_time[1] );
 
         holder.sheet_id = sheetDetail.sheet_id;
-        holder.course.setText( sheetDetail.course_name );
-        holder.lecture.setText( "L" + sheetDetail.lecture );
+        String formattedCourseName = sheetDetail.course_id.split("-")[0] + " " + Accessory_tool.getRomanFromInt( Integer.parseInt(sheetDetail.course_id.split("-")[1]));
+        holder.course.setText( formattedCourseName  );
+        holder.lecture.setText( "Lecture " + sheetDetail.lecture );
         holder.date.setTag( sheetDetail );
     }
 

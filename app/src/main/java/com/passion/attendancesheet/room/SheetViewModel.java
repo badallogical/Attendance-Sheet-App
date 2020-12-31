@@ -8,17 +8,20 @@ import androidx.lifecycle.LiveData;
 
 import com.passion.attendancesheet.room.entity.Attendance;
 import com.passion.attendancesheet.room.entity.Course;
+import com.passion.attendancesheet.room.entity.CourseTeacherCrossRef;
 import com.passion.attendancesheet.room.entity.Sheet;
 import com.passion.attendancesheet.room.entity.Student;
+import com.passion.attendancesheet.room.entity.Teacher;
 import com.passion.attendancesheet.room.view.CourseTeacherView;
 import com.passion.attendancesheet.room.view.SheetAttendanceView;
 import com.passion.attendancesheet.room.view.SheetDetailView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SheetViewModel extends AndroidViewModel {
 
-    SheetRepository sheetRepository;
+    public SheetRepository sheetRepository;
     LiveData<List<Course>> allCourses;
     LiveData<List<SheetDetailView>> allSheets;
 
@@ -37,15 +40,23 @@ public class SheetViewModel extends AndroidViewModel {
         return allCourses;
     }
 
-    public LiveData<List<Student>> getAllStudents(int course_id ){
+    public LiveData<List<Student>> getAllStudents(String course_id ){
         return sheetRepository.getAllStudent(course_id);
+    }
+
+    public LiveData<List<Teacher>> getAllTeachers(){
+        return sheetRepository.getAllTeachers();
+    }
+
+    public void insertTeacher( Teacher teacher ){
+        sheetRepository.insertTeacher(teacher);
     }
 
     public void insertStudents( Student student){
         sheetRepository.insertStudent(student);
     }
 
-    public LiveData<List<CourseTeacherView>> getTeacherCourse( int course_id ){
+    public LiveData<List<CourseTeacherView>> getTeacherCourse( String course_id ){
         return sheetRepository.getCourseTeachers(course_id);
     }
 
@@ -88,6 +99,10 @@ public class SheetViewModel extends AndroidViewModel {
 
     public LiveData<List<SheetAttendanceView>> getSheetAttendance(int sheet_id ){
         return sheetRepository.getSheetAttendance(sheet_id);
+    }
+
+    public void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef ){
+        sheetRepository.insertCourseWithTeacherRef( courseTeacherCrossRef );
     }
 
     public SheetDetailView getTopSheetSync(){

@@ -17,7 +17,9 @@
 
     <string name="normal">NORMAL</string>
     <string name="edit">EDIT</string>
-    <string name="editToNormal">EDITTONORMAL</string>
+    <string name="editToNormal">EDIT_TO_NORMAL</string>
     <string name="no_history_available">No History Available</string>
+    <string name="courses">COURSES</string>
+    <string name="sharedPreference1">SHARED_PREFERENCES1</string>
 
 </resources>

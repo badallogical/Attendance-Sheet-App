@@ -8,8 +8,10 @@ import androidx.lifecycle.LiveData;
 import com.passion.attendancesheet.room.dao.SheetDao;
 import com.passion.attendancesheet.room.entity.Attendance;
 import com.passion.attendancesheet.room.entity.Course;
+import com.passion.attendancesheet.room.entity.CourseTeacherCrossRef;
 import com.passion.attendancesheet.room.entity.Sheet;
 import com.passion.attendancesheet.room.entity.Student;
+import com.passion.attendancesheet.room.entity.Teacher;
 import com.passion.attendancesheet.room.view.CourseTeacherView;
 import com.passion.attendancesheet.room.view.SheetAttendanceView;
 import com.passion.attendancesheet.room.view.SheetDetailView;
@@ -18,7 +20,7 @@ import java.util.List;
 
 public class SheetRepository {
 
-    SheetDao sheetDao;
+    public SheetDao sheetDao;
     LiveData<List<Course>> allCourses;
     LiveData<List<SheetDetailView>> allSheets;
 
@@ -41,11 +43,11 @@ public class SheetRepository {
         new AsyncInsertStudent(sheetDao).execute(s);
     }
 
-    public LiveData<List<Student>> getAllStudent(int course_id ){
+    public LiveData<List<Student>> getAllStudent(String course_id ){
         return sheetDao.getAllStudents(course_id);
     }
 
-    public LiveData<List<CourseTeacherView>> getCourseTeachers( int course_id ){
+    public LiveData<List<CourseTeacherView>> getCourseTeachers( String course_id ){
         return sheetDao.getCourseTeacher(course_id);
     }
 
@@ -72,6 +74,14 @@ public class SheetRepository {
     }
 
 
+    public LiveData<List<Teacher>> getAllTeachers(){
+        return sheetDao.getAllTeachers();
+    }
+
+    public void insertTeacher( Teacher teacher ){
+       new AsyncInsertTeacher(sheetDao).execute(teacher);
+    }
+
     public void insertAttendance(Attendance attendance ){
         new AsyncInsertAttendance(sheetDao).execute(attendance);
     }
@@ -90,6 +100,10 @@ public class SheetRepository {
 
     public LiveData<List<SheetDetailView>> getSheetDetailBySheetId( int sheet_id ){
         return sheetDao.getSheetDetailBySheetId(sheet_id);
+    }
+
+    public void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef){
+        new AsyncInsertCourseWithTeacherCrossRef( sheetDao ).execute( courseTeacherCrossRef );
     }
 
     private static class AsyncDeleteAttendance extends AsyncTask< Attendance, Void, Void > {
@@ -197,6 +211,21 @@ public class SheetRepository {
         }
     }
 
+    private static class AsyncInsertTeacher extends AsyncTask< Teacher, Void, Void > {
+
+        SheetDao sheetDao;
+
+        AsyncInsertTeacher( SheetDao sheetDao ){
+            this.sheetDao = sheetDao;
+        }
+
+        @Override
+        protected Void doInBackground(Teacher ... teachers ) {
+            sheetDao.insertTeacher( teachers[0] );
+            return null;
+        }
+    }
+
 
     private static class AsyncInsertCourse extends AsyncTask< Course, Void, Void > {
 
@@ -260,6 +289,21 @@ public class SheetRepository {
         }
     }
 
+    private static class AsyncInsertCourseWithTeacherCrossRef extends AsyncTask< CourseTeacherCrossRef, Void, Void > {
+
+        SheetDao sheetDao;
+
+        AsyncInsertCourseWithTeacherCrossRef( SheetDao sheetDao ){
+            this.sheetDao = sheetDao;
+        }
+
+        @Override
+        protected Void doInBackground(CourseTeacherCrossRef... courseTeacherCrossRefs) {
+            sheetDao.insertCourseWithTeacherRef( courseTeacherCrossRefs[0] );
+            return null;
+        }
+    }
+
 //    private static class AsyncLoadAllStudents extends AsyncTask< Void, Void, List<Student> > {
 //
 //        SheetDao sheetDao;
@@ -282,6 +326,8 @@ public class SheetRepository {
 //            this.students = students;
 //        }
 //    }
+
+
 
     public SheetDetailView getTopSheetsSync(){
         return sheetDao.getTopSheetsSync();

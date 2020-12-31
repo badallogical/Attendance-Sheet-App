@@ -22,6 +22,7 @@ import com.passion.attendancesheet.fragments.SheetList;
 import com.passion.attendancesheet.room.SheetViewModel;
 import com.passion.attendancesheet.room.entity.Course;
 import com.passion.attendancesheet.room.view.CourseTeacherView;
+import com.passion.attendancesheet.utils.Accessory_tool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,8 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
     public void onBindViewHolder(@NonNull SheetListViewHolder holder, int position) {
         if (courseList.size() > 0) {
             Course course = courseList.get(position);
-            holder.courseName.setText(course.name);
+            String mCourseName = course.course_id.split("-")[0] + " " + Accessory_tool.getRomanFromInt( Integer.parseInt(course.course_id.split("-")[1]) );
+            holder.courseName.setText(mCourseName);
             holder.courseName.setTag(position);
             holder.course_id = course.course_id;
         }
@@ -67,14 +69,14 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
         notifyDataSetChanged();
     }
 
-    public static class SheetListViewHolder extends RecyclerView.ViewHolder{
+    static class SheetListViewHolder extends RecyclerView.ViewHolder{
 
         TextView courseName;
-        int course_id;
+        String course_id;
         static AlertDialog dialog;
 
 
-        public SheetListViewHolder(@NonNull View itemView, ViewGroup parent, Context context) {
+        SheetListViewHolder(@NonNull View itemView, ViewGroup parent, Context context) {
             super(itemView);
             courseName = itemView.findViewById(R.id.course_name);
 
@@ -95,15 +97,9 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
                         TeacherListAdapter teacherListAdapter = new TeacherListAdapter(context);
                         teacher_spinner.setAdapter( teacherListAdapter );
 
-                        // TODO : make it relevent to course , not same for all( teacher list )
-                        sheetViewModel.getTeacherCourse(course_id).observe(sheetList, new Observer<List<CourseTeacherView>>() {
-                            @Override
-                            public void onChanged(List<CourseTeacherView> courseWithTeachers) {
-                                teacherListAdapter.setTeachers(courseWithTeachers);
-                                //intent.putExtra( AttendanceActivity.TEACHER , courseWithTeachers.get(0).teachers.get(0) );
-                            }
-
-
+                        sheetViewModel.getTeacherCourse(course_id).observe(sheetList, courseWithTeachers -> {
+                            teacherListAdapter.setTeachers(courseWithTeachers);
+                            //intent.putExtra( AttendanceActivity.TEACHER , courseWithTeachers.get(0).teachers.get(0) );
                         });
 
 
@@ -115,12 +111,8 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
 
                                 intent.putExtra(AttendanceActivity.MODE, context.getResources().getString(R.string.normal));
                                 intent.putExtra(AttendanceActivity.COURSE, courseList.get(Integer.parseInt(courseName.getTag().toString())));
-                                if (teacher_spinner == null) {
-                                    intent.putExtra(AttendanceActivity.TEACHER, "unknown");
-                                } else {
-                                    CourseTeacherView curTeacher = (CourseTeacherView) teacher_spinner.getSelectedView().getTag();
-                                    intent.putExtra(AttendanceActivity.TEACHER, curTeacher );
-                                }
+                                CourseTeacherView curTeacher = (CourseTeacherView) teacher_spinner.getSelectedView().getTag();
+                                intent.putExtra(AttendanceActivity.TEACHER, curTeacher );
 
                                 intent.putExtra(AttendanceActivity.LECTURE, ((Spinner) dailogview.findViewById(R.id.lecture_spinner)).getSelectedItem().toString());
                                 intent.putExtra(AttendanceActivity.SUBJECT, subject.getText().toString());

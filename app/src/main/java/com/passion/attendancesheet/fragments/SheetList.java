@@ -58,18 +58,22 @@ public class SheetList extends Fragment {
         sheetlist = getView().findViewById( R.id.sheet_list );
         sheetListAdapter = new SheetListAdapter( context, SheetList.this );
         sheetlist.setAdapter( sheetListAdapter );
+
         sheetlist.setLayoutManager( new LinearLayoutManager(context));
-        sheetViewModel.getllCourse().observe( this, (courses)-> {
-            sheetListAdapter.setCourseList(courses);
-            if( courses.isEmpty() ){
-                no_classes.setVisibility(View.VISIBLE);
-                sheetlist.setVisibility(View.GONE);
-            }
-            else{
-                no_classes.setVisibility(View.GONE);
-                sheetlist.setVisibility(View.VISIBLE);
-            }
-        });
+        if( sheetViewModel.getllCourse() != null ){
+            sheetViewModel.getllCourse().observe( this, (courses)-> {
+                if( courses.isEmpty() ){
+                    no_classes.setVisibility(View.VISIBLE);
+                    sheetlist.setVisibility(View.GONE);
+                }
+                else{
+                    sheetListAdapter.setCourseList(courses);
+                    no_classes.setVisibility(View.GONE);
+                    sheetlist.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -80,6 +84,7 @@ public class SheetList extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 //TODO: Delete the sheet
+
 
             }
         }).attachToRecyclerView(sheetlist);

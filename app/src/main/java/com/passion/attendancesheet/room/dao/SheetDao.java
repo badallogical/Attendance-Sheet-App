@@ -28,12 +28,15 @@ public interface SheetDao {
    @Query("Select * from course_table")
    LiveData<List<Course>> getAllCourses();
 
-   @Query("Select * from student_table where course_id = :course_id order by student_id")
-   LiveData<List<Student>>  getAllStudents(int course_id);
+   @Query("Select * from student_table where course_id = :course_id order by student_no")
+   LiveData<List<Student>>  getAllStudents(String course_id);
 
    // course teachers
    @Query("Select * from course_teacher_view where course_id = :course_id")
-   LiveData<List<CourseTeacherView>> getCourseTeacher( int course_id );
+   LiveData<List<CourseTeacherView>> getCourseTeacher( String course_id );
+
+   @Query("Select * from teacher_table")
+   LiveData<List<Teacher>> getAllTeachers();
 
    /** Sheets **/
    // get all sheets
@@ -75,7 +78,7 @@ public interface SheetDao {
 
 
    // insert the course
-   @Insert
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
    void insertCourse( Course course );
 
    // update the course
@@ -83,7 +86,7 @@ public interface SheetDao {
    void updateCourse( Course course );
 
    // insert the student
-   @Insert(entity = Student.class)
+   @Insert(entity = Student.class , onConflict = OnConflictStrategy.REPLACE)
    void insertStudent( Student student );
 
    // update the student
@@ -96,4 +99,6 @@ public interface SheetDao {
    @Insert
    void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef );
 
+   @Query("Select count(*) from teacher_table")
+   int getTeachersCount();
 }

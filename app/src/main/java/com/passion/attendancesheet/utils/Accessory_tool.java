@@ -1,5 +1,8 @@
 package com.passion.attendancesheet.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Accessory_tool {
 
     public static int getIntFromRoman( String roman ){
@@ -26,6 +29,19 @@ public class Accessory_tool {
             case 6: return "VI";
             default: return " ";
         }
+    }
+
+    public static List<String> fetchCourseSemester( String gCourseSemesters ){
+        String[] courses = gCourseSemesters.split("-");
+        List<String> fCourseSemester = new ArrayList<>();
+        int sems = Integer.parseInt(courses[1]);
+
+        while( sems != 0 ){
+            fCourseSemester.add( courses[0] + "-" + (sems % 10) );
+            sems = sems / 10;
+        }
+
+        return fCourseSemester;
     }
 
 }

@@ -20,14 +20,14 @@ import java.util.Map;
 
 public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter.StudentListViewHolder> {
 
-    List<Student> students = new ArrayList<>();
-    List<SheetAttendanceView> studentPresents = new ArrayList<>();
-    Map<Integer, Boolean> studentPresentMap = new HashMap<>();
+    private List<Student> students = new ArrayList<>();
+    private List<SheetAttendanceView> studentPresents = new ArrayList<>();
+    private Map<Integer, Boolean> studentPresentMap = new HashMap<>();
     public static HashSet<Integer> studentPresentIndex = new HashSet<Integer>();
 
-    Context context;
-    static String mode;
-    static int tempOldPresentCount = 0;
+    private Context context;
+    private static String mode;
+    private static int tempOldPresentCount = 0;
 
     public StudentListAdapter( Context context , String _mode ){
         this.context = context;
@@ -57,26 +57,26 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
         if( mode.equals(context.getResources().getString(R.string.normal))) {
             Student s = students.get(position);
 
-            holder.id.setText(String.valueOf(s.student_id));
+            holder.id.setText(String.valueOf(s.student_no));
             holder.name.setText(s.name);
         }
         else if( mode.equals(context.getResources().getString(R.string.edit))){
             SheetAttendanceView s = studentPresents.get(position);
-            holder.id.setText( String.valueOf(s.student_id) );
+            holder.id.setText( String.valueOf(s.student_no) );
             holder.name.setText( s.student_name );
 
-            if( !studentPresentMap.containsKey( s.student_id )){
-                studentPresentMap.put( s.student_id, true );
+            if( !studentPresentMap.containsKey( s.student_no )){
+                studentPresentMap.put( s.student_no, true );
             }
         }
         else{
             // editToNormal
             Student s = students.get(position);
-            holder.id.setText(String.valueOf(s.student_id));
+            holder.id.setText(String.valueOf(s.student_no));
             holder.name.setText( s.name);
             holder.setToggleButton(true);
 
-            if( studentPresentMap.containsKey( s.student_id )){
+            if( studentPresentMap.containsKey( s.student_no )){
                 holder.markPresent();
                 studentPresentIndex.add( position );
             }

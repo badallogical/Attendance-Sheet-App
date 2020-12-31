@@ -1,5 +1,6 @@
 package com.passion.attendancesheet.room.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -12,7 +13,8 @@ public class Sheet {
 
     public String date;
 
-    public int course_id;
+    @NonNull
+    public String course_id;
 
     public int lecture;
 
@@ -20,7 +22,7 @@ public class Sheet {
 
     public int teacher_id;
 
-    public Sheet( String date, int course_id, int lecture, String subject, int teacher_id ){
+    public Sheet( String date, String course_id, int lecture, String subject, int teacher_id ){
         this.date = date;
         this.course_id = course_id;
         this.lecture = lecture;
