@@ -59,6 +59,8 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
 
             holder.id.setText(String.valueOf(s.student_no));
             holder.name.setText(s.name);
+
+
         }
         else if( mode.equals(context.getResources().getString(R.string.edit))){
             SheetAttendanceView s = studentPresents.get(position);
@@ -80,6 +82,14 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
                 holder.markPresent();
                 studentPresentIndex.add( position );
             }
+        }
+
+
+        if( studentPresentIndex.contains(position)){
+            holder.markPresent();
+        }
+        else{
+            holder.markAbsent();
         }
 
     }
@@ -177,6 +187,12 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
             toggleButton.setChecked(true);
             toggleButton.setVisibility(View.VISIBLE);
             presentMark.setVisibility(View.VISIBLE);
+        }
+
+        public void markAbsent(){
+            toggleButton.setChecked(false);
+            toggleButton.setVisibility(View.VISIBLE);
+            presentMark.setVisibility(View.GONE);
         }
 
         public void setToggleButton(Boolean bool ){

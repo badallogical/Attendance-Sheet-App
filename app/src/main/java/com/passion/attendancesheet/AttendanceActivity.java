@@ -420,24 +420,4 @@ public class AttendanceActivity extends AppCompatActivity {
         return true;
     }
 
-//    private static class  SaveFile extends AsyncTask<Void, Void, Void >{
-//
-//        private Context context;
-//
-//        SaveFile(Context context ){
-//            this.context = context;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            (( AttendanceActivity) context ).saveSheet();
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//            (( AttendanceActivity) context ).prepareExcelFile();
-//        }
-//    }
 }
