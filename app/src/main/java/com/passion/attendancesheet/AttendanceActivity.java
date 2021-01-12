@@ -41,10 +41,13 @@ import com.passion.attendancesheet.room.view.SheetAttendanceView;
 import com.passion.attendancesheet.room.view.SheetDetailView;
 import com.passion.attendancesheet.utils.Accessory_tool;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Color;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -253,38 +256,75 @@ public class AttendanceActivity extends AppCompatActivity {
             cs.setFillBackgroundColor(HSSFColor.BLACK.index);
 
             org.apache.poi.ss.usermodel.Sheet sheet1 = wb.createSheet();
+
+            // cell style
+            CellStyle cellStyle = wb.createCellStyle();
+            cellStyle.setAlignment( CellStyle.ALIGN_CENTER );
+
             Row row = sheet1.createRow(0);
             c = row.createCell(0);
             c.setCellValue("Course");
-            c.setCellStyle(cs);
+            c.setCellStyle(cellStyle);
 
             c = row.createCell(1);
             c.setCellValue(curCourseName);
             c.setCellStyle(cs);
+            c.setCellStyle(cellStyle);
 
-            if (mode.equals("normal")) {
-                int stu_count = student_list_adapter.getItemCount();
-                List<Student> studentList = student_list_adapter.getStudents();
-                for (int i = 0, j = 1; i < stu_count; i++) {
+            row = sheet1.createRow(1);
+            c = row.createCell(0);
+            c.setCellValue("Sr. No.");
+            c.setCellStyle(cellStyle);
 
-                    if (StudentListAdapter.studentPresentIndex.contains(i)) {
-                        // add to sheet
-                        row = sheet1.createRow(row.getRowNum() + 1);
-                        row.createCell(0).setCellValue(j++);
-                        row.createCell(1).setCellValue(studentList.get(i).student_no);
-                        row.createCell(2).setCellValue(studentList.get(i).name);
+            c = row.createCell(1);
+            c.setCellValue("Roll No.");
+            c.setCellStyle(cellStyle);
 
-                    }
-                }
-            } else {
+            c = row.createCell(2);
+            c.setCellValue("Students Present");
+            cellStyle.setWrapText(true);
+            c.setCellStyle(cellStyle);
+
+//
+//            if (mode.equals("normal")) {
+//                int stu_count = student_list_adapter.getItemCount();
+//                List<Student> studentList = student_list_adapter.getStudents();
+//                for (int i = 0; i < stu_count; i++) {
+//
+//                    if (StudentListAdapter.studentPresentIndex.contains(i)) {
+//                        // add to sheet
+//                        row = sheet1.createRow(row.getRowNum() + 1);
+//                        c = row.createCell(0);
+//                        c.setCellValue(i+1);
+//                        c.setCellStyle( cellStyle );
+//
+//                        c = row.createCell(1);
+//                        c.setCellValue(studentList.get(i).student_no);
+//                        c.setCellStyle( cellStyle );
+//
+//                        c = row.createCell(2);
+//                        c.setCellValue(studentList.get(i).name);
+//                        c.setCellStyle( cellStyle );
+//                    }
+//                }
+//            } else {
                 List<SheetAttendanceView> stu_presents = student_list_adapter.getStudentPresents();
                 for (int i = 0; i < stu_presents.size(); i++) {
+                    // add to sheet
                     row = sheet1.createRow(row.getRowNum() + 1);
-                    row.createCell(0).setCellValue(i);
-                    row.createCell(1).setCellValue(stu_presents.get(i).student_no);
-                    row.createCell(2).setCellValue(stu_presents.get(i).student_name);
+                    c = row.createCell(0);
+                    c.setCellValue(i+1);
+                    c.setCellStyle( cellStyle );
+
+                    c = row.createCell(1);
+                    c.setCellValue(stu_presents.get(i).student_no);
+                    c.setCellStyle( cellStyle );
+
+                    c = row.createCell(2);
+                    c.setCellValue(stu_presents.get(i).student_name);
+                    cellStyle.setWrapText(true);
                 }
-            }
+//            }
 
             dateTime = new SimpleDateFormat("MMM dd, yyyy-hh:mm a", Locale.US).format(Calendar.getInstance().getTime());
             file = new File(getExternalFilesDir(null), curCourseName + curSem + " " + curLecture + " " + dateTime.split(",")[0] + ".xls");
@@ -385,10 +425,9 @@ public class AttendanceActivity extends AppCompatActivity {
                     int student_count = student_list_adapter.getItemCount();
 
                     List<Student> studentList = student_list_adapter.getStudents();
-                    for (int i = 0; i < student_count; i++) {
+                    for ( Student s : studentList ) {
 
-                        if (StudentListAdapter.studentPresentIndex.contains(i)) {
-                            Student s = studentList.get(i);
+                        if (StudentListAdapter.studentPresentIndex.contains( s.student_no )) {
                             viewModel.insertAttendance(new Attendance( newSheet_id, s.course_id, s.student_no));
                         }
                     }

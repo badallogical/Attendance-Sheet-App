@@ -22,7 +22,7 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
 
     private List<Student> students = new ArrayList<>();
     private List<SheetAttendanceView> studentPresents = new ArrayList<>();
-    private Map<Integer, Boolean> studentPresentMap = new HashMap<>();
+    private static Map<Integer, Boolean> studentPresentMap = new HashMap<>();
     public static HashSet<Integer> studentPresentIndex = new HashSet<Integer>();
 
     private Context context;
@@ -42,6 +42,11 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
         this.studentPresents = studentPresents;
         this.students = students;
         studentPresentIndex.clear();
+
+        for( SheetAttendanceView s : studentPresents ){
+            studentPresentIndex.add( s.student_no );
+        }
+
         tempOldPresentCount = 0;
         notifyDataSetChanged();
     }
@@ -80,17 +85,21 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
 
             if( studentPresentMap.containsKey( s.student_no )){
                 holder.markPresent();
-                studentPresentIndex.add( position );
+                studentPresentIndex.add( s.student_no );
+            }
+        }
+
+        // for normal and editToNormal
+        if( !mode.equals(context.getResources().getString(R.string.edit)) ){
+            if( studentPresentIndex.contains( Integer.parseInt( holder.id.getText().toString() ))){
+                holder.markPresent();
+            }
+            else{
+                holder.markAbsent();
             }
         }
 
 
-        if( studentPresentIndex.contains(position)){
-            holder.markPresent();
-        }
-        else{
-            holder.markAbsent();
-        }
 
     }
 
@@ -159,11 +168,15 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
             toggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if(isChecked){
                     presentMark.setVisibility(View.VISIBLE);
-                    studentPresentIndex.add( getAdapterPosition() );
+                    studentPresentIndex.add( Integer.parseInt( id.getText().toString() ) );
                 }
                 else{
                     presentMark.setVisibility(View.GONE);
-                    studentPresentIndex.remove( getAdapterPosition() );
+                    studentPresentIndex.remove( Integer.parseInt( id.getText().toString() ) );
+
+                    if( studentPresentMap.containsKey( Integer.parseInt( id.getText().toString() ) )){
+                        studentPresentMap.remove( Integer.parseInt( id.getText().toString() ) );
+                    }
                 }
             });
         }
