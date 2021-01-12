@@ -22,7 +22,7 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
 
     private List<Student> students = new ArrayList<>();
     private List<SheetAttendanceView> studentPresents = new ArrayList<>();
-    private static Map<Integer, Boolean> studentPresentMap = new HashMap<>();
+//    private static Map<Integer, Boolean> studentPresentMap = new HashMap<>();
     public static HashSet<Integer> studentPresentIndex = new HashSet<Integer>();
 
     private Context context;
@@ -72,9 +72,9 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
             holder.id.setText( String.valueOf(s.student_no) );
             holder.name.setText( s.student_name );
 
-            if( !studentPresentMap.containsKey( s.student_no )){
-                studentPresentMap.put( s.student_no, true );
-            }
+//            if( !studentPresentMap.containsKey( s.student_no )){
+//                studentPresentMap.put( s.student_no, true );
+//            }
         }
         else{
             // editToNormal
@@ -83,13 +83,13 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
             holder.name.setText( s.name);
             holder.setToggleButton(true);
 
-            if( studentPresentMap.containsKey( s.student_no )){
-                holder.markPresent();
-                studentPresentIndex.add( s.student_no );
-            }
+//            if( studentPresentMap.containsKey( s.student_no )){
+//                holder.markPresent();
+//                studentPresentIndex.add( s.student_no );
+//            }
         }
 
-        // for normal and editToNormal
+        // For normal and editToNormal
         if( !mode.equals(context.getResources().getString(R.string.edit)) ){
             if( studentPresentIndex.contains( Integer.parseInt( holder.id.getText().toString() ))){
                 holder.markPresent();
@@ -98,8 +98,6 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
                 holder.markAbsent();
             }
         }
-
-
 
     }
 
@@ -174,9 +172,9 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
                     presentMark.setVisibility(View.GONE);
                     studentPresentIndex.remove( Integer.parseInt( id.getText().toString() ) );
 
-                    if( studentPresentMap.containsKey( Integer.parseInt( id.getText().toString() ) )){
-                        studentPresentMap.remove( Integer.parseInt( id.getText().toString() ) );
-                    }
+//                    if( studentPresentMap.containsKey( Integer.parseInt( id.getText().toString() ) )){
+//                        studentPresentMap.remove( Integer.parseInt( id.getText().toString() ) );
+//                    }
                 }
             });
         }
