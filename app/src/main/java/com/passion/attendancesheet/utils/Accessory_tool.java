@@ -44,4 +44,16 @@ public class Accessory_tool {
         return fCourseSemester;
     }
 
+    public static String convertToCamelCase(String str ){
+        str = str.toLowerCase();
+        String[] parts = str.split(" ");
+        StringBuilder camelCaseStr = new StringBuilder();
+        for( String part : parts ){
+            camelCaseStr.append(Character.toUpperCase(part.charAt(0)) + part.substring(1)).append(" ");
+        }
+
+        return camelCaseStr.toString();
+
+    }
+
 }

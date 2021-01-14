@@ -13,9 +13,11 @@
         android:id="@+id/course_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:textAppearanceLarge"
-        android:paddingStart="16sp"
+        android:fontFamily="@font/montserrat_alternates"
         android:padding="10sp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="#000"
+        android:paddingStart="16sp"
         tools:text="BCA-Vth" />
 
 </androidx.cardview.widget.CardView>

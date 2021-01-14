@@ -12,6 +12,8 @@ import android.widget.ToggleButton;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.room.entity.Student;
 import com.passion.attendancesheet.room.view.SheetAttendanceView;
+import com.passion.attendancesheet.utils.Accessory_tool;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,14 +65,14 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
             Student s = students.get(position);
 
             holder.id.setText(String.valueOf(s.student_no));
-            holder.name.setText(s.name);
+            holder.name.setText(Accessory_tool.convertToCamelCase(s.name));
 
 
         }
         else if( mode.equals(context.getResources().getString(R.string.edit))){
             SheetAttendanceView s = studentPresents.get(position);
             holder.id.setText( String.valueOf(s.student_no) );
-            holder.name.setText( s.student_name );
+            holder.name.setText( Accessory_tool.convertToCamelCase(s.student_name));
 
 //            if( !studentPresentMap.containsKey( s.student_no )){
 //                studentPresentMap.put( s.student_no, true );

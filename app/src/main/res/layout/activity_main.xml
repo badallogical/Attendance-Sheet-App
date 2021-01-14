@@ -14,20 +14,20 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tablayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/tab_style"
+            >
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Sheets"
-                android:icon="@drawable/ic_assignment_black_24dp"
                 />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="History"
-                android:icon="@drawable/ic_history_black_24dp"
                 />
 
         </com.google.android.material.tabs.TabLayout>

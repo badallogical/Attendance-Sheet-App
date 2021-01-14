@@ -119,7 +119,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 curTeacherName = ((CourseTeacherView) Objects.requireNonNull(sheet_intent.getSerializableExtra(TEACHER))).teacher_name;
                 curTeacherId = ((CourseTeacherView) Objects.requireNonNull(sheet_intent.getSerializableExtra(TEACHER))).teacher_id;
                 curLecture = Accessory_tool.getIntFromRoman(Objects.requireNonNull(sheet_intent.getExtras().get(LECTURE)).toString());
-                curSubject = Objects.requireNonNull(sheet_intent.getExtras().get(SUBJECT)).toString();
+                curSubject = Accessory_tool.convertToCamelCase(Objects.requireNonNull(sheet_intent.getExtras().get(SUBJECT)).toString());
                 curSem = curCourseId.split("-")[1];
 
             } else {
@@ -131,7 +131,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 curTeacherId = sheetDetails.teacher_id;
                 curTeacherName = sheetDetails.teacher_name;
                 curLecture = sheetDetails.lecture;
-                curSubject = sheetDetails.subject_name;
+                curSubject = Accessory_tool.convertToCamelCase(sheetDetails.subject_name);
                 curSem = sheetDetails.course_id.split("-")[1];
             }
         } catch (NullPointerException e) {
@@ -321,7 +321,7 @@ public class AttendanceActivity extends AppCompatActivity {
                     c.setCellStyle( cellStyle );
 
                     c = row.createCell(2);
-                    c.setCellValue(stu_presents.get(i).student_name);
+                    c.setCellValue(Accessory_tool.convertToCamelCase(stu_presents.get(i).student_name));
                     cellStyle.setWrapText(true);
                 }
 //            }

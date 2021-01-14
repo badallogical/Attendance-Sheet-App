@@ -6,12 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     String curCourse;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tablayout);
+        tabLayout.setTabTextColors(Color.rgb(80,80,80), Color.BLACK);
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -366,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
             this.context = context;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.P)
         @Override
         protected Void doInBackground(Void... voids) {
            importSheet(context);

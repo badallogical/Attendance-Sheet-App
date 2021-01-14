@@ -24,16 +24,15 @@
 
             <TextView
                 android:id="@+id/course_name"
-                android:textAllCaps="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="BCA"
                 android:layout_gravity="center"
+                android:fontFamily="@font/montserrat_alternates"
+                android:textAllCaps="true"
                 android:textAppearance="?android:textAppearanceLarge"
-                android:fontFamily="@font/roboto_mono"
-                android:textSize="25sp"
                 android:textColor="@color/colorPrimary"
-                />
+                android:textSize="25sp"
+                tools:text="BCA" />
 
             <TextView
                 android:id="@+id/lecture"
@@ -41,17 +40,16 @@
                 android:layout_height="wrap_content"
                 tools:text="III Lecture "
                 android:textAppearance="?android:textAppearanceSmall"
-                android:fontFamily="@font/roboto_mono"
+                android:fontFamily="@font/montserrat"
                 android:layout_gravity="center"
                 android:textColor="#000"
                 />
 
             <TextView
                 android:id="@+id/subject"
-                android:textAllCaps="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_mono"
+                android:fontFamily="@font/montserrat"
                 android:layout_gravity="center"
                 tools:text="Artificial Intelligence"
                 android:textColor="@color/colorAccent"
@@ -63,6 +61,7 @@
                 android:layout_height="wrap_content"
                 tools:text="By L.S Awasthi"
                 android:textAppearance="?android:textAppearanceSmall"
+                android:fontFamily="@font/pompiere"
                 android:layout_gravity="center"
                 android:textColor="#000"
                 />

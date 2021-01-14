@@ -107,6 +107,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textAutoComplete"
                 android:labelFor="@id/subject"
+                android:textSize="14sp"
                 android:autofillHints="Subject" />
 
         </LinearLayout>
