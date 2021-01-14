@@ -268,8 +268,12 @@ public class AttendanceActivity extends AppCompatActivity {
 
             c = row.createCell(1);
             c.setCellValue(curCourseName);
-            c.setCellStyle(cs);
             c.setCellStyle(cellStyle);
+
+            c = row.createCell(2);
+            c.setCellValue(curSem);
+            c.setCellStyle(cs);
+
 
             row = sheet1.createRow(1);
             c = row.createCell(0);
@@ -327,7 +331,7 @@ public class AttendanceActivity extends AppCompatActivity {
 //            }
 
             dateTime = new SimpleDateFormat("MMM dd, yyyy-hh:mm a", Locale.US).format(Calendar.getInstance().getTime());
-            file = new File(getExternalFilesDir(null), curCourseName + curSem + " " + curLecture + " " + dateTime.split(",")[0] + ".xls");
+            file = new File(getExternalFilesDir(null), curCourseName + curSem + " " + "L-"+curLecture + " " + dateTime.split(",")[0] + ".xls");
 
             try (FileOutputStream os = new FileOutputStream(file)) {
                 wb.write(os);
