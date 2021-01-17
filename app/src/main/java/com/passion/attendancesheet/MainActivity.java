@@ -230,38 +230,29 @@ public class MainActivity extends AppCompatActivity {
                             cur_row = (HSSFRow) rowIter.next();
                             if (cur_row != null) {
                                 String heading = cur_row.getCell(0).toString();
-                                if (heading.equalsIgnoreCase("courses") || heading.equalsIgnoreCase("course")) {
-
+                                if ( (cur_row.getPhysicalNumberOfCells() == 1) && heading.equalsIgnoreCase("courses") || heading.equalsIgnoreCase("course")) {
 
                                     while (rowIter.hasNext()) {
                                         cur_row = (HSSFRow) rowIter.next();
-                                        if (cur_row != null && !cur_row.getCell(0).toString().equalsIgnoreCase("id")) {
+                                        if (cur_row != null && cur_row.getPhysicalNumberOfCells() == 1 && !cur_row.getCell(0).toString().equalsIgnoreCase("id")) {
+
                                             // read courses
                                             courses.add(cur_row.getCell(0).toString());
-                                        } else {
+                                        } else if( !courses.isEmpty() && (cur_row.getPhysicalNumberOfCells() > 0 )&&cur_row != null && cur_row.getCell(0).toString().equalsIgnoreCase("id")){
 
-                                            if (!courses.isEmpty()) {
-                                                sharedPreferenceEditor.putStringSet(getString(R.string.courses), courses).commit();
-                                            }
+                                            // save courses
+                                            sharedPreferenceEditor.putStringSet(getString(R.string.courses), courses).commit();
 
 
-                                            // ignore empty rows
-                                            while (rowIter.hasNext()) {
-                                                if (cur_row != null && cur_row.getCell(0).toString().isEmpty()) {
-                                                    cur_row = (HSSFRow) rowIter.next();
-                                                } else {
-                                                    break;
-                                                }
-                                            }
-
-                                            if (cur_row != null && cur_row.getCell(0).toString().equalsIgnoreCase("id")) {
                                                 // read teachers with courses
                                                 while (rowIter.hasNext()) {
                                                     cur_row = (HSSFRow) rowIter.next();
                                                     teachers_with_courses.add((int) cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString() + "/" + cur_row.getCell(2));
                                                 }
 
-                                            }
+
+
+                                            Toast.makeText(this, "courses and teacher are readed successfully", Toast.LENGTH_LONG).show();
 
                                         }
                                     }
@@ -297,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
 
                         }
 
-                        Toast.makeText(this, "courses and teacher are readed successfully", Toast.LENGTH_LONG).show();
+
                     } else {
 
                         // read course student
