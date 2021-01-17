@@ -38,7 +38,9 @@ import com.passion.attendancesheet.room.entity.CourseTeacherCrossRef;
 import com.passion.attendancesheet.room.entity.Student;
 import com.passion.attendancesheet.room.entity.Teacher;
 import com.passion.attendancesheet.utils.Accessory_tool;
+
 import androidx.lifecycle.*;
+
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tablayout);
-        tabLayout.setTabTextColors(Color.rgb(80,80,80), Color.BLACK);
+        tabLayout.setTabTextColors(Color.rgb(80, 80, 80), Color.BLACK);
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -148,10 +150,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void importSheet(Context context) {
 
-        if( viewModel.sheetRepository.sheetDao.getTeachersCount() == 0 ){
+        if (viewModel.sheetRepository.sheetDao.getTeachersCount() == 0) {
             CUR_READ_TYPE = 0;
 
             // Pop up to import courses and teachers
@@ -166,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                                 filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
                                 filePickerIntent.setType("application/vnd.ms-excel");
-                                ((MainActivity)context).startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
+                                ((MainActivity) context).startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
                             })
                             .setNegativeButton("cancel", (dialog, which) -> {
                                 // dismiss
@@ -174,22 +177,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        }else{
+        } else {
             CUR_READ_TYPE = 1;
             // Import Student list
             Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
             filePickerIntent.setType("application/vnd.ms-excel");
-            ((MainActivity)context).startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
+            ((MainActivity) context).startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
 
         }
-//        // check for teacher and courses tables
-//        viewModel.getAllTeachers().observe(this, (teachers) -> {
-//            if (teachers.isEmpty()) {
-//
-//            } else {
-//}
-//        });
     }
 
 
@@ -219,126 +215,149 @@ public class MainActivity extends AppCompatActivity {
                     HSSFRow cur_row;
                     HSSFRow verifyRow;
 
+                    Set<String> courses = new HashSet<String>();
+                    List<String> teachers_with_courses = new ArrayList<String>();
+
                     // verify sheet ???? need to have strong verification
                     if (CUR_READ_TYPE == 0) {
-                        // Read basic sheet
-                        verifyRow = mySheet.getRow(0);
-                        boolean verification = false;
-                        if ( (verifyRow.getCell(0).toString().toUpperCase().equalsIgnoreCase("COURSE")
-                                || verifyRow.getCell(0).toString().toUpperCase().equalsIgnoreCase("COURSES") ) && verifyRow.getPhysicalNumberOfCells() == 1 ) {
 
-                            verification = true;
-                            // read all courses name
-                            Set<String> courses = new HashSet<String>();
-                            List<String> teachers_with_courses = new ArrayList<String>();
-                            rowIter = mySheet.rowIterator();
-                            rowIter.next();
 
-                            int row = 1;
-                            while (rowIter.hasNext()) {
-                                cur_row = (HSSFRow) rowIter.next();
-                                if (cur_row.getCell(0).toString().equalsIgnoreCase("ID")) {
+                        // Read basic Sheet
+                        rowIter = mySheet.rowIterator();
+                        while (rowIter.hasNext()) {
 
-                                    // save courses to sharedPreferences
-                                    sharedPreferenceEditor.putStringSet( getString(R.string.courses), courses ).commit();
+                            // read
+                            cur_row = (HSSFRow) rowIter.next();
+                            if (cur_row != null) {
+                                String heading = cur_row.getCell(0).toString();
+                                if (heading.equalsIgnoreCase("courses") || heading.equalsIgnoreCase("course")) {
+
 
                                     while (rowIter.hasNext()) {
                                         cur_row = (HSSFRow) rowIter.next();
-                                        teachers_with_courses.add((int) cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString() + "/" + cur_row.getCell(2));
-                                    }
+                                        if (cur_row != null && !cur_row.getCell(0).toString().equalsIgnoreCase("id")) {
+                                            // read courses
+                                            courses.add(cur_row.getCell(0).toString());
+                                        } else {
 
+                                            if (!courses.isEmpty()) {
+                                                sharedPreferenceEditor.putStringSet(getString(R.string.courses), courses).commit();
+                                            }
+
+
+                                            // ignore empty rows
+                                            while (rowIter.hasNext()) {
+                                                if (cur_row != null && cur_row.getCell(0).toString().isEmpty()) {
+                                                    cur_row = (HSSFRow) rowIter.next();
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+
+                                            if (cur_row != null && cur_row.getCell(0).toString().equalsIgnoreCase("id")) {
+                                                // read teachers with courses
+                                                while (rowIter.hasNext()) {
+                                                    cur_row = (HSSFRow) rowIter.next();
+                                                    teachers_with_courses.add((int) cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString() + "/" + cur_row.getCell(2));
+                                                }
+
+                                            }
+
+                                        }
+                                    }
                                 } else {
-                                    courses.add(mySheet.getRow(row).getCell(0).toString());
-                                    row++;
+                                    // invalid sheet
+                                    invalidSheetPopup();
                                 }
                             }
-
-
-                            // show
-                            StringBuilder temp = new StringBuilder();
-                            for (String course : courses) {
-                                temp.append(course).append(",");
-                            }
-                            Log.i("Debug Output : ", temp.toString());
-
-                            for (String teacherCourse : teachers_with_courses) {
-                                Log.i("Debug Output Teacher : ", teacherCourse);
-                                // insert to database
-                                teacherCourse = teacherCourse.trim();
-                                String[] info = teacherCourse.split("/");
-                                viewModel.insertTeacher( new Teacher( Integer.parseInt(info[0]) , info[1] ) );
-
-                                // insert all the courses mapping for this teacher
-                                String[] coursesTought = info[2].split(",");
-                                for( String courseTought : coursesTought ){
-                                    List<String> semestersWise = Accessory_tool.fetchCourseSemester(courseTought);
-                                    for( String courseSemster : semestersWise ){
-                                        viewModel.insertCourseWithTeacherRef( new CourseTeacherCrossRef(courseSemster, Integer.parseInt(info[0])));
-                                    }
-                                }
-
-                            }
-
-                            Toast.makeText(this, "courses and teacher are readed successfully", Toast.LENGTH_LONG).show();
-
-                        } else {
-                           invalidSheetPopup();
                         }
-                    }
-                    else{
-                        String cur_courseReadied = "";
-                        List<String> student_list = new ArrayList<>();
-                        verifyRow = mySheet.getRow(0);
-                        if( verifyRow.getPhysicalNumberOfCells() == 2 && verifyRow.getCell(0).toString().equalsIgnoreCase("course") && verifyRow.getCell(1).toString().equalsIgnoreCase("semester") ){
 
-                            // read course
-                            cur_row = mySheet.getRow(1);
-                            boolean course_readied = false;
-                            if( cur_row.getPhysicalNumberOfCells() == 2 ) {
-                                cur_courseReadied = cur_row.getCell(0).toString() + "-" + (int)cur_row.getCell(1).getNumericCellValue();
-                                course_readied = true;
+                        // show
+                        StringBuilder temp = new StringBuilder();
+                        for (String course : courses) {
+                            temp.append(course).append(",");
+                        }
+                        Log.i("Debug Output : ", temp.toString());
+
+                        for (String teacherCourse : teachers_with_courses) {
+                            Log.i("Debug Output Teacher : ", teacherCourse);
+                            // insert to database
+                            teacherCourse = teacherCourse.trim();
+                            String[] info = teacherCourse.split("/");
+                            viewModel.insertTeacher(new Teacher(Integer.parseInt(info[0]), info[1]));
+
+                            // insert all the courses mapping for this teacher
+                            String[] coursesTought = info[2].split(",");
+                            for (String courseTought : coursesTought) {
+                                List<String> semestersWise = Accessory_tool.fetchCourseSemester(courseTought);
+                                for (String courseSemster : semestersWise) {
+                                    viewModel.insertCourseWithTeacherRef(new CourseTeacherCrossRef(courseSemster, Integer.parseInt(info[0])));
+                                }
                             }
 
-                            // read student list now
-                            if( course_readied ){
-                                rowIter = mySheet.rowIterator();
-                                rowIter.next();
-                                rowIter.next();
-                                rowIter.next();
-                                cur_row = (HSSFRow)rowIter.next();
+                        }
 
-                                // verify student entry
-                                if( cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("roll") && cur_row.getCell(1).toString().equalsIgnoreCase("name")){
-                                    while( rowIter.hasNext()){
-                                        cur_row = (HSSFRow) rowIter.next();
-                                        student_list.add( (int)cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString() );
-                                    }
+                        Toast.makeText(this, "courses and teacher are readed successfully", Toast.LENGTH_LONG).show();
+                    } else {
+
+                        // read course student
+                        String cur_courseReadied = "";
+                        rowIter = mySheet.rowIterator();
+                        List<String> student_list = new ArrayList<>();
+                        boolean course_readied = false;
+
+                        if (rowIter.hasNext()) {
+
+                            cur_row = (HSSFRow) rowIter.next();
+                            if (cur_row != null) {
+                                if ((cur_row.getPhysicalNumberOfCells() == 2) && cur_row.getCell(0).toString().equalsIgnoreCase("course") && cur_row.getCell(1).toString().equalsIgnoreCase("semester")) {
+                                    // read course name
+                                    cur_row = (HSSFRow) rowIter.next();
+                                    cur_courseReadied = cur_row.getCell(0).toString() + "-" + (int) cur_row.getCell(1).getNumericCellValue();
+                                    course_readied = true;
+                                } else {
+                                    invalidSheetPopup();
                                 }
+                            }
+                        } else {
+                            invalidSheetPopup();
+                        }
 
-                                // courses readied successfully
-                                for( String student : student_list ){
-                                    String[] student_data = student.split("/");
-                                    Log.i( "Debug student list : ", student);
-                                    viewModel.insertStudents( new Student( cur_courseReadied, Integer.parseInt(student_data[0]), student_data[1]));
-                                }
+                        // if valid
+                        if (course_readied) {
 
-                                curCourse = cur_courseReadied;
-                                viewModel.getAllStudents(cur_courseReadied).observe( this, students -> {
-                                    if( students.isEmpty() ){
-                                        invalidSheetPopup();
+                            while (rowIter.hasNext()) {
+                                cur_row = (HSSFRow) rowIter.next();
+                                if (cur_row != null && !cur_row.getCell(0).toString().isEmpty()) {
+                                    if (cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("roll") && cur_row.getCell(1).toString().equalsIgnoreCase("name")) {
+
+                                        while (rowIter.hasNext()) {
+                                            cur_row = (HSSFRow) rowIter.next();
+                                            student_list.add((int) cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString());
+                                        }
                                     }
                                     else{
-                                        // insert the student list as course added
-                                        viewModel.insertCourses( new Course(curCourse));
+                                        invalidSheetPopup();
                                     }
-                                });
-
+                                }
                             }
 
-                        }
-                        else{
-                            // pop up invalid sheet dialog
-                            invalidSheetPopup();
+                            // courses readied successfully
+                            for (String student : student_list) {
+                                String[] student_data = student.split("/");
+                                Log.i("Debug student list : ", student);
+                                viewModel.insertStudents(new Student(cur_courseReadied, Integer.parseInt(student_data[0]), student_data[1]));
+                            }
+
+                            curCourse = cur_courseReadied;
+                            viewModel.getAllStudents(cur_courseReadied).observe(this, students -> {
+                                if (students.isEmpty()) {
+                                    invalidSheetPopup();
+                                } else {
+                                    // insert the student list as course added
+                                    viewModel.insertCourses(new Course(curCourse));
+                                }
+                            });
                         }
 
 
@@ -359,24 +378,24 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Invalid Sheet")
                 .setMessage("You have selected different sheet please select the basic sheet consist of teacher and course information")
-                .setPositiveButton("Ok", (dialog, which)->{
+                .setPositiveButton("Ok", (dialog, which) -> {
                     dialog.dismiss();
                 }).create().show();
     }
 
-    class AsyncImport extends AsyncTask<Void, Void,Void>{
+    class AsyncImport extends AsyncTask<Void, Void, Void> {
 
         Context context;
 
-        AsyncImport(Context context ){
+        AsyncImport(Context context) {
             this.context = context;
         }
 
         @RequiresApi(api = Build.VERSION_CODES.P)
         @Override
         protected Void doInBackground(Void... voids) {
-           importSheet(context);
-           return null;
+            importSheet(context);
+            return null;
         }
     }
 }
