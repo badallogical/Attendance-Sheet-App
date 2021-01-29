@@ -1,8 +1,10 @@
 package com.passion.attendancesheet;
 
 import android.Manifest;
+import androidx.appcompat.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -15,6 +17,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,10 +61,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static android.content.DialogInterface.*;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 1;
     static int CUR_READ_TYPE = 0;
+    private int ACTION_BAR_MODE = 0;
+    private String SEL_COURSE_ID = "";
+
+    ActionBar actionBar;
+
+    View selectedCourseView;
 
     ViewPager viewPager;
     PageAdapter pagerAdapter;
@@ -76,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Action bar
+        actionBar = getSupportActionBar();
+
         // SharedPreferences
         sharedPreferences = getSharedPreferences(getString(R.string.sharedPreference1), Context.MODE_PRIVATE);
         sharedPreferenceEditor = sharedPreferences.edit();
@@ -89,14 +106,11 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Ask for permission check
                 if (checkPermission()) {
-//                    importSheet();
                     new AsyncImport(this).execute();
                 } else {
                     requestForPermission();
                 }
             } else {
-                // Go ahead
-//                importSheet();
                 new AsyncImport(this).execute();
             }
 
@@ -104,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         viewPager = findViewById(R.id.viewpager);
-        pagerAdapter = new PageAdapter(getSupportFragmentManager(), viewModel);
+        pagerAdapter = new PageAdapter(getSupportFragmentManager(), viewModel, this);
         viewPager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tablayout);
@@ -112,6 +126,109 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+
+    /* Action bar menu */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_activity_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if( ACTION_BAR_MODE == 1 ){
+            // Sheet Delete Action Bar
+            menu.getItem(0).setVisible(true);
+            menu.getItem(1).setVisible(false);
+            actionBar.setBackgroundDrawable(getDrawable(R.color.colorPrimaryDark));
+
+        }
+        else{
+            // Setting Option
+            menu.getItem(0).setVisible(false);
+            menu.getItem(1).setVisible(true);
+            actionBar.setBackgroundDrawable( getDrawable(R.color.colorPrimary));
+
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch( item.getItemId() ){
+            case R.id.delete:
+
+                if( SEL_COURSE_ID.isEmpty() ){
+
+                    // if course_id is empty
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Invalid Course ");
+                    builder.setMessage("Course Id is empty can't delete the sheet");
+                    builder.setPositiveButton("OK", new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.create().show();
+                }else{
+
+                    // Confirmation Delete dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                    builder.setTitle("Confirmation");
+                    builder.setIcon(R.drawable.ic_round_warning_24);
+                    builder.setMessage("Deleting the list will delete all the course date include students, and history of attendance.");
+                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener(){
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            viewModel.deleteStudentsByCourseId(SEL_COURSE_ID);
+                            Toast.makeText(MainActivity.this, "Course deleted Successfully", Toast.LENGTH_LONG).show();
+
+                            // Reset the actionbar to setting
+                            resetActionBar();
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+
+                            // Reset the actionbar to setting
+                            resetActionBar();
+
+                        }
+                    });
+
+                    builder.create().show();
+
+
+
+
+                }
+
+            break;
+
+            case R.id.setting:
+                break;
+        }
+        return true;
+    }
+
+    private void resetActionBar(){
+        // Reset Action Bar Mode
+        ACTION_BAR_MODE = 0;
+        invalidateOptionsMenu();
+        pagerAdapter.getSheetList().getSheetListAdapter().notifyDataSetChanged();
+        selectedCourseView.setBackgroundResource(R.color.normalCardColor);
+
+    }
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -142,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Show popup and perform operation safely.
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-//                importSheet();
                 new AsyncImport(this).execute();
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
@@ -374,6 +490,7 @@ public class MainActivity extends AppCompatActivity {
                 }).create().show();
     }
 
+
     class AsyncImport extends AsyncTask<Void, Void, Void> {
 
         Context context;
@@ -388,5 +505,21 @@ public class MainActivity extends AppCompatActivity {
             importSheet(context);
             return null;
         }
+    }
+
+    public void setACTION_BAR_MODE(int ACTION_BAR_MODE) {
+        this.ACTION_BAR_MODE = ACTION_BAR_MODE;
+    }
+
+    public int getACTION_BAR_MODE() {
+        return ACTION_BAR_MODE;
+    }
+
+    public void setSelectedCourseId( String courseId ){
+        this.SEL_COURSE_ID = courseId;
+    }
+
+    public void setSelectedCourseView( View v){
+        this.selectedCourseView = v;
     }
 }

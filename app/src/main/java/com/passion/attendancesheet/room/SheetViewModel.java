@@ -36,6 +36,10 @@ public class SheetViewModel extends AndroidViewModel {
         sheetRepository.insertCourse(course);
     }
 
+    public void deleteStudentsByCourseId( String courseId ){
+        sheetRepository.deleteStudentsByCourseId( courseId );
+    }
+
     public LiveData<List<Course>> getllCourse(){
         return allCourses;
     }

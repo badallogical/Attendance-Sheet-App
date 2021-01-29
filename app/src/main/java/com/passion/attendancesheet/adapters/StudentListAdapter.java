@@ -22,10 +22,9 @@ import java.util.Map;
 
 public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter.StudentListViewHolder> {
 
-    private List<Student> students = new ArrayList<>();
-    private List<SheetAttendanceView> studentPresents = new ArrayList<>();
-//    private static Map<Integer, Boolean> studentPresentMap = new HashMap<>();
-    public static HashSet<Integer> studentPresentIndex = new HashSet<Integer>();
+    private List<Student> students = new ArrayList<>(); // All students of course
+    private List<SheetAttendanceView> studentPresents = new ArrayList<>();  // previously presented Students.
+    public static HashSet<Integer> studentPresentIndex = new HashSet<Integer>();    // Store the current presented state of student.
 
     private Context context;
     private static String mode;
@@ -45,6 +44,8 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
         this.students = students;
         studentPresentIndex.clear();
 
+
+        // add existing student attendance to current studentPresentIndex to show.
         for( SheetAttendanceView s : studentPresents ){
             studentPresentIndex.add( s.student_no );
         }
@@ -74,9 +75,6 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
             holder.id.setText( String.valueOf(s.student_no) );
             holder.name.setText( Accessory_tool.convertToCamelCase(s.student_name));
 
-//            if( !studentPresentMap.containsKey( s.student_no )){
-//                studentPresentMap.put( s.student_no, true );
-//            }
         }
         else{
             // editToNormal
@@ -85,10 +83,6 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
             holder.name.setText( s.name);
             holder.setToggleButton(true);
 
-//            if( studentPresentMap.containsKey( s.student_no )){
-//                holder.markPresent();
-//                studentPresentIndex.add( s.student_no );
-//            }
         }
 
         // For normal and editToNormal
@@ -144,7 +138,6 @@ public class StudentListAdapter extends RecyclerView.Adapter< StudentListAdapter
         ToggleButton toggleButton;
         Context context;
         ImageView presentMark;
-
 
 
         public StudentListViewHolder(@NonNull View itemView, Context context ) {

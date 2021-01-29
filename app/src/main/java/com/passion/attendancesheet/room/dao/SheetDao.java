@@ -22,83 +22,101 @@ import com.passion.attendancesheet.room.view.SheetDetailView;
 import java.util.List;
 
 @Dao
-public interface SheetDao {
+public abstract class SheetDao {
 
    // get all the courses
    @Query("Select * from course_table")
-   LiveData<List<Course>> getAllCourses();
+   public abstract LiveData<List<Course>> getAllCourses();
 
    @Query("Select * from student_table where course_id = :course_id order by student_no")
-   LiveData<List<Student>>  getAllStudents(String course_id);
+   public abstract LiveData<List<Student>>  getAllStudents(String course_id);
 
    // course teachers
    @Query("Select * from course_teacher_view where course_id = :course_id")
-   LiveData<List<CourseTeacherView>> getCourseTeacher( String course_id );
+   public abstract LiveData<List<CourseTeacherView>> getCourseTeacher(String course_id);
 
    @Query("Select * from teacher_table")
-   LiveData<List<Teacher>> getAllTeachers();
+   public abstract LiveData<List<Teacher>> getAllTeachers();
 
    /** Sheets **/
    // get all sheets
    @Query("Select * from sheet_detail_table order by sheet_id desc")
-   LiveData<List<SheetDetailView>> getAllSheets();
+   public abstract LiveData<List<SheetDetailView>> getAllSheets();
 
    @Query("Select * from sheet_detail_table order by sheet_id desc limit 1")
-   SheetDetailView getTopSheetsSync();
+   public abstract SheetDetailView getTopSheetsSync();
 
    @Query("Select * from sheet_detail_table where sheet_id = :sheet_id ")
-   LiveData<List<SheetDetailView>> getSheetDetailBySheetId(int sheet_id);
+   public abstract LiveData<List<SheetDetailView>> getSheetDetailBySheetId(int sheet_id);
 
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   void insertSheet(Sheet s);
+   public abstract void insertSheet(Sheet s);
 
    @Delete
-   void deleteSheet(Sheet s);
+   public abstract void deleteSheet(Sheet s);
 
    @Query( "DELETE from sheet_table where sheet_id = :sheed_id")
-   void deleteSheetById( int sheed_id );
+   public abstract void deleteSheetById(int sheed_id);
 
    @Update
-   void updateSheet(Sheet s);
+   public abstract void updateSheet(Sheet s);
 
    @Insert( onConflict = OnConflictStrategy.REPLACE)
-   void insertAttendace(Attendance attendance);
+   public abstract void insertAttendace(Attendance attendance);
 
    @Delete
-   void deleteAttendace(Attendance attendance);
+   public abstract void deleteAttendace(Attendance attendance);
 
    @Query("DELETE from attendance_table where sheet_id = :sheet_id")
-   void deleteAttendanceOfSheet( int sheet_id );
+   public abstract void deleteAttendanceOfSheet(int sheet_id);
 
    // consist student list that are present on that sheet
    @Transaction
    @Query("Select * from sheet_attendace_view where sheet_id = :sheet_id ")
-   LiveData<List<SheetAttendanceView>> getSheetAttendance(int sheet_id);
+   public abstract LiveData<List<SheetAttendanceView>> getSheetAttendance(int sheet_id);
 
 
+   /** Course */
    // insert the course
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   void insertCourse( Course course );
+   public abstract void insertCourse(Course course);
 
    // update the course
    @Update
-   void updateCourse( Course course );
+   public abstract void updateCourse(Course course);
 
+   @Query("Delete from course_table where course_id = :courseId")
+   public abstract void deleteCourse(String courseId);
+
+   // Delete the Course Student (Course) as transaction as run multiple queries as one.
+   @Transaction
+   public void deleteStudentsByCourseId( String courseId ){
+      deleteStudentByCourseIdHelper(courseId);
+      deleteCourse(courseId);
+
+   }
+
+
+   /** Student */
    // insert the student
    @Insert(entity = Student.class , onConflict = OnConflictStrategy.REPLACE)
-   void insertStudent( Student student );
+   public abstract void insertStudent(Student student);
 
    // update the student
    @Update
-   void updateStudent( Student student );
+   public abstract void updateStudent(Student student);
+
+   @Query("Delete from student_table where course_id = :courseId ")
+   public abstract void deleteStudentByCourseIdHelper(String courseId);
+
 
    @Insert
-   void insertTeacher( Teacher teacher );
+   public abstract void insertTeacher(Teacher teacher);
 
    @Insert
-   void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef );
+   public abstract void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef);
 
    @Query("Select count(*) from teacher_table")
-   int getTeachersCount();
+   public abstract int getTeachersCount();
 }

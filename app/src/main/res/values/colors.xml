@@ -6,4 +6,8 @@
     <color name="colorAccent">#002E65</color>
     <color name="absent">#FF103E</color>
     <color name="present">#64DD17</color>
+
+    <color name="longClick">#606060</color>
+    <color name="normalCardColor">#424242</color>
+
 </resources>

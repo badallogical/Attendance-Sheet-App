@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.passion.attendancesheet.AttendanceActivity;
+import com.passion.attendancesheet.MainActivity;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.fragments.SheetList;
 import com.passion.attendancesheet.room.SheetViewModel;
@@ -99,7 +100,6 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
 
                         sheetViewModel.getTeacherCourse(course_id).observe(sheetList, courseWithTeachers -> {
                             teacherListAdapter.setTeachers(courseWithTeachers);
-                            //intent.putExtra( AttendanceActivity.TEACHER , courseWithTeachers.get(0).teachers.get(0) );
                         });
 
 
@@ -133,6 +133,32 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
                     // show dialog
                     dialog.show();
 
+                }
+            });
+
+
+            // OnLongClick delete option
+            itemView.setOnLongClickListener( new View.OnLongClickListener(){
+
+                @Override
+                public boolean onLongClick(View v) {
+
+                    // Highlight the selected course( card view )
+                    v.setBackgroundResource(R.color.longClick);
+
+                    // get Main Activity Object
+                    MainActivity mainActivity = sheetList.getMainActivity();
+
+                    // Invalidate the action bar to show delete option
+                    if( mainActivity != null ){
+                        mainActivity.setACTION_BAR_MODE(1);
+                        mainActivity.setSelectedCourseId( course_id );
+                        mainActivity.setSelectedCourseView(v);
+                        mainActivity.invalidateOptionsMenu();
+                    }
+
+
+                    return true;
                 }
             });
         }

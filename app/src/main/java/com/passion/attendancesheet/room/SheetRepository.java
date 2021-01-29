@@ -18,7 +18,7 @@ import com.passion.attendancesheet.room.view.SheetDetailView;
 
 import java.util.List;
 
-public class SheetRepository {
+public class SheetRepository{
 
     public SheetDao sheetDao;
     LiveData<List<Course>> allCourses;
@@ -33,6 +33,10 @@ public class SheetRepository {
 
     public void insertCourse(Course course ){
         new AsyncInsertCourse(sheetDao).execute(course);
+    }
+
+    public void deleteStudentsByCourseId( String courseId ){
+        new AsyncDeleteStudentsByCourseId( sheetDao ).execute( courseId );
     }
 
     public LiveData<List<Course>> getAllCourses(){
@@ -238,6 +242,21 @@ public class SheetRepository {
         @Override
         protected Void doInBackground(Course... courses) {
             sheetDao.insertCourse( courses[0] );
+            return null;
+        }
+    }
+
+    private static class AsyncDeleteStudentsByCourseId extends AsyncTask< String, Void, Void > {
+
+        SheetDao sheetDao;
+
+        AsyncDeleteStudentsByCourseId( SheetDao sheetDao ){
+            this.sheetDao = sheetDao;
+        }
+
+        @Override
+        protected Void doInBackground(String ... courseId ) {
+            sheetDao.deleteStudentsByCourseId(courseId[0]);
             return null;
         }
     }

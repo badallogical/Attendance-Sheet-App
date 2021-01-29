@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.passion.attendancesheet.MainActivity;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.SheetListAdapter;
 import com.passion.attendancesheet.room.SheetViewModel;
@@ -33,8 +34,14 @@ public class SheetList extends Fragment {
 
     Context context;
 
+    MainActivity mainActivity;
+
     public SheetList() {
         // Required empty public constructor
+    }
+
+    public SheetList(Context mainActivity ){
+        this.mainActivity = (MainActivity) mainActivity;
     }
 
     @Override
@@ -51,8 +58,6 @@ public class SheetList extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
-
-//        TeacherListAdapter teacherListAdapter = new TeacherListAdapter(context);
 
         no_classes = getView().findViewById(R.id.no_classes);
         sheetlist = getView().findViewById( R.id.sheet_list );
@@ -73,26 +78,17 @@ public class SheetList extends Fragment {
                 }
             });
         }
-
-
-//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//                //TODO: Delete the sheet
-//
-//
-//            }
-//        }).attachToRecyclerView(sheetlist);
-
-
     }
 
     public SheetViewModel getSheetViewModel() {
         return sheetViewModel;
+    }
+
+    public MainActivity getMainActivity(){
+        return mainActivity;
+    }
+
+    public SheetListAdapter getSheetListAdapter() {
+        return sheetListAdapter;
     }
 }

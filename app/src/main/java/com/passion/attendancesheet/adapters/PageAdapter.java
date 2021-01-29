@@ -1,5 +1,7 @@
 package com.passion.attendancesheet.adapters;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -24,13 +26,15 @@ public class PageAdapter extends FragmentPagerAdapter {
     HistoryList history;
     SheetViewModel viewModel;
 
-    public PageAdapter(@NonNull FragmentManager fm, SheetViewModel viewModel ) {
+    Context mainContext;
+
+    public PageAdapter(@NonNull FragmentManager fm, SheetViewModel viewModel , Context mainContext) {
         super(fm);
 
         this.viewModel = viewModel;
-
-        sheetList = new SheetList();
-        history = new HistoryList();
+        this.sheetList = new SheetList(mainContext);
+        this.history = new HistoryList();
+        this.mainContext = mainContext;
     }
 
     @NonNull
@@ -59,5 +63,9 @@ public class PageAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return 2;
+    }
+
+    public SheetList getSheetList() {
+        return sheetList;
     }
 }
