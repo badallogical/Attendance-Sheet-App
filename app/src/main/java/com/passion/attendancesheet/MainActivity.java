@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     static int CUR_READ_TYPE = 0;
     private int ACTION_BAR_MODE = 0;
     private String SEL_COURSE_ID = "";
+    private static boolean IMPORTING_SHEET = false;
 
     ActionBar actionBar;
 
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
+
             //  TODO : import sheet.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Ask for permission check
@@ -295,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             CUR_READ_TYPE = 1;
+
             // Import Student list
             Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -336,7 +339,6 @@ public class MainActivity extends AppCompatActivity {
 
                     // verify sheet ???? need to have strong verification
                     if (CUR_READ_TYPE == 0) {
-
 
                         // Read basic Sheet
                         rowIter = mySheet.rowIterator();
@@ -401,7 +403,6 @@ public class MainActivity extends AppCompatActivity {
                                     viewModel.insertCourseWithTeacherRef(new CourseTeacherCrossRef(courseSemster, Integer.parseInt(info[0])));
                                 }
                             }
-
                         }
 
 
@@ -431,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         // if valid
-                        if (course_readied) {
+                        if (course_readied ) {
 
                             while (rowIter.hasNext()) {
                                 cur_row = (HSSFRow) rowIter.next();
@@ -458,17 +459,26 @@ public class MainActivity extends AppCompatActivity {
 
                             curCourse = cur_courseReadied;
                             viewModel.getAllStudents(cur_courseReadied).observe(this, students -> {
-                                if (students.isEmpty()) {
-                                    invalidSheetPopup();
-                                } else {
-                                    // insert the student list as course added
-                                    viewModel.insertCourses(new Course(curCourse));
+
+                                if(IMPORTING_SHEET){
+                                    if (students.isEmpty()) {
+                                        invalidSheetPopup();
+                                    } else {
+                                        // insert the student list as course added
+                                        viewModel.insertCourses(new Course(curCourse));
+                                    }
+
+                                    IMPORTING_SHEET = false;
                                 }
+
+
                             });
                         }
 
 
                     }
+
+
 
 
                 } catch (Exception e) {
@@ -481,10 +491,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void invalidSheetPopup() {
-        // pop up alert , Corrupt xl file
+        //Message for alerts
+        String msg1 = "You have select different or invalid sheet please select the sheet with Course Students list.";
+        String msg0 = "You have selected different sheet please select the basic sheet consist of teacher and course information";
+
+        String msg = "";
+        if( CUR_READ_TYPE == 0 ){
+            // Invalid basic sheet
+            msg = msg0;
+        }
+        else{
+            // Invalid Information Sheet
+            msg = msg1;
+        }
+
         new AlertDialog.Builder(this)
                 .setTitle("Invalid Sheet")
-                .setMessage("You have selected different sheet please select the basic sheet consist of teacher and course information")
+                .setMessage(msg)
                 .setPositiveButton("Ok", (dialog, which) -> {
                     dialog.dismiss();
                 }).create().show();
@@ -502,6 +525,7 @@ public class MainActivity extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.P)
         @Override
         protected Void doInBackground(Void... voids) {
+            IMPORTING_SHEET = true;
             importSheet(context);
             return null;
         }
