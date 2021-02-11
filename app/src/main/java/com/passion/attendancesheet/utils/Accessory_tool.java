@@ -1,9 +1,16 @@
 package com.passion.attendancesheet.utils;
 
+import android.graphics.drawable.Drawable;
+
+import com.passion.attendancesheet.MainActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Accessory_tool {
+
+    public static Drawable defaultCardColor;
+    public static MainActivity mainActivity;
 
     public static int getIntFromRoman( String roman ){
         switch ( roman ){

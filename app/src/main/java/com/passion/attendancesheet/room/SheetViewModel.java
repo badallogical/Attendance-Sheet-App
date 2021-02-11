@@ -32,6 +32,8 @@ public class SheetViewModel extends AndroidViewModel {
         allSheets = sheetRepository.getAllSheets();
     }
 
+
+    /** Course */
     public void insertCourses(Course course){
         sheetRepository.insertCourse(course);
     }
@@ -40,14 +42,24 @@ public class SheetViewModel extends AndroidViewModel {
         sheetRepository.deleteStudentsByCourseId( courseId );
     }
 
-    public LiveData<List<Course>> getllCourse(){
+    public LiveData<List<Course>> getAllCourse(){
         return allCourses;
+    }
+
+
+
+    /** Students */
+    public void insertStudents( Student student){
+        sheetRepository.insertStudent(student);
     }
 
     public LiveData<List<Student>> getAllStudents(String course_id ){
         return sheetRepository.getAllStudent(course_id);
     }
 
+
+
+    /** Teachers */
     public LiveData<List<Teacher>> getAllTeachers(){
         return sheetRepository.getAllTeachers();
     }
@@ -56,29 +68,21 @@ public class SheetViewModel extends AndroidViewModel {
         sheetRepository.insertTeacher(teacher);
     }
 
-    public void insertStudents( Student student){
-        sheetRepository.insertStudent(student);
-    }
-
     public LiveData<List<CourseTeacherView>> getTeacherCourse( String course_id ){
         return sheetRepository.getCourseTeachers(course_id);
     }
 
+    public void deleteTeacherTable(){
+        sheetRepository.deleteTeacherTable();
+    }
 
+    /** Course Sheet */
     public void insertSheet(Sheet s ){
         sheetRepository.insertSheet(s);
     }
 
-    public void deleteSheet( Sheet s ){
-        sheetRepository.deleteSheet(s);
-    }
-
     public void deleteSheetById( int sheet_id ){
         sheetRepository.deleteSheedById(sheet_id);
-    }
-
-    public void updateSheet( Sheet s){
-        sheetRepository.updateSheet(s);
     }
 
     public LiveData<List<SheetDetailView>> getAllSheets(){
@@ -89,6 +93,19 @@ public class SheetViewModel extends AndroidViewModel {
         return sheetRepository.getSheetDetailBySheetId(sheet_id);
     }
 
+
+    /** CourseWithTeacherRef */
+    public void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef ){
+        sheetRepository.insertCourseWithTeacherRef( courseTeacherCrossRef );
+    }
+
+    public void deleteCourseWithTeacherCrossRef(){
+        sheetRepository.deleteCourseWithTeacherCrossRef();
+    }
+
+
+
+    /** Attendance Sheet */
     public void insertAttendance(Attendance attendance ){
         sheetRepository.insertAttendance(attendance);
     }
@@ -105,12 +122,8 @@ public class SheetViewModel extends AndroidViewModel {
         return sheetRepository.getSheetAttendance(sheet_id);
     }
 
-    public void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef ){
-        sheetRepository.insertCourseWithTeacherRef( courseTeacherCrossRef );
-    }
 
-    public SheetDetailView getTopSheetSync(){
-        return sheetRepository.getTopSheetsSync();
-    }
+
+
 }
 

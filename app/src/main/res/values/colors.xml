@@ -8,6 +8,6 @@
     <color name="present">#64DD17</color>
 
     <color name="longClick">#606060</color>
-    <color name="normalCardColor">#424242</color>
+    <color name="normalCardColor">#ffffff</color>
 
 </resources>

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,8 @@ import java.util.List;
 public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.SheetListViewHolder> {
 
     Context context;
-    static List<Course> courseList = new ArrayList<>();
 
+    static List<Course> courseList = new ArrayList<>();
     static SheetList sheetList;
 
     public SheetListAdapter(Context context, SheetList sheetListref){
@@ -70,6 +71,7 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
         notifyDataSetChanged();
     }
 
+
     static class SheetListViewHolder extends RecyclerView.ViewHolder{
 
         TextView courseName;
@@ -87,7 +89,13 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
                 public void onClick(View v) {
                     Intent intent = new Intent(context, AttendanceActivity.class);
 
+                        // get the prepare sheet layout
                         View dailogview = LayoutInflater.from(context).inflate(R.layout.prepare_sheet_dialog, parent, false);
+
+                        // get missing subject alert textview
+                        TextView missing_subject_alert = dailogview.findViewById(R.id.missing_subject);
+
+                        // create alert dialog
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setView(dailogview);
                         builder.setTitle("Prepare Your Sheet");
@@ -107,17 +115,25 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
+                                // check for subject field ( validate )
                                 EditText subject = dailogview.findViewById(R.id.edit_subject);
+                                if( subject.getText().toString().trim().isEmpty() ){
+                                   missing_subject_alert.setVisibility(View.VISIBLE);
+                                }
+                                else {
+                                    missing_subject_alert.setVisibility(View.GONE);
 
-                                intent.putExtra(AttendanceActivity.MODE, context.getResources().getString(R.string.normal));
-                                intent.putExtra(AttendanceActivity.COURSE, courseList.get(Integer.parseInt(courseName.getTag().toString())));
-                                CourseTeacherView curTeacher = (CourseTeacherView) teacher_spinner.getSelectedView().getTag();
-                                intent.putExtra(AttendanceActivity.TEACHER, curTeacher );
 
-                                intent.putExtra(AttendanceActivity.LECTURE, ((Spinner) dailogview.findViewById(R.id.lecture_spinner)).getSelectedItem().toString());
-                                intent.putExtra(AttendanceActivity.SUBJECT, subject.getText().toString());
+                                    intent.putExtra(AttendanceActivity.MODE, context.getResources().getString(R.string.normal));
+                                    intent.putExtra(AttendanceActivity.COURSE, courseList.get(Integer.parseInt(courseName.getTag().toString())));
+                                    CourseTeacherView curTeacher = (CourseTeacherView) teacher_spinner.getSelectedView().getTag();
+                                    intent.putExtra(AttendanceActivity.TEACHER, curTeacher);
 
-                                context.startActivity(intent);
+                                    intent.putExtra(AttendanceActivity.LECTURE, ((Spinner) dailogview.findViewById(R.id.lecture_spinner)).getSelectedItem().toString());
+                                    intent.putExtra(AttendanceActivity.SUBJECT, subject.getText().toString());
+
+                                    context.startActivity(intent);
+                                }
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
@@ -126,8 +142,8 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
                             }
                         });
 
-
                         dialog = builder.create();
+                        dialog.setCanceledOnTouchOutside(false);
 
 
                     // show dialog
@@ -143,20 +159,22 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.Shee
                 @Override
                 public boolean onLongClick(View v) {
 
+                    // Save Current Normal Card Color
+                    Accessory_tool.defaultCardColor = v.getBackground();
+
                     // Highlight the selected course( card view )
                     v.setBackgroundResource(R.color.longClick);
 
-                    // get Main Activity Object
-                    MainActivity mainActivity = sheetList.getMainActivity();
+                    MainActivity mainActivity = Accessory_tool.mainActivity;
 
                     // Invalidate the action bar to show delete option
                     if( mainActivity != null ){
+                        // TODO: (Issue) in switch dark mode to normal (vice-versa ) mainactivity is destroyed and recreated but sheet list is have the previous context so it will not work if switching the mode.
                         mainActivity.setACTION_BAR_MODE(1);
                         mainActivity.setSelectedCourseId( course_id );
                         mainActivity.setSelectedCourseView(v);
                         mainActivity.invalidateOptionsMenu();
                     }
-
 
                     return true;
                 }

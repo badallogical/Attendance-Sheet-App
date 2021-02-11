@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +21,6 @@ import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.SheetListAdapter;
 import com.passion.attendancesheet.room.SheetViewModel;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SheetList extends Fragment {
 
     RecyclerView  sheetlist;
@@ -41,6 +38,9 @@ public class SheetList extends Fragment {
     }
 
     public SheetList(Context mainActivity ){
+
+        // debug
+        Log.i(getClass().getName(), "sheet list constructor" + mainActivity);
         this.mainActivity = (MainActivity) mainActivity;
     }
 
@@ -59,14 +59,17 @@ public class SheetList extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
+        // debug
+        Log.i(context.getClass().getName(), "OnViewCreated");
+
         no_classes = getView().findViewById(R.id.no_classes);
         sheetlist = getView().findViewById( R.id.sheet_list );
         sheetListAdapter = new SheetListAdapter( context, SheetList.this );
         sheetlist.setAdapter( sheetListAdapter );
 
         sheetlist.setLayoutManager( new LinearLayoutManager(context));
-        if( sheetViewModel.getllCourse() != null ){
-            sheetViewModel.getllCourse().observe( this, (courses)-> {
+        if( sheetViewModel.getAllCourse() != null ){
+            sheetViewModel.getAllCourse().observe( this, (courses)-> {
                 if( courses.isEmpty() ){
                     no_classes.setVisibility(View.VISIBLE);
                     sheetlist.setVisibility(View.GONE);

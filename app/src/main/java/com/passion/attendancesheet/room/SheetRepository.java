@@ -31,34 +31,65 @@ public class SheetRepository{
         allSheets = sheetDao.getAllSheets();
     }
 
+    /** Course */
     public void insertCourse(Course course ){
         new AsyncInsertCourse(sheetDao).execute(course);
-    }
-
-    public void deleteStudentsByCourseId( String courseId ){
-        new AsyncDeleteStudentsByCourseId( sheetDao ).execute( courseId );
     }
 
     public LiveData<List<Course>> getAllCourses(){
         return allCourses;
     }
 
+
+
+    /** Students */
     public void insertStudent( Student s ){
         new AsyncInsertStudent(sheetDao).execute(s);
+    }
+
+    public void deleteStudentsByCourseId( String courseId ){
+        new AsyncDeleteStudentsByCourseId( sheetDao ).execute( courseId );
     }
 
     public LiveData<List<Student>> getAllStudent(String course_id ){
         return sheetDao.getAllStudents(course_id);
     }
 
+
+
+    /** Teachers */
+    public void insertTeacher( Teacher teacher ){
+        new AsyncInsertTeacher(sheetDao).execute(teacher);
+    }
+
+    public LiveData<List<Teacher>> getAllTeachers(){
+        return sheetDao.getAllTeachers();
+    }
+
+    public void deleteTeacherTable(){
+        new AsyncDeleteTeacherTable(sheetDao).execute();
+    }
+
+
+
+    /** CourseWithTeacherRef */
+    public void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef){
+        new AsyncInsertCourseWithTeacherCrossRef( sheetDao ).execute( courseTeacherCrossRef );
+    }
+
     public LiveData<List<CourseTeacherView>> getCourseTeachers( String course_id ){
         return sheetDao.getCourseTeacher(course_id);
     }
 
+    public void deleteCourseWithTeacherCrossRef(){
+        new AsyncDeleteCourseWithTeacherCrossRef(sheetDao).execute();
+    }
 
+
+
+    /** Course Sheet */
     public void insertSheet(Sheet s){
        new AsyncInsertSheet(sheetDao).execute(s);
-
     }
 
     public void deleteSheet( Sheet s ){
@@ -77,15 +108,13 @@ public class SheetRepository{
         return allSheets;
     }
 
-
-    public LiveData<List<Teacher>> getAllTeachers(){
-        return sheetDao.getAllTeachers();
+    public LiveData<List<SheetDetailView>> getSheetDetailBySheetId( int sheet_id ){
+        return sheetDao.getSheetDetailBySheetId(sheet_id);
     }
 
-    public void insertTeacher( Teacher teacher ){
-       new AsyncInsertTeacher(sheetDao).execute(teacher);
-    }
 
+
+    /** Attendance Sheet */
     public void insertAttendance(Attendance attendance ){
         new AsyncInsertAttendance(sheetDao).execute(attendance);
     }
@@ -102,13 +131,6 @@ public class SheetRepository{
         return sheetDao.getSheetAttendance(sheet_id);
     }
 
-    public LiveData<List<SheetDetailView>> getSheetDetailBySheetId( int sheet_id ){
-        return sheetDao.getSheetDetailBySheetId(sheet_id);
-    }
-
-    public void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef){
-        new AsyncInsertCourseWithTeacherCrossRef( sheetDao ).execute( courseTeacherCrossRef );
-    }
 
     private static class AsyncDeleteAttendance extends AsyncTask< Attendance, Void, Void > {
 
@@ -230,6 +252,35 @@ public class SheetRepository{
         }
     }
 
+    private static class AsyncDeleteTeacherTable extends AsyncTask<Void, Void, Void >{
+
+        SheetDao sheetDao;
+
+        AsyncDeleteTeacherTable(SheetDao sheetDao){
+            this.sheetDao = sheetDao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            sheetDao.deleteTeacherTable();
+            return null;
+        }
+    }
+
+    private static class AsyncDeleteCourseWithTeacherCrossRef extends AsyncTask<Void,Void,Void>{
+
+        SheetDao sheetDao;
+
+        AsyncDeleteCourseWithTeacherCrossRef(SheetDao sheetDao){
+           this.sheetDao = sheetDao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            sheetDao.deleteCourseWithTeacherRef();
+            return null;
+        }
+    }
 
     private static class AsyncInsertCourse extends AsyncTask< Course, Void, Void > {
 

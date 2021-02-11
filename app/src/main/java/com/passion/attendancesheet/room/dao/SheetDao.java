@@ -94,7 +94,6 @@ public abstract class SheetDao {
    public void deleteStudentsByCourseId( String courseId ){
       deleteStudentByCourseIdHelper(courseId);
       deleteCourse(courseId);
-
    }
 
 
@@ -110,13 +109,22 @@ public abstract class SheetDao {
    @Query("Delete from student_table where course_id = :courseId ")
    public abstract void deleteStudentByCourseIdHelper(String courseId);
 
-
-   @Insert
+   /** Teacher */
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
    public abstract void insertTeacher(Teacher teacher);
-
-   @Insert
-   public abstract void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef);
 
    @Query("Select count(*) from teacher_table")
    public abstract int getTeachersCount();
+
+   @Query("Delete from teacher_table")
+   public abstract int deleteTeacherTable();
+
+   /** CourseTeacherCross */
+
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
+   public abstract void insertCourseWithTeacherRef(CourseTeacherCrossRef courseTeacherCrossRef);
+
+   @Query("Delete from courseteachercrossref")
+   public abstract void deleteCourseWithTeacherRef();
+
 }

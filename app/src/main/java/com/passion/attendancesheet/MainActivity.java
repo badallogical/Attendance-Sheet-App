@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     static int CUR_READ_TYPE = 0;
     private int ACTION_BAR_MODE = 0;
     private String SEL_COURSE_ID = "";
+    private boolean UPDATE_PRIMARY_SHEET = false;
     private static boolean IMPORTING_SHEET = false;
 
     ActionBar actionBar;
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Accessory_tool.mainActivity = this;
 
         // Action bar
         actionBar = getSupportActionBar();
@@ -126,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tablayout);
         tabLayout.setTabTextColors(Color.rgb(80, 80, 80), Color.BLACK);
         tabLayout.setupWithViewPager(viewPager);
+
     }
 
 
@@ -139,19 +143,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+
         if( ACTION_BAR_MODE == 1 ){
             // Sheet Delete Action Bar
             menu.getItem(0).setVisible(true);
-            menu.getItem(1).setVisible(false);
+            menu.getItem(1).setVisible(true);
+            menu.getItem(2).setVisible(false);
             actionBar.setBackgroundDrawable(getDrawable(R.color.colorPrimaryDark));
-
         }
         else{
             // Setting Option
             menu.getItem(0).setVisible(false);
-            menu.getItem(1).setVisible(true);
+            menu.getItem(1).setVisible(false);
+            menu.getItem(2).setVisible(true);
             actionBar.setBackgroundDrawable( getDrawable(R.color.colorPrimary));
-
         }
 
         return true;
@@ -159,13 +164,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        // Pop up dialog box
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         switch( item.getItemId() ){
             case R.id.delete:
-
                 if( SEL_COURSE_ID.isEmpty() ){
-
                     // if course_id is empty
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Invalid Course ");
                     builder.setMessage("Course Id is empty can't delete the sheet");
                     builder.setPositiveButton("OK", new OnClickListener() {
@@ -175,12 +181,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    builder.create().show();
                 }else{
-
                     // Confirmation Delete dialog
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
                     builder.setTitle("Confirmation");
                     builder.setIcon(R.drawable.ic_round_warning_24);
                     builder.setMessage("Deleting the list will delete all the course date include students, and history of attendance.");
@@ -207,18 +209,50 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
-
-                    builder.create().show();
-
-
-
-
                 }
-
-            break;
-
-            case R.id.setting:
+                builder.create().show();
                 break;
+
+            case R.id.cancel_delete:
+                resetActionBar();
+                break;
+
+            case R.id.update_primary_sheet :
+                // TODO : build a interactive dialog box that inform and allow to access the storage to get the sheet and replace it with the exiting basic Sheet
+                builder.setTitle("Update Primary Sheet");
+                builder.setMessage("Please choose the updated primary sheet or basic sheet that contains the teachers and courses information.");
+                builder.setPositiveButton("Update", new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                            // TODO : Open File Chooser
+                            UPDATE_PRIMARY_SHEET = true;
+                        // import sheet.
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            // Ask for permission check
+                            if (checkPermission()) {
+                                new AsyncImport(MainActivity.this).execute();
+                            } else {
+                                requestForPermission();
+                            }
+                        } else {
+                            new AsyncImport(MainActivity.this).execute();
+                        }
+
+                    }
+                });
+
+                builder.setNegativeButton("Cancel",new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.create().show();
+                break;
+
         }
         return true;
     }
@@ -227,8 +261,16 @@ public class MainActivity extends AppCompatActivity {
         // Reset Action Bar Mode
         ACTION_BAR_MODE = 0;
         invalidateOptionsMenu();
-        pagerAdapter.getSheetList().getSheetListAdapter().notifyDataSetChanged();
-        selectedCourseView.setBackgroundResource(R.color.normalCardColor);
+
+        // if phone theme is changed mainActivity is recreated which lead to null pointer exception hence checking it first
+        if( pagerAdapter.getSheetList().getSheetListAdapter() != null )
+            pagerAdapter.getSheetList().getSheetListAdapter().notifyDataSetChanged();
+
+        // default color is saved onClick on delete and then used to reset.
+        if( selectedCourseView != null )
+            selectedCourseView.setBackground(Accessory_tool.defaultCardColor);
+
+        selectedCourseView = null;
 
     }
 
@@ -338,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
                     List<String> teachers_with_courses = new ArrayList<String>();
 
                     // verify sheet ???? need to have strong verification
-                    if (CUR_READ_TYPE == 0) {
+                    if (CUR_READ_TYPE == 0 || UPDATE_PRIMARY_SHEET == true) {
 
                         // Read basic Sheet
                         rowIter = mySheet.rowIterator();
@@ -348,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                             cur_row = (HSSFRow) rowIter.next();
                             if (cur_row != null) {
                                 String heading = cur_row.getCell(0).toString();
-                                if ( (cur_row.getPhysicalNumberOfCells() == 1) && heading.equalsIgnoreCase("courses") || heading.equalsIgnoreCase("course")) {
+                                if ( (cur_row.getPhysicalNumberOfCells() == 1) && (heading.equalsIgnoreCase("courses") || heading.equalsIgnoreCase("course"))) {
 
                                     while (rowIter.hasNext()) {
                                         cur_row = (HSSFRow) rowIter.next();
@@ -377,6 +419,9 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     // invalid sheet
                                     invalidSheetPopup();
+                                    // reset Update
+                                    UPDATE_PRIMARY_SHEET = false;
+                                    return;
                                 }
                             }
                         }
@@ -387,6 +432,10 @@ public class MainActivity extends AppCompatActivity {
                             temp.append(course).append(",");
                         }
                         Log.i("Debug Output : ", temp.toString());
+
+                        // Delete Existing teacher and CourseWithTeacherRef table
+                        viewModel.deleteTeacherTable();
+                        viewModel.deleteCourseWithTeacherCrossRef();
 
                         for (String teacherCourse : teachers_with_courses) {
                             Log.i("Debug Output Teacher : ", teacherCourse);
@@ -404,6 +453,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
+
+                        // reset Update
+                        UPDATE_PRIMARY_SHEET = false;
 
 
                     } else {
@@ -425,10 +477,12 @@ public class MainActivity extends AppCompatActivity {
                                     course_readied = true;
                                 } else {
                                     invalidSheetPopup();
+                                    return;
                                 }
                             }
                         } else {
                             invalidSheetPopup();
+                            return;
                         }
 
                         // if valid
@@ -446,6 +500,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     else{
                                         invalidSheetPopup();
+                                        return;
                                     }
                                 }
                             }
@@ -477,9 +532,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                     }
-
-
-
 
                 } catch (Exception e) {
                     e.printStackTrace();
