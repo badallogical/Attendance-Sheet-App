@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AttendanceActivity">
+    tools:context=".LoginActivity">
 
 
     <androidx.cardview.widget.CardView
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         >
 
-        <LinearLayout
+        <LinearLayoutq
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -66,7 +66,7 @@
                 android:textColor="#000"
                 />
 
-        </LinearLayout>
+        </LinearLayoutq>
     </androidx.cardview.widget.CardView>
 
     <RelativeLayout

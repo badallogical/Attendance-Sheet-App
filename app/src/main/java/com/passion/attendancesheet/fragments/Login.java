@@ -6,7 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +19,10 @@ import com.passion.attendancesheet.databinding.FragmentLoginBinding;
 
 public class Login extends Fragment {
 
-    private FragmentManager fragmentManager;
     private FragmentLoginBinding binding;
+    private FragmentManager parentFM;
+    public Login() {
 
-    public Login(FragmentManager fragmentManager) {
-        this.fragmentManager = fragmentManager;
     }
 
 
@@ -44,6 +45,33 @@ public class Login extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.
+        parentFM = getParentFragmentManager();
+
+        binding.signInBtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+
+                fragmentTransaction.replace(R.id.fragment_container_view,Sign_in.class,null)
+                        .addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit();
+            }
+        });
+
+        binding.signUpBtn.setOnClickListener(new View.OnClickListener(){
+
+
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+
+                fragmentTransaction.replace(R.id.fragment_container_view,Sign_up.class,null)
+                        .addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit();
+            }
+        });
     }
 }

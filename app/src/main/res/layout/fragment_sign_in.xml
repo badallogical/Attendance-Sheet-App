@@ -3,13 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    >
 
     <TextView
         android:id="@+id/textView"
         android:text="Sign in"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
         style="@style/login_title_style" />
 
     <EditText
@@ -17,6 +20,7 @@
         style="@style/login_field_style"
         android:layout_marginTop="72dp"
         android:hint="Email"
+        android:layout_marginHorizontal="16dp"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -28,6 +32,7 @@
         style="@style/login_field_style"
         android:layout_marginTop="40dp"
         android:hint="Password"
+        android:layout_marginHorizontal="16dp"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -49,12 +54,14 @@
         android:id="@+id/button"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginTop="104dp"
         android:background="@drawable/completely_round_button"
         android:elevation="16dp"
         android:padding="20dp"
+
         android:scaleType="fitXY"
         android:src="@drawable/go_right"
-        tools:layout_editor_absoluteX="321dp"
-        tools:layout_editor_absoluteY="409dp" />
+        app:layout_constraintEnd_toEndOf="@+id/editTextTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
