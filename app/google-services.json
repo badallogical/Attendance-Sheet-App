@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "170705002690",
+    "project_id": "e-attendance-2a295",
+    "storage_bucket": "e-attendance-2a295.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170705002690:android:19b4bbb052a6614b9fdb5b",
+        "android_client_info": {
+          "package_name": "com.passion.attendancesheet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "170705002690-5hiap8u9ccmfiv85irkd88qc5ts2cqom.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCvDbuSLAiVbyCTpXnuI8CK72OQhbBPXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "170705002690-5hiap8u9ccmfiv85irkd88qc5ts2cqom.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
