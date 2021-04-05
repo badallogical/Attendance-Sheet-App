@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/editName"
         style="@style/login_field_style"
         android:hint="Name"
         android:inputType="textPersonName"
@@ -22,22 +22,22 @@
         app:layout_constraintTop_toBottomOf="@+id/sign_up_title" />
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress2"
+        android:id="@+id/editEmail"
         style="@style/login_field_style"
         android:hint="Email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintStart_toStartOf="@+id/editName"
+        app:layout_constraintTop_toBottomOf="@+id/editName" />
 
     <EditText
-        android:id="@+id/editTextTextPassword2"
+        android:id="@+id/editPasswd"
         style="@style/login_field_style"
         android:hint="Password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextEmailAddress2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress2" />
+        app:layout_constraintStart_toStartOf="@+id/editEmail"
+        app:layout_constraintTop_toBottomOf="@+id/editEmail" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -46,11 +46,11 @@
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword2" />
+        app:layout_constraintStart_toEndOf="@+id/textCourse"
+        app:layout_constraintTop_toBottomOf="@+id/editPasswd" />
 
     <ImageButton
-        android:id="@+id/button2"
+        android:id="@+id/submit"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:padding="20dp"
@@ -63,13 +63,13 @@
         app:layout_constraintEnd_toEndOf="@+id/spinner" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/textCourse"
         style="@style/login_field_style"
         android:text="Course"
         android:textAppearance="?android:textAppearanceMedium"
         app:layout_constraintEnd_toStartOf="@+id/spinner"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPassword2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword2" />
+        app:layout_constraintStart_toStartOf="@+id/editPasswd"
+        app:layout_constraintTop_toBottomOf="@+id/editPasswd" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
