@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="81dp">
 
     <TextView
         android:id="@+id/sign_up_title"
@@ -15,6 +16,7 @@
     <EditText
         android:id="@+id/editName"
         style="@style/login_field_style"
+        android:layout_marginHorizontal="16sp"
         android:hint="Name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,6 +26,7 @@
     <EditText
         android:id="@+id/editEmail"
         style="@style/login_field_style"
+        android:layout_marginHorizontal="16sp"
         android:hint="Email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,43 +36,60 @@
     <EditText
         android:id="@+id/editPasswd"
         style="@style/login_field_style"
+        android:layout_marginHorizontal="16sp"
         android:hint="Password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/editEmail"
         app:layout_constraintTop_toBottomOf="@+id/editEmail" />
 
-    <Spinner
-        android:id="@+id/spinner"
-        style="@style/login_field_style"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textCourse"
-        app:layout_constraintTop_toBottomOf="@+id/editPasswd" />
+
+
 
     <ImageButton
         android:id="@+id/submit"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:padding="20dp"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="72dp"
         android:background="@drawable/completely_round_button"
-        android:src="@drawable/go_right"
-        android:scaleType="fitXY"
         android:elevation="16dp"
+        android:padding="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/go_right"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/spinner" />
+        app:layout_constraintEnd_toEndOf="@+id/editPasswd" />
 
-    <TextView
-        android:id="@+id/textCourse"
-        style="@style/login_field_style"
-        android:text="Course"
-        android:textAppearance="?android:textAppearanceMedium"
-        app:layout_constraintEnd_toStartOf="@+id/spinner"
-        app:layout_constraintStart_toStartOf="@+id/editPasswd"
-        app:layout_constraintTop_toBottomOf="@+id/editPasswd" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editPasswd">
+
+        <TextView
+            android:id="@+id/textCourse"
+            style="@style/login_field_style"
+            android:layout_width="100sp"
+            android:text="Course"
+            android:textAppearance="?android:textAppearanceMedium"
+            tools:layout_editor_absoluteX="81dp"
+            tools:layout_editor_absoluteY="398dp" />
+
+
+        <Spinner
+            android:id="@+id/spinner"
+            style="@style/login_field_style"
+            android:layout_width="120sp"
+            android:layout_height="wrap_content"
+            tools:layout_editor_absoluteX="221dp"
+            tools:layout_editor_absoluteY="398dp" />
+
+    </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

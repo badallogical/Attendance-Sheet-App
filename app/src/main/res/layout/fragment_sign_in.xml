@@ -46,12 +46,12 @@
         android:layout_marginStart="12dp"
         android:text="Forget Password?"
         android:textAppearance="?android:textAppearanceSmall"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/submit_sign_in"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPassword"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintTop_toTopOf="@+id/submit_sign_in" />
 
     <ImageButton
-        android:id="@+id/button"
+        android:id="@+id/submit_sign_in"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="104dp"

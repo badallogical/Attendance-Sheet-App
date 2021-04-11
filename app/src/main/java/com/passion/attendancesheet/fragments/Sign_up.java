@@ -2,10 +2,13 @@ package com.passion.attendancesheet.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +29,7 @@ import com.passion.attendancesheet.dataclasses.ClassRepresentative;
 import com.passion.attendancesheet.dataclasses.CourseF;
 import com.passion.attendancesheet.dataclasses.StudentF;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
@@ -116,6 +120,11 @@ public class Sign_up extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // course spinner
+        String [] courses = { "BCA-6", "BCA-1", "BBA-6", "BBA-1"};
+        ArrayAdapter courseAdapter = new ArrayAdapter( getActivity(),android.R.layout.simple_list_item_1, courses);
+        binding.spinner.setAdapter( courseAdapter );
+
 
         // submit action
         binding.submit.setOnClickListener( new View.OnClickListener(){
@@ -160,7 +169,17 @@ public class Sign_up extends Fragment {
     }
 
     public void signUp( String email, String passwd ){
-        createAccount(email,passwd);
+        if( verifiedForCr( email ) ){
+            createAccount(email,passwd);
+        }
+        else{
+            Toast.makeText( getContext(), "You are not eligible for CR", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean verifiedForCr( String email ){
+        //TODO : implement verification of eligible email only
+        return true;
     }
 
 
@@ -168,7 +187,7 @@ public class Sign_up extends Fragment {
         if( user != null ){
             Toast.makeText(context, "User created Successfully", Toast.LENGTH_LONG).show();
             getParentFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container_view, Sign_in.class, null)
+                    .add(R.id.fragment_container_view, Congratulation.class, null)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
         }
