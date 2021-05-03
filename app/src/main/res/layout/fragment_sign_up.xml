@@ -6,89 +6,103 @@
     android:layout_height="match_parent"
     tools:layout_editor_absoluteY="81dp">
 
-    <TextView
-        android:id="@+id/sign_up_title"
-        style="@style/login_title_style"
-        android:text="Sign up"
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/editName"
-        style="@style/login_field_style"
-        android:layout_marginHorizontal="16sp"
-        android:hint="Name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/sign_up_title"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_title" />
-
-    <EditText
-        android:id="@+id/editEmail"
-        style="@style/login_field_style"
-        android:layout_marginHorizontal="16sp"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/editName"
-        app:layout_constraintTop_toBottomOf="@+id/editName" />
-
-    <EditText
-        android:id="@+id/editPasswd"
-        style="@style/login_field_style"
-        android:layout_marginHorizontal="16sp"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/editEmail"
-        app:layout_constraintTop_toBottomOf="@+id/editEmail" />
+        app:layout_constraintTop_toTopOf="parent">
 
 
+        <TextView
+            android:id="@+id/sign_up_title"
+            style="@style/login_title_style"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginBottom="25dp"
+            android:text="Sign up"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16sp"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_title"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_title" />
+
+        <EditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16sp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/editName"
+            app:layout_constraintTop_toBottomOf="@+id/editName" />
+
+        <EditText
+            android:id="@+id/editPasswd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16sp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/editEmail"
+            app:layout_constraintTop_toBottomOf="@+id/editEmail" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16sp"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textCourse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Course"
+                android:textAppearance="?android:textAppearanceMedium" />
+
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:spinnerMode="dialog"
+                tools:layout_editor_absoluteX="221dp"
+                tools:layout_editor_absoluteY="398dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <ImageButton
-        android:id="@+id/submit"
+        android:id="@+id/submit_sign_up"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="72dp"
         android:background="@drawable/completely_round_button"
         android:elevation="16dp"
         android:padding="20dp"
         android:scaleType="fitXY"
         android:src="@drawable/go_right"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editPasswd" />
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editPasswd">
-
-        <TextView
-            android:id="@+id/textCourse"
-            style="@style/login_field_style"
-            android:layout_width="100sp"
-            android:text="Course"
-            android:textAppearance="?android:textAppearanceMedium"
-            tools:layout_editor_absoluteX="81dp"
-            tools:layout_editor_absoluteY="398dp" />
-
-
-        <Spinner
-            android:id="@+id/spinner"
-            style="@style/login_field_style"
-            android:layout_width="120sp"
-            android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="221dp"
-            tools:layout_editor_absoluteY="398dp" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 
 

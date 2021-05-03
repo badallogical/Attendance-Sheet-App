@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.passion.attendancesheet.LoginBottomSheet;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentLoginBinding;
 
@@ -51,12 +52,15 @@ public class Login extends Fragment {
 
             @Override
             public void onClick(View v) {
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+//                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+//
+//                fragmentTransaction.replace(R.id.fragment_container_view,Sign_in.class,null)
+//                        .addToBackStack(null)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                        .commit();
 
-                fragmentTransaction.replace(R.id.fragment_container_view,Sign_in.class,null)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
+                LoginBottomSheet bottomSheet = new LoginBottomSheet(getContext(), 0);
+                bottomSheet.show( getParentFragmentManager() , "signInSheet");
             }
         });
 
@@ -65,12 +69,16 @@ public class Login extends Fragment {
 
             @Override
             public void onClick(View v) {
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+//                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+//
+//                fragmentTransaction.replace(R.id.fragment_container_view,Sign_up.class,null)
+//                        .addToBackStack(null)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                        .commit();
 
-                fragmentTransaction.replace(R.id.fragment_container_view,Sign_up.class,null)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
+                LoginBottomSheet bottomSheet = new LoginBottomSheet(getContext(),1);
+                bottomSheet.show( getParentFragmentManager() , "SignUpSheet");
+
             }
         });
     }

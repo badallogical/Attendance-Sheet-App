@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    tools:context=".fragments.ImportSheet">
+
+    <ImageView
+        android:layout_width="300sp"
+        android:layout_height="249dp"
+        android:src="@drawable/no_class2"
+        />
+
+    <TextView
+        android:layout_width="200sp"
+        android:layout_height="wrap_content"
+        android:text="Please import the course sheet, to fire it up."
+        android:textSize="16sp"
+        android:gravity="center"
+        />
+
+    <Button
+        android:layout_width="200sp"
+        android:layout_height="40sp"
+        android:textSize="16sp"
+        android:text="Import"
+        android:layout_marginTop="50sp"
+        android:background="@drawable/completely_round_button"
+       />
+
+</LinearLayout>

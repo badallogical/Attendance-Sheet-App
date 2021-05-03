@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentCongratulationBinding;
+import com.passion.attendancesheet.fragments.admin.AdminSignIn;
 
 public class Congratulation extends Fragment {
 
@@ -40,14 +41,35 @@ public class Congratulation extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle args = getArguments();
+        String userType = args.getString("user");
+
+
+        if( userType == "admin"){
+            binding.congratesText.setText("You are now a Administrator");
+        }
+        else{
+            binding.congratesText.setText("You are now a Class Representative");
+        }
+
         binding.signInBtn.setOnClickListener( new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                getParentFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container_view, Sign_in.class, null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
+
+                if( userType == "admin"){
+                    getParentFragmentManager().beginTransaction()
+                            .add(R.id.fragment_container_view, AdminSignIn.class, null)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit();
+                }
+                else{
+                    getParentFragmentManager().beginTransaction()
+                            .add(R.id.fragment_container_view, Sign_in.class, null)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit();
+                }
+
             }
         });
     }
