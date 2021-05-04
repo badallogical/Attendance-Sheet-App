@@ -43,22 +43,6 @@ public class AdminSignUp extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        db = FirebaseDatabase.getInstance();
-//        DatabaseReference adminRef = db.getReference("admin");
-//        adminRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DataSnapshot> task) {
-//                if( task.isSuccessful() ){
-//                    String res = task.getResult().child("email").getValue().toString();
-//                    System.out.println("admin_email" + res );
-//                }
-//                else{
-//                    Log.e("firebase_admin", "error", task.getException());
-//                }
-//
-//            }
-//        });
-
     }
 
     @Override
@@ -97,11 +81,13 @@ public class AdminSignUp extends Fragment {
                 }
                 else{
 
-                    // verify email and sign up
+                    // verify validity of email and create user
                     adminRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                             if( task.isSuccessful() ){
+
                                 String admin_email_reg = task.getResult().child("email").getValue().toString();
                                 if( binding.editEmail.getText().toString().trim().equals(admin_email_reg) ){
                                     // eligible for sign up

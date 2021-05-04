@@ -10,7 +10,12 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentCongratulationBinding;
 import com.passion.attendancesheet.fragments.admin.AdminSignIn;
@@ -58,10 +63,31 @@ public class Congratulation extends Fragment {
             public void onClick(View v) {
 
                 if( userType == "admin"){
-                    getParentFragmentManager().beginTransaction()
-                            .add(R.id.fragment_container_view, AdminSignIn.class, null)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit();
+
+
+                    // verify user email
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                    currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if( task.isSuccessful() ){
+
+                                Toast.makeText(getContext(), "verification is send to your email", Toast.LENGTH_LONG).show();
+
+                                getParentFragmentManager().beginTransaction()
+                                        .add(R.id.fragment_container_view, AdminSignIn.class, null)
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .commit();
+                            }
+                            else{
+                                Toast.makeText(getContext(), "Email verified" + currentUser.isEmailVerified() , Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+
                 }
                 else{
                     getParentFragmentManager().beginTransaction()

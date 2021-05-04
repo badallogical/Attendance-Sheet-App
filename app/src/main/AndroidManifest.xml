@@ -16,13 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="HardcodedDebugMode">
-        <activity android:name=".Attendance" android:screenOrientation="portrait"></activity>
-        <activity android:name=".LoginActivity"
-            android:screenOrientation="portrait"
-            >
-
-
-
+        <activity android:name=".AdminActivity"></activity>
+        <activity
+            android:name=".Attendance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

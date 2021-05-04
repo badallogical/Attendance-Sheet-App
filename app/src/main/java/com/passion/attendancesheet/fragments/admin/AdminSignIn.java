@@ -1,5 +1,6 @@
 package com.passion.attendancesheet.fragments.admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,15 +17,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.passion.attendancesheet.AdminActivity;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentAdminSignInBinding;
 import com.passion.attendancesheet.databinding.FragmentAdminSignUpBinding;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AdminSignIn#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AdminSignIn extends Fragment {
 
    FragmentAdminSignInBinding binding;
@@ -95,6 +92,9 @@ public class AdminSignIn extends Fragment {
 
     void updateUI( FirebaseUser user ){
         if( user != null ){
+            Intent intentToAdminHome = new Intent( getContext(), AdminActivity.class );
+            startActivity(intentToAdminHome);
+
             Toast.makeText(getContext(), "Signed in as " + user.getEmail() ,Toast.LENGTH_LONG).show();
         }
     }
