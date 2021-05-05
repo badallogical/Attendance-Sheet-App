@@ -1,5 +1,7 @@
 package com.passion.attendancesheet.fragments.admin;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,15 +62,59 @@ public class AdminHome extends Fragment {
             array.add("BBA-I");
             array.add("BBA-VI");
 
-            AdminCourseListAdapter adapter = new AdminCourseListAdapter( array );
+            AdminCourseListAdapter adapter = new AdminCourseListAdapter( array , getContext());
             binding.courseList.setAdapter(adapter);
-            binding.courseList.setLayoutManager( new GridLayoutManager(getContext(), 2));
+            binding.courseList.setLayoutManager( new GridLayoutManager(getContext(), 2 ) );
         }
         else{
             Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_LONG).show();
         }
 
+        binding.addCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+                        View custom_layout = LayoutInflater.from(getContext()).inflate(R.layout.add_course_dialog, null );
+
+                        Spinner semesterSpinner = custom_layout.findViewById(R.id.semester_spinner);
+                        ArrayList<String> semester = new ArrayList<>();
+                        semester.add("I");
+                        semester.add("II");
+                        semester.add("III");
+                        semester.add("IV");
+                        semester.add("V");
+                        semester.add("VI");
+
+
+                        semesterSpinner.setAdapter( new ArrayAdapter<String>( getContext(), android.R.layout.simple_spinner_dropdown_item, semester ){
+                            @Override
+                            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                                View  v = super.getDropDownView(position, convertView, parent);
+                                ((TextView)v).setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                return v;
+                            }
+                        });
+
+                        // create and show dialog
+                        dialogBuilder.setView( custom_layout )
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // TODO:
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setTitle("Add Course")
+                                .create().show();
+
+                    }
+                });
 
     }
 
