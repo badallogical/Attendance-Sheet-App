@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".fragments.admin.CourseCR">
+    tools:context=".fragments.admin.CourseCR"
+    android:background="#fff"
+    >
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -31,18 +33,16 @@
                 />
 
             <ImageButton
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:id="@+id/add_cr1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:scaleType="fitXY"
                 android:layout_gravity="center"
                 android:background="#fff"
-                android:src="@drawable/ic_baseline_add_circle_outline_24"
+                android:src="@drawable/ic_baseline_add_circle_outline_24"/>
 
 
         </LinearLayout>
-
-
-
 
     </androidx.cardview.widget.CardView>
 
@@ -65,24 +65,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CR 1"
+                android:text="CR 2"
                 android:fontFamily="@font/montserrat"
                 android:textSize="20dp"
                 />
 
             <ImageButton
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:id="@+id/add_cr2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:scaleType="fitXY"
                 android:layout_gravity="center"
                 android:background="#fff"
-                android:src="@drawable/ic_baseline_add_circle_outline_24"
-
-
+                android:src="@drawable/ic_baseline_add_circle_outline_24"/>
         </LinearLayout>
-
-
-
 
     </androidx.cardview.widget.CardView>
 

@@ -25,11 +25,12 @@ public class AdminCourseListAdapter extends RecyclerView.Adapter<AdminCourseList
 
     ArrayList<String> courseList;
     Context context;
+    CourseListClick courseListClick;
 
-
-    public AdminCourseListAdapter( ArrayList<String> courseList , Context context ){
+    public AdminCourseListAdapter( ArrayList<String> courseList , Context context, CourseListClick courseListClick){
         this.courseList = courseList;
         this.context = context;
+        this.courseListClick = courseListClick;
     }
 
     @NonNull
@@ -58,6 +59,12 @@ public class AdminCourseListAdapter extends RecyclerView.Adapter<AdminCourseList
 
             text = itemView.findViewById(R.id.course_text);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    courseListClick.openCrPanel();
+                }
+            });
 
 
 
@@ -66,3 +73,4 @@ public class AdminCourseListAdapter extends RecyclerView.Adapter<AdminCourseList
     }
 
 }
+

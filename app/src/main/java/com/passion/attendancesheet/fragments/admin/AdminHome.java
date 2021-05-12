@@ -7,8 +7,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +21,16 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.AdminCourseListAdapter;
+import com.passion.attendancesheet.adapters.CourseListClick;
 import com.passion.attendancesheet.databinding.FragmentAdminHomeBinding;
 
 import java.util.ArrayList;
 
-public class AdminHome extends Fragment {
+public class AdminHome extends Fragment implements CourseListClick {
 
     FragmentAdminHomeBinding binding;
 
@@ -56,13 +61,13 @@ public class AdminHome extends Fragment {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         if( currentUser.isEmailVerified() ){
-            ArrayList<String> array = new ArrayList<String>();
-            array.add("BCA-I");
-            array.add("BCA-VI");
-            array.add("BBA-I");
-            array.add("BBA-VI");
 
-            AdminCourseListAdapter adapter = new AdminCourseListAdapter( array , getContext());
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref = db.getReference();
+
+           array = getCourseFromFirebase();
+
+            AdminCourseListAdapter adapter = new AdminCourseListAdapter( array , getContext() , this );
             binding.courseList.setAdapter(adapter);
             binding.courseList.setLayoutManager( new GridLayoutManager(getContext(), 2 ) );
         }
@@ -102,6 +107,8 @@ public class AdminHome extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         // TODO:
+                                        FirebaseDatabase db = FirebaseDatabase.getInstance();
+                                        DatabaseReference ref = db.getReference("courses");
                                     }
                                 })
                                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -121,5 +128,14 @@ public class AdminHome extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void openCrPanel() {
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.add( R.id.admin_fragment_container, CourseCR.class, null )
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
     }
 }
