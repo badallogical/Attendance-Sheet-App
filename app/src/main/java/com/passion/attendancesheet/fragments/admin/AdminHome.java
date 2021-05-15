@@ -65,7 +65,10 @@ public class AdminHome extends Fragment implements CourseListClick {
             FirebaseDatabase db = FirebaseDatabase.getInstance();
             DatabaseReference ref = db.getReference();
 
-           array = getCourseFromFirebase();
+            // TODO : fetch data from firebase
+           ArrayList<String > array = new ArrayList<>();
+           array.add("BCA");
+           array.add("BSC");
 
             AdminCourseListAdapter adapter = new AdminCourseListAdapter( array , getContext() , this );
             binding.courseList.setAdapter(adapter);
