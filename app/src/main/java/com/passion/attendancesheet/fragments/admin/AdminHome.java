@@ -50,6 +50,8 @@ public class AdminHome extends Fragment implements CourseListClick {
 
         binding = FragmentAdminHomeBinding.inflate(getLayoutInflater());
 
+
+
         // Inflate the layout for this fragment
         return binding.getRoot();
     }

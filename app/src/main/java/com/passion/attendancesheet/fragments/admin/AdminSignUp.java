@@ -146,7 +146,7 @@ public class AdminSignUp extends Fragment {
 
             // open congratulation fragment
             FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-            fragmentTransaction.add( R.id.fragment_container_view, Congratulation.class, args )
+            fragmentTransaction.add( R.id.login_nav_host_fragment, Congratulation.class, args )
                     .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
 

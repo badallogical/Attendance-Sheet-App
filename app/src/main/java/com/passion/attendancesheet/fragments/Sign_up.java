@@ -187,7 +187,7 @@ public class Sign_up extends Fragment {
         if( user != null ){
             Toast.makeText(context, "User created Successfully", Toast.LENGTH_LONG).show();
             getParentFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container_view, Congratulation.class, null)
+                    .add(R.id.login_nav_host_fragment, Congratulation.class, null)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
         }

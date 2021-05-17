@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_navigation"
+    app:startDestination="@id/adminHome">
+
+    <fragment
+        android:id="@+id/addCR"
+        android:name="com.passion.attendancesheet.fragments.admin.AddCR"
+        android:label="Add CR's"
+        tools:layout="@layout/fragment_add_c_r" />
+    <fragment
+        android:id="@+id/courseCR"
+        android:name="com.passion.attendancesheet.fragments.admin.CourseCR"
+        android:label="Manage CR's"
+        tools:layout="@layout/fragment_course_c_r">
+        <action
+            android:id="@+id/action_courseCR_to_addCR"
+            app:destination="@id/addCR" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminHome"
+        android:name="com.passion.attendancesheet.fragments.admin.AdminHome"
+        android:label="Home"
+        tools:layout="@layout/fragment_admin_home">
+
+        <action
+            android:id="@+id/action_adminHome_to_courseCR"
+            app:destination="@id/courseCR" />
+
+        <action
+            android:id="@+id/action_adminHome_to_loginActivity"
+            app:destination="@id/loginActivity"
+            app:popUpTo="@id/adminHome"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.passion.attendancesheet.LoginActivity"
+        android:label="Attendance Sheet"
+        tools:layout="@layout/activity_login" >
+    </activity>
+</navigation>

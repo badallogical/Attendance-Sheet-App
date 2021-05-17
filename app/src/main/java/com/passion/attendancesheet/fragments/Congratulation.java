@@ -77,7 +77,7 @@ public class Congratulation extends Fragment {
                                 Toast.makeText(getContext(), "verification is send to your email", Toast.LENGTH_LONG).show();
 
                                 getParentFragmentManager().beginTransaction()
-                                        .add(R.id.fragment_container_view, AdminSignIn.class, null)
+                                        .add(R.id.login_nav_host_fragment, AdminSignIn.class, null)
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                         .commit();
                             }
@@ -91,7 +91,7 @@ public class Congratulation extends Fragment {
                 }
                 else{
                     getParentFragmentManager().beginTransaction()
-                            .add(R.id.fragment_container_view, Sign_in.class, null)
+                            .add(R.id.login_nav_host_fragment, Sign_in.class, null)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .commit();
                 }

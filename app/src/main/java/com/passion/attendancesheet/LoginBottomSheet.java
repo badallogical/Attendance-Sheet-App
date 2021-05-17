@@ -1,37 +1,28 @@
 package com.passion.attendancesheet;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
-import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.passion.attendancesheet.databinding.BottomSheetLayoutBinding;
-import com.passion.attendancesheet.fragments.Sign_in;
-import com.passion.attendancesheet.fragments.Sign_up;
-import com.passion.attendancesheet.fragments.admin.AdminSignIn;
-import com.passion.attendancesheet.fragments.admin.AdminSignUp;
 
 public class LoginBottomSheet extends BottomSheetDialogFragment {
 
-    int commingFrom;        // need to know how to communicate with bottom sheet dailog
+    int comingFrom;
 
     BottomSheetLayoutBinding binding;
 
-    Context context;
+    NavController navController;
 
-    public LoginBottomSheet( Context context , int commingFrom){
-        this.context = context;
-        this.commingFrom = commingFrom;
+    public LoginBottomSheet( NavController navController , int comingFrom){
+        this.navController = navController;
+        this.comingFrom = comingFrom;
     }
 
 
@@ -39,6 +30,7 @@ public class LoginBottomSheet extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = BottomSheetLayoutBinding.inflate(getLayoutInflater());
+
         return binding.getRoot();
     }
 
@@ -50,24 +42,14 @@ public class LoginBottomSheet extends BottomSheetDialogFragment {
         binding.iAmCr.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-                if( commingFrom == 0 ){
+                if( comingFrom == 0 ){
                     // sign in
-                    FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-
-                    fragmentTransaction.replace(R.id.fragment_container_view, Sign_in.class, null)
-                            .addToBackStack(null)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit();
+                    navController.navigate( R.id.action_login_to_sign_in);
 
                 }
                 else{
-                    // sign in
-                    FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-
-                    fragmentTransaction.replace(R.id.fragment_container_view, Sign_up.class, null)
-                            .addToBackStack(null)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit();
+                    // sign up
+                    navController.navigate( R.id.action_login_to_sign_up);
                 }
 
                 // close the sheet
@@ -81,21 +63,13 @@ public class LoginBottomSheet extends BottomSheetDialogFragment {
         binding.iAmAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( commingFrom == 0 ){
+                if( comingFrom == 0 ){
                     // sign in
-                    FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container_view, AdminSignIn.class, null)
-                            .addToBackStack(null)   // to change the login option
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit();
+                    navController.navigate( R.id.action_login_to_adminSignIn);
                 }
                 else{
                     // sign up
-                    FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container_view, AdminSignUp.class, null )
-                            .addToBackStack(null)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit();
+                    navController.navigate(R.id.action_login_to_adminSignUp);
                 }
 
                 // close the sheet

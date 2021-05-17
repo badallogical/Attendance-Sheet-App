@@ -6,6 +6,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.passion.attendancesheet.AdminActivity;
+import com.passion.attendancesheet.LoginActivity;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentAdminSignInBinding;
 import com.passion.attendancesheet.databinding.FragmentAdminSignUpBinding;
@@ -25,6 +29,8 @@ import com.passion.attendancesheet.databinding.FragmentAdminSignUpBinding;
 public class AdminSignIn extends Fragment {
 
    FragmentAdminSignInBinding binding;
+
+   NavController navController;
 
     public AdminSignIn() {
         // Required empty public constructor
@@ -34,6 +40,9 @@ public class AdminSignIn extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        navController = NavHostFragment.findNavController(this);
+
 
     }
 
@@ -92,10 +101,10 @@ public class AdminSignIn extends Fragment {
 
     void updateUI( FirebaseUser user ){
         if( user != null ){
-            Intent intentToAdminHome = new Intent( getContext(), AdminActivity.class );
-            startActivity(intentToAdminHome);
+             navController.navigate( AdminSignInDirections.actionAdminSignInToAdminActivity(user.getEmail().toString()));
+//           Intent intent = new Intent( getContext() , AdminActivity.class );
+//           startActivity( intent );
 
-            Toast.makeText(getContext(), "Signed in as " + user.getEmail() ,Toast.LENGTH_LONG).show();
         }
     }
 }

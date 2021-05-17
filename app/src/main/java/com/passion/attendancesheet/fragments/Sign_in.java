@@ -39,8 +39,6 @@ public class Sign_in extends Fragment {
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
-
-
     }
 
     @Override
