@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,22 +32,16 @@ public class CourseCR extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        NavController navController = NavHostFragment.findNavController( this );
 
         binding = FragmentCourseCRBinding.inflate(getLayoutInflater());
+        CourseCRArgs args = CourseCRArgs.fromBundle( getArguments() );
 
         // add cr 1
         binding.addCr1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Bundle args = new Bundle();
-                args.putInt("CR", 1);
-
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.add(R.id.admin_fragment_container, AddCR.class, args)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
+             navController.navigate( CourseCRDirections.actionCourseCRToAddCR( args.getCourse(), 1 ));
             }
         });
 
@@ -53,15 +49,7 @@ public class CourseCR extends Fragment {
         binding.addCr2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-                Bundle args = new Bundle();
-                args.putInt("CR", 2);
-
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.add(R.id.admin_fragment_container, AddCR.class, args)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
+               navController.navigate( CourseCRDirections.actionCourseCRToAddCR( args.getCourse(), 2 ));
             }
         });
 

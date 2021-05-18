@@ -62,7 +62,7 @@ public class AdminCourseListAdapter extends RecyclerView.Adapter<AdminCourseList
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    courseListClick.openCrPanel();
+                    courseListClick.openCrPanel( courseList.get( getAdapterPosition() ));
                 }
             });
 

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.provider.ContactsContract;
@@ -136,11 +137,7 @@ public class AdminHome extends Fragment implements CourseListClick {
     }
 
     @Override
-    public void openCrPanel() {
-        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-        fragmentTransaction.add( R.id.admin_fragment_container, CourseCR.class, null )
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+    public void openCrPanel(String course ) {
+        NavHostFragment.findNavController(this).navigate( AdminHomeDirections.actionAdminHomeToCourseCR( course ));
     }
 }

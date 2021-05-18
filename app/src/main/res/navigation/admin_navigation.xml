@@ -9,7 +9,14 @@
         android:id="@+id/addCR"
         android:name="com.passion.attendancesheet.fragments.admin.AddCR"
         android:label="Add CR's"
-        tools:layout="@layout/fragment_add_c_r" />
+        tools:layout="@layout/fragment_add_c_r" >
+        <argument
+            android:name="course"
+            app:argType="string" />
+        <argument
+            android:name="cr_no"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/courseCR"
         android:name="com.passion.attendancesheet.fragments.admin.CourseCR"
@@ -18,6 +25,9 @@
         <action
             android:id="@+id/action_courseCR_to_addCR"
             app:destination="@id/addCR" />
+        <argument
+            android:name="course"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/adminHome"
