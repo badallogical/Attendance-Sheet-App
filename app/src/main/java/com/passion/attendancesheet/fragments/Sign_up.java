@@ -54,57 +54,57 @@ public class Sign_up extends Fragment {
 
         context = getContext();
 
-        // Realtime Database
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("courses");
-
-        // Firebase Authentication
-        mAuth = FirebaseAuth.getInstance();
-
-
-        ArrayList<CourseF> courses;
-        ArrayList<ClassRepresentative> crs;
-        ArrayList<StudentF> students;
-        ArrayList<String> teachers;
-
-        // BCA-6
-
-        // Crs
-        crs = new ArrayList<ClassRepresentative>();
-        crs.add( new ClassRepresentative("Badal", "badallearn@gmail.com", "BCA-6"));
-        crs.add( new ClassRepresentative("Shubhum Kumar", "shubhumkumar@gmail.com", "BCA-6"));
-
-
-        // Students
-        students = new ArrayList<StudentF>();
-        students.add( new StudentF("Badal",1));
-        students.add( new StudentF("Badal",2));
-        students.add( new StudentF("Badal",3));
-        students.add( new StudentF("Badal",4));
-        students.add( new StudentF("Badal",5));
-        students.add( new StudentF("Badal",6));
-        students.add( new StudentF("Badal",7));
-        students.add( new StudentF("Badal",8));
-        students.add( new StudentF("Badal",9));
-        students.add( new StudentF("Badal",10));
-        students.add( new StudentF("Badal",11));
-        students.add( new StudentF("Badal",12));
-        students.add( new StudentF("Badal",13));
-
-
-        // teachers
-        teachers = new ArrayList<String>();
-        teachers.add( "Rohit Sir");
-        teachers.add( "Santosh Sir");
-        teachers.add( "Ajay Sir");
-        teachers.add( "L.S Awasthi Sir");
-
-        // add BCA-6
-        courses = new ArrayList<CourseF>();
-        courses.add( new CourseF("BCA-6", 94, crs, students,teachers));
-
-        //save course to db
-        myRef.setValue(courses);
+//        // Realtime Database
+//        database = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = database.getReference("courses");
+//
+//        // Firebase Authentication
+//        mAuth = FirebaseAuth.getInstance();
+//
+//
+//        ArrayList<CourseF> courses;
+//        ArrayList<ClassRepresentative> crs;
+//        ArrayList<StudentF> students;
+//        ArrayList<String> teachers;
+//
+//        // BCA-6
+//
+//        // Crs
+//        crs = new ArrayList<ClassRepresentative>();
+//        crs.add( new ClassRepresentative("Badal", "badallearn@gmail.com", "BCA-6));
+//        crs.add( new ClassRepresentative("Shubhum Kumar", "shubhumkumar@gmail.com", "BCA-6"));
+//
+//
+//        // Students
+//        students = new ArrayList<StudentF>();
+//        students.add( new StudentF("Badal",1));
+//        students.add( new StudentF("Badal",2));
+//        students.add( new StudentF("Badal",3));
+//        students.add( new StudentF("Badal",4));
+//        students.add( new StudentF("Badal",5));
+//        students.add( new StudentF("Badal",6));
+//        students.add( new StudentF("Badal",7));
+//        students.add( new StudentF("Badal",8));
+//        students.add( new StudentF("Badal",9));
+//        students.add( new StudentF("Badal",10));
+//        students.add( new StudentF("Badal",11));
+//        students.add( new StudentF("Badal",12));
+//        students.add( new StudentF("Badal",13));
+//
+//
+//        // teachers
+//        teachers = new ArrayList<String>();
+//        teachers.add( "Rohit Sir");
+//        teachers.add( "Santosh Sir");
+//        teachers.add( "Ajay Sir");
+//        teachers.add( "L.S Awasthi Sir");
+//
+//        // add BCA-6
+//        courses = new ArrayList<CourseF>();
+//        courses.add( new CourseF("BCA-6", 94, crs, students,teachers));
+//
+//        //save course to db
+//        myRef.setValue(courses);
 
     }
 

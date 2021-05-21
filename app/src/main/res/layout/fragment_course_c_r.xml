@@ -10,6 +10,7 @@
     >
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cr1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
@@ -32,6 +33,32 @@
                 android:textSize="20dp"
                 />
 
+            <LinearLayout
+                android:id="@+id/cr1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/cr1Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="25sp"
+                    android:textColor="#000"
+                    tools:text="Badal" />
+
+                <TextView
+                    android:id="@+id/cr1Email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="16sp"
+                    tools:text="badallearn@gmail.com" />
+
+            </LinearLayout>
+
             <ImageButton
                 android:id="@+id/add_cr1"
                 android:layout_width="50dp"
@@ -48,6 +75,7 @@
 
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cr2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
@@ -69,6 +97,32 @@
                 android:fontFamily="@font/montserrat"
                 android:textSize="20dp"
                 />
+
+            <LinearLayout
+                android:id="@+id/cr2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/cr2Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="25sp"
+                    android:textColor="#000"
+                    tools:text="Badal" />
+
+                <TextView
+                    android:id="@+id/cr2Email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="16sp"
+                    tools:text="badallearn@gmail.com" />
+
+            </LinearLayout>
 
             <ImageButton
                 android:id="@+id/add_cr2"

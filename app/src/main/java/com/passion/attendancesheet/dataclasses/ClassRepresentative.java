@@ -6,13 +6,11 @@ public class ClassRepresentative implements Serializable {
 
     private String name;
     private String email;
-    private String course;
 
     public ClassRepresentative(){}
 
-    public ClassRepresentative( String name, String email, String course ){
+    public ClassRepresentative( String name, String email ){
         this.name = name;
-        this.course = course;
         this.email = email;
     }
 
@@ -24,9 +22,6 @@ public class ClassRepresentative implements Serializable {
         return email;
     }
 
-    public String getCourse() {
-        return course;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -36,7 +31,4 @@ public class ClassRepresentative implements Serializable {
         this.email = email;
     }
 
-    public void setCourse(String course) {
-        this.course = course;
-    }
 }
