@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.passion.attendancesheet.AdminActivity;
@@ -59,10 +61,20 @@ public class AdminCourseListAdapter extends RecyclerView.Adapter<AdminCourseList
 
             text = itemView.findViewById(R.id.course_text);
 
+            String[] semesters = { "I", "II", "III", "IV", "V", "VI"};
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    courseListClick.openCrPanel( courseList.get( getAdapterPosition() ));
+                    //courseListClick.openCrPanel( courseList.get( getAdapterPosition() ));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Select Semester")
+                            .setItems(semesters, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    courseListClick.openCrPanel( courseList.get( getAdapterPosition() ) +" "+ semesters[ which ] );
+                                }
+                            } ).create().show();
                 }
             });
 

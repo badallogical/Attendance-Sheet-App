@@ -10,7 +10,7 @@
     >
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cr1"
+        android:id="@+id/cr1_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
@@ -38,6 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
 
                 <TextView
@@ -59,6 +60,14 @@
 
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/cr1_progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible"
+                />
+
             <ImageButton
                 android:id="@+id/add_cr1"
                 android:layout_width="50dp"
@@ -66,6 +75,7 @@
                 android:scaleType="fitXY"
                 android:layout_gravity="center"
                 android:background="#fff"
+                android:visibility="gone"
                 android:src="@drawable/ic_baseline_add_circle_outline_24"/>
 
 
@@ -75,7 +85,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cr2"
+        android:id="@+id/cr2_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
@@ -103,6 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
 
                 <TextView
@@ -124,6 +135,14 @@
 
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/cr2_progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible"
+                />
+
             <ImageButton
                 android:id="@+id/add_cr2"
                 android:layout_width="50dp"
@@ -131,6 +150,7 @@
                 android:scaleType="fitXY"
                 android:layout_gravity="center"
                 android:background="#fff"
+                android:visibility="gone"
                 android:src="@drawable/ic_baseline_add_circle_outline_24"/>
         </LinearLayout>
 

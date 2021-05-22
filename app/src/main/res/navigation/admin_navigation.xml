@@ -16,6 +16,10 @@
         <argument
             android:name="cr_no"
             app:argType="integer" />
+        <argument
+            android:name="cr"
+            app:argType="com.passion.attendancesheet.dataclasses.ClassRepresentative"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/courseCR"

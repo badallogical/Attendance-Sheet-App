@@ -50,9 +50,15 @@ public class AddCR extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        db = FirebaseDatabase.getInstance();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference ref = db.getReference();
 
+        // Display cr data if exist
+        AddCRArgs args = AddCRArgs.fromBundle( getArguments() );
+        if( args.getCr() != null ){
+           binding.editName.setText( args.getCr().getName());
+           binding.editEmail.setText( args.getCr().getEmail());
+        }
 
         binding.register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +67,6 @@ public class AddCR extends Fragment {
                 AddCRArgs args = AddCRArgs.fromBundle( getArguments() );
 
                 ClassRepresentative crs[] = {null,null};
-
 
                 // Check fields
                 if( binding.editName.getText().toString().trim().isEmpty() ){
