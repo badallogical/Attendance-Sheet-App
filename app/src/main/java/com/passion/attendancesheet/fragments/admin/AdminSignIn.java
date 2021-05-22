@@ -10,6 +10,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.passion.attendancesheet.AdminActivity;
 import com.passion.attendancesheet.LoginActivity;
 import com.passion.attendancesheet.R;
@@ -73,12 +77,32 @@ public class AdminSignIn extends Fragment {
                 }
                 else{
 
-                    adminSignIn( email, passwd );
-
+                    // verify admin and sign in
+                    verifyAndSignInAdmin(email,passwd);
                 }
             }
         });
 
+    }
+
+    private void verifyAndSignInAdmin(String email,String passwd) {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference();
+
+        ref.child("admin").child("email").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if( task.isSuccessful() ){
+                    String Femail = task.getResult().getValue(String.class);
+                    if( Femail.equals( email )){
+                        adminSignIn(email,passwd);
+                    }
+                    else{
+                        Toast.makeText(getContext(), "You are not a Admin",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
     }
 
     void adminSignIn( String email, String passwd ){
