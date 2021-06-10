@@ -13,23 +13,15 @@
 
 
         <ImageView
-            android:layout_width="300dp"
-            android:layout_height="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="60dp"
             android:elevation="50dp"
-            android:paddingHorizontal="10dp"
-            android:layout_marginTop="50dp"
+            android:padding="24dp"
             android:scaleType="fitXY"
             android:src="@drawable/logo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200sp"
-            android:layout_marginTop="184dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/faculty"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

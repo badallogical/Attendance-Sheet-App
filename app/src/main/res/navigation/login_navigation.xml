@@ -41,7 +41,14 @@
             android:id="@+id/sign_in"
             android:name="com.passion.attendancesheet.fragments.Sign_in"
             android:label="Sign In"
-            tools:layout="@layout/fragment_sign_in" />
+            tools:layout="@layout/fragment_sign_in" >
+            <action
+                android:id="@+id/action_sign_in_to_importSheet"
+                app:destination="@id/importSheet" />
+            <action
+                android:id="@+id/action_sign_in_to_Home"
+                app:destination="@id/Home" />
+        </fragment>
         <fragment
             android:id="@+id/congratulation"
             android:name="com.passion.attendancesheet.fragments.Congratulation"
@@ -84,4 +91,14 @@
             android:name="email"
             app:argType="string" />
     </activity>
+    <fragment
+        android:id="@+id/Home"
+        android:name="com.passion.attendancesheet.fragments.Home"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/importSheet"
+        android:name="com.passion.attendancesheet.fragments.ImportSheet"
+        android:label="Import Sheet"
+        tools:layout="@layout/fragment_import_sheet" />
 </navigation>

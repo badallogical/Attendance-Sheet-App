@@ -18,13 +18,4 @@
         />
 
 
-
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/semester_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:spinnerMode="dropdown"
-        android:autofillHints="Semester"
-        />
-
 </LinearLayout>

@@ -22,14 +22,15 @@ import com.passion.attendancesheet.R;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdminCourseListAdapter extends RecyclerView.Adapter<AdminCourseListAdapter.CourseListViewHolder> {
 
-    ArrayList<String> courseList;
+    List<String> courseList;
     Context context;
     CourseListClick courseListClick;
 
-    public AdminCourseListAdapter( ArrayList<String> courseList , Context context, CourseListClick courseListClick){
+    public AdminCourseListAdapter( List<String> courseList , Context context, CourseListClick courseListClick){
         this.courseList = courseList;
         this.context = context;
         this.courseListClick = courseListClick;
@@ -50,6 +51,14 @@ public class AdminCourseListAdapter extends RecyclerView.Adapter<AdminCourseList
     @Override
     public int getItemCount() {
         return courseList.size();
+    }
+
+    public void removeItem( int position ){
+        courseList.remove(position);
+    }
+
+    public String getItem( int position ){
+        return courseList.get( position );
     }
 
     class CourseListViewHolder extends RecyclerView.ViewHolder{

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +16,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.room.Database;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentSignUpBinding;
 import com.passion.attendancesheet.dataclasses.ClassRepresentative;
 import com.passion.attendancesheet.dataclasses.CourseF;
 import com.passion.attendancesheet.dataclasses.StudentF;
+import com.passion.attendancesheet.dataclasses.UserF;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class Sign_up extends Fragment {
@@ -121,10 +128,28 @@ public class Sign_up extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // course spinner
-        String [] courses = { "BCA-6", "BCA-1", "BBA-6", "BBA-1"};
-        ArrayAdapter courseAdapter = new ArrayAdapter( getActivity(),android.R.layout.simple_list_item_1, courses);
-        binding.spinner.setAdapter( courseAdapter );
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference();
 
+        List<String> courses = new ArrayList<String>();
+        ArrayAdapter courseAdapter = new ArrayAdapter( getActivity(),android.R.layout.simple_list_item_1, courses );
+
+        ref.child("courses").orderByKey().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for( DataSnapshot dataSnapshot : snapshot.getChildren() ){
+                    courses.add( dataSnapshot.getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        binding.spinner.setAdapter( courseAdapter );
 
         // submit action
         binding.submitSignUp.setOnClickListener( new View.OnClickListener(){
@@ -158,6 +183,11 @@ public class Sign_up extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if( task.isSuccessful() ){
                             FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                            // write user details to firebase
+                            FirebaseDatabase db = FirebaseDatabase.getInstance();
+                            DatabaseReference ref = db.getReference();
+
                             updateUI(currentUser);
                         }
                         else{
@@ -169,23 +199,57 @@ public class Sign_up extends Fragment {
     }
 
     public void signUp( String email, String passwd ){
-        if( verifiedForCr( email ) ){
-            createAccount(email,passwd);
+        //TODO : implement verification of eligible email only
+        if( binding.spinner.getSelectedItem().toString().trim().isEmpty() ){
+            Toast.makeText( getContext(), "Please Select the Course", Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText( getContext(), "You are not eligible for CR", Toast.LENGTH_LONG).show();
+
+            String course = binding.spinner.getSelectedItem().toString();
+
+            // verify the cr credential at firebase , at given course and if verified create account
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref = db.getReference();
+
+            ref.child("crs").child(course).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                    boolean verified = false;
+
+                    if( task.isSuccessful()){
+                        // check the email if exist
+                        if( task.getResult().child("cr1").exists() ){
+                            if( task.getResult().child("cr1").child("email").equals(email) ){
+                                // verified
+                                verified = true;
+                                createAccount(email,passwd);
+                            }
+                        }
+
+                        if( task.getResult().child("cr2").exists() ){
+                            if( task.getResult().child("cr2").child("email").equals(email)){
+                                // verified
+                                verified = true;
+                                createAccount(email,passwd);
+                            }
+                        }
+
+                        if( !verified ){
+                            // not eligible
+                            Toast.makeText(getContext(), "You are not eligible", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                }
+            });
         }
     }
-
-    private boolean verifiedForCr( String email ){
-        //TODO : implement verification of eligible email only
-        return true;
-    }
-
 
     private void updateUI(FirebaseUser user ){
         if( user != null ){
             Toast.makeText(context, "User created Successfully", Toast.LENGTH_LONG).show();
+
             getParentFragmentManager().beginTransaction()
                     .add(R.id.login_nav_host_fragment, Congratulation.class, null)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

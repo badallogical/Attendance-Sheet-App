@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.passion.attendancesheet.Attendance;
-import com.passion.attendancesheet.R;
+import com.passion.attendancesheet.databinding.FragmentImportSheetBinding;
 import com.passion.attendancesheet.databinding.FragmentSignInBinding;
 
 
@@ -80,6 +81,9 @@ public class Sign_in extends Fragment {
     }
 
     private void signIn(String email, String password ){
+
+        
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -99,11 +103,23 @@ public class Sign_in extends Fragment {
     private void updateUI(FirebaseUser user ){
         if( user != null ){
             Toast.makeText(getContext(), "Successfully Signed In", Toast.LENGTH_LONG).show();
-            Intent intentTOAttendance = new Intent( getContext(), Attendance.class );
-            startActivity(intentTOAttendance);
+
+            NavController navController = NavHostFragment.findNavController(this);
+
+            if( checkIfSheetAvailable() ){
+                // open the course sheet (HOME)
+                navController.navigate( Sign_inDirections.actionSignInToHome() );
+            }else{
+                // open import attendance
+                navController.navigate( Sign_inDirections.actionSignInToImportSheet());
+            }
         }
         else{
             Toast.makeText(getContext(), "Sign In Failed", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private boolean checkIfSheetAvailable() {
+        return false;
     }
 }

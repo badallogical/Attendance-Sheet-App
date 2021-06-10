@@ -125,7 +125,7 @@ public class AdminSignIn extends Fragment {
 
     void updateUI( FirebaseUser user ){
         if( user != null ){
-             navController.navigate( AdminSignInDirections.actionAdminSignInToAdminActivity(user.getEmail().toString()));
+             navController.navigate( AdminSignInDirections.actionAdminSignInToAdminActivity(user.getEmail()));
 //           Intent intent = new Intent( getContext() , AdminActivity.class );
 //           startActivity( intent );
 

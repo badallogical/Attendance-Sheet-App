@@ -32,7 +32,8 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if( currentUser != null  ){
-            navController.navigate( LoginDirections.actionLoginToAdminActivity( currentUser.getEmail().toString() ));
+            if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com"))
+                navController.navigate( LoginDirections.actionLoginToAdminActivity( currentUser.getEmail().toString() ));
         }
     }
 
@@ -43,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         navController = ((NavHostFragment)getSupportFragmentManager().findFragmentById(R.id.login_nav_host_fragment)).getNavController();
 
-        // add up button in navigation button , where navController is provided to navigate back using up button , but the behaviour is not set yet.
+        // Add up button in navigation button , where navController is provided to navigate back using up button , but the behaviour is not set yet.
         NavigationUI.setupActionBarWithNavController(this, navController);
 
     }
