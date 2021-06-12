@@ -36,6 +36,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.AdminCourseListAdapter;
@@ -94,11 +95,14 @@ public class AdminHome extends Fragment implements CourseListClick {
             * This listener not only called when the data changed but at the start of the app , so its perfect, better then onDataChanged listener as it returen the whole data set.
             * */
             ref.child("courses").orderByKey().addChildEventListener(new ChildEventListener() {
+
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     Timber.d("add child listener called");
                     array.add( snapshot.getValue(String.class));
                     adapter.notifyDataSetChanged();
+
+                    Toast.makeText(getContext(), "Course: " + snapshot.getValue(String.class) + " Added", Toast.LENGTH_SHORT ).show();
                 }
 
                 @Override
@@ -111,6 +115,8 @@ public class AdminHome extends Fragment implements CourseListClick {
                     Timber.d("remove child event called");
                     array.remove( snapshot.getValue(String.class));
                     adapter.notifyDataSetChanged();
+
+                    Toast.makeText(getContext(), "Course: " + snapshot.getValue(String.class) + " Removed", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -142,7 +148,16 @@ public class AdminHome extends Fragment implements CourseListClick {
                 public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
                     // removeValue is used to delete just get the reference to the node you want to delete ( remember equalTo is used to check equality in firebase rather then equal
-                    ref.child("courses").orderByValue().equalTo( adapter.getItem(viewHolder.getAdapterPosition() ) ).limitToFirst(1).
+                   Query query = ref.child("courses").orderByValue().equalTo( adapter.getItem(viewHolder.getAdapterPosition() ) ).limitToFirst(1);
+                   query.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                       @Override
+                       public void onComplete(@NonNull Task<DataSnapshot> task) {
+                           if( task.isSuccessful()){
+                             //  To remove list item , ref.child("courses").child(item_key).removeValue()
+                              ref.child("courses").child(task.getResult().getChildren().iterator().next().getKey() ).removeValue();
+                           }
+                       }
+                   });
                 }
             }).attachToRecyclerView(binding.courseList);
         }

@@ -45,9 +45,6 @@
             <action
                 android:id="@+id/action_sign_in_to_importSheet"
                 app:destination="@id/importSheet" />
-            <action
-                android:id="@+id/action_sign_in_to_Home"
-                app:destination="@id/Home" />
         </fragment>
         <fragment
             android:id="@+id/congratulation"
@@ -100,5 +97,9 @@
         android:id="@+id/importSheet"
         android:name="com.passion.attendancesheet.fragments.ImportSheet"
         android:label="Import Sheet"
-        tools:layout="@layout/fragment_import_sheet" />
+        tools:layout="@layout/fragment_import_sheet" >
+        <action
+            android:id="@+id/action_importSheet_to_Home"
+            app:destination="@id/Home" />
+    </fragment>
 </navigation>
