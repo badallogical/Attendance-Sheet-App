@@ -8,7 +8,10 @@
         <entry key="app/src/main/res/layout/activity_attendance_take.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/admin_course_card.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_admin_home.xml" value="0.209375" />
+        <entry key="app/src/main/res/layout/fragment_attendance.xml" value="0.209375" />
+        <entry key="app/src/main/res/layout/fragment_course_sheet.xml" value="0.209375" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.209375" />
+        <entry key="app/src/main/res/layout/student_item.xml" value="0.209375" />
       </map>
     </option>
   </component>

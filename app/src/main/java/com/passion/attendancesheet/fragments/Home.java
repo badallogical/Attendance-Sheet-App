@@ -15,6 +15,9 @@ import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentHomeBinding;
 import com.passion.attendancesheet.fragments.admin.AdminHomeDirections;
 
+/**
+ * It is the CR home Screen that display the course sheet
+ */
 public class Home extends Fragment {
 
 

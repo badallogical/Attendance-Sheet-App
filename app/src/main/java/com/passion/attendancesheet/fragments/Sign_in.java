@@ -106,20 +106,14 @@ public class Sign_in extends Fragment {
 
             NavController navController = NavHostFragment.findNavController(this);
 
-            if( checkIfSheetAvailable() ){
-                // open the course sheet (HOME)
-                navController.navigate( Sign_inDirections.actionSignInToHome() );
-            }else{
-                // open import attendance
-                navController.navigate( Sign_inDirections.actionSignInToImportSheet());
-            }
+            // Open import attendance where if already imported if will redirect to Admin Home
+            navController.navigate( Sign_inDirections.actionSignInToImportSheet());
+
         }
         else{
             Toast.makeText(getContext(), "Sign In Failed", Toast.LENGTH_LONG).show();
         }
     }
 
-    private boolean checkIfSheetAvailable() {
-        return false;
-    }
+
 }

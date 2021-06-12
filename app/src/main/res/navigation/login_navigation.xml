@@ -44,7 +44,8 @@
             tools:layout="@layout/fragment_sign_in" >
             <action
                 android:id="@+id/action_sign_in_to_importSheet"
-                app:destination="@id/importSheet" />
+                app:destination="@id/importSheet"
+                app:popUpTo="@id/login" />
         </fragment>
         <fragment
             android:id="@+id/congratulation"
@@ -92,7 +93,11 @@
         android:id="@+id/Home"
         android:name="com.passion.attendancesheet.fragments.Home"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_Home_to_attendance"
+            app:destination="@id/attendance" />
+    </fragment>
     <fragment
         android:id="@+id/importSheet"
         android:name="com.passion.attendancesheet.fragments.ImportSheet"
@@ -102,4 +107,8 @@
             android:id="@+id/action_importSheet_to_Home"
             app:destination="@id/Home" />
     </fragment>
+    <fragment
+        android:id="@+id/attendance"
+        android:name="com.passion.attendancesheet.fragments.Attendance"
+        android:label="Attendance" />
 </navigation>
