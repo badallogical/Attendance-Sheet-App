@@ -6,11 +6,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -62,6 +65,9 @@ public class AdminSignUp extends Fragment {
 
             @Override
             public void onClick(View v) {
+
+                v.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pop_up_animation));
+
                 db = FirebaseDatabase.getInstance();
                 adminRef = db.getReference("admin");
 
@@ -138,17 +144,9 @@ public class AdminSignUp extends Fragment {
             // successful sign up
             Toast.makeText(getContext(), "Successfully Registered", Toast.LENGTH_LONG ).show();
 
-            // data for admin congrates
-            Congratulation admin_congrats = new Congratulation();
-            Bundle args = new Bundle();
-            args.putString("user", "admin");
-            admin_congrats.setArguments(args);
-
             // open congratulation fragment
-            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-            fragmentTransaction.add( R.id.login_nav_host_fragment, Congratulation.class, args )
-                    .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit();
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(AdminSignUpDirections.actionAdminSignUpToCongratulation(binding.editName.getText().toString(), getString(R.string.ADMIN)));
 
         }
     }

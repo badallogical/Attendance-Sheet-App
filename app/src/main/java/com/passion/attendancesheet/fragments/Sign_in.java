@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentImportSheetBinding;
 import com.passion.attendancesheet.databinding.FragmentSignInBinding;
 
@@ -61,6 +63,8 @@ public class Sign_in extends Fragment {
 
             @Override
             public void onClick(View v) {
+
+                v.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pop_up_animation));
 
                 String email = binding.editTextTextEmailAddress.getText().toString();
                 String password = binding.editTextTextPassword.getText().toString();

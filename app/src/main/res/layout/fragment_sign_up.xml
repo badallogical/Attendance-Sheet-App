@@ -65,7 +65,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16sp"
+            android:layout_margin="10sp"
             android:gravity="center_vertical"
             android:paddingHorizontal="5dp"
             android:orientation="horizontal">
@@ -80,9 +80,11 @@
 
             <Spinner
                 android:id="@+id/spinner"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="center"
+                android:scrollbars="vertical"
                 android:spinnerMode="dialog"
                 tools:layout_editor_absoluteX="221dp"
                 tools:layout_editor_absoluteY="398dp" />

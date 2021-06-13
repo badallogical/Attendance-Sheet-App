@@ -14,6 +14,7 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -66,6 +67,9 @@ public class AdminSignIn extends Fragment {
         binding.submitSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                v.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pop_up_animation));
+
                 String email = binding.editEmail.getText().toString().trim();
                 String passwd = binding.editPasswd.getText().toString().trim();
 

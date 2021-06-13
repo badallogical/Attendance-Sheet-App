@@ -21,5 +21,7 @@
     <string name="no_history_available">No History Available</string>
     <string name="courses">COURSES</string>
     <string name="sharedPreference1">SHARED_PREFERENCES1</string>
+    <string name="CR">CR</string>
+    <string name="ADMIN">ADMIN</string>
 
 </resources>

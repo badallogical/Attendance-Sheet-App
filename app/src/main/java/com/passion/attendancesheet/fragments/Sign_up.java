@@ -8,6 +8,7 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
@@ -16,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Database;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import timber.log.Timber;
+
 public class Sign_up extends Fragment {
 
     private FragmentSignUpBinding binding;
@@ -60,6 +65,7 @@ public class Sign_up extends Fragment {
         super.onCreate(savedInstanceState);
 
         context = getContext();
+        mAuth = FirebaseAuth.getInstance();
 
 //        // Realtime Database
 //        database = FirebaseDatabase.getInstance();
@@ -134,12 +140,13 @@ public class Sign_up extends Fragment {
         List<String> courses = new ArrayList<String>();
         ArrayAdapter courseAdapter = new ArrayAdapter( getActivity(),android.R.layout.simple_list_item_1, courses );
 
-        ref.child("courses").orderByKey().addValueEventListener(new ValueEventListener() {
+        ref.child("crs").orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for( DataSnapshot dataSnapshot : snapshot.getChildren() ){
-                    courses.add( dataSnapshot.getValue(String.class));
+                    courses.add( dataSnapshot.getKey() );
                 }
+                courseAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -156,6 +163,11 @@ public class Sign_up extends Fragment {
 
             @Override
             public void onClick(View v) {
+
+                v.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pop_up_animation));
+                if( courses.size() == 0 ){
+                    Toast.makeText(getContext(), "No Course Available Yet, Contact Admin", Toast.LENGTH_LONG).show();
+                }
 
                 // read data
                 String email = binding.editEmail.getText().toString();
@@ -177,6 +189,7 @@ public class Sign_up extends Fragment {
     }
 
     public void createAccount( String email, String passwd ){
+
         mAuth.createUserWithEmailAndPassword( email, passwd )
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -187,12 +200,10 @@ public class Sign_up extends Fragment {
                             // write user details to firebase
                             FirebaseDatabase db = FirebaseDatabase.getInstance();
                             DatabaseReference ref = db.getReference();
-
                             updateUI(currentUser);
                         }
                         else{
-                            Toast.makeText(context, "Authentication Failed", Toast.LENGTH_LONG).show();
-                            updateUI(null);
+                            Toast.makeText(context, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -200,64 +211,71 @@ public class Sign_up extends Fragment {
 
     public void signUp( String email, String passwd ){
         //TODO : implement verification of eligible email only
-        if( binding.spinner.getSelectedItem().toString().trim().isEmpty() ){
-            Toast.makeText( getContext(), "Please Select the Course", Toast.LENGTH_LONG).show();
+        if( binding.spinner.getSelectedItem() == null ){
+            Toast.makeText(getContext(), "Please Select Your Course", Toast.LENGTH_LONG).show();
         }
         else{
 
-            String course = binding.spinner.getSelectedItem().toString();
+            if( binding.spinner.getSelectedItem().toString().trim().isEmpty() ){
+                Toast.makeText( getContext(), "Please Select the Course", Toast.LENGTH_LONG).show();
+            }
+            else{
 
-            // verify the cr credential at firebase , at given course and if verified create account
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference ref = db.getReference();
+                String course = binding.spinner.getSelectedItem().toString();
 
-            ref.child("crs").child(course).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                // verify the cr credential at firebase , at given course and if verified create account
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                DatabaseReference ref = db.getReference();
 
-                    boolean verified = false;
+                ref.child("crs").child(course).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
 
-                    if( task.isSuccessful()){
-                        // check the email if exist
-                        if( task.getResult().child("cr1").exists() ){
-                            if( task.getResult().child("cr1").child("email").equals(email) ){
-                                // verified
-                                verified = true;
-                                createAccount(email,passwd);
+                        boolean verified = false;
+
+                        if( task.isSuccessful() ){
+                            // check the email if exist
+                            if( task.getResult().child("cr1").exists() ){
+                                if( task.getResult().child("cr1").child("email").getValue().equals(email) ){
+                                    // verified
+                                    verified = true;
+                                    createAccount(email,passwd);
+                                }
                             }
-                        }
 
-                        if( task.getResult().child("cr2").exists() ){
-                            if( task.getResult().child("cr2").child("email").equals(email)){
-                                // verified
-                                verified = true;
-                                createAccount(email,passwd);
+                            if( task.getResult().child("cr2").exists() ){
+                                if( task.getResult().child("cr2").child("email").getValue().equals(email)){
+                                    // verified
+                                    verified = true;
+                                    if( !checkIfExisted( email , passwd ))
+                                        createAccount(email,passwd);
+                                }
                             }
-                        }
 
-                        if( !verified ){
-                            // not eligible
-                            Toast.makeText(getContext(), "You are not eligible", Toast.LENGTH_LONG).show();
-                        }
+                            if( !verified ){
+                                // not eligible
+                                Toast.makeText(getContext(), "You are not eligible", Toast.LENGTH_LONG).show();
+                            }
 
+                        }
                     }
-                }
-            });
+                });
+            }
         }
+    }
+
+    private boolean checkIfExisted(String email, String passwd) {
+       return false;
     }
 
     private void updateUI(FirebaseUser user ){
         if( user != null ){
             Toast.makeText(context, "User created Successfully", Toast.LENGTH_LONG).show();
 
-            getParentFragmentManager().beginTransaction()
-                    .add(R.id.login_nav_host_fragment, Congratulation.class, null)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit();
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate( Sign_upDirections.actionSignUpToCongratulation(binding.editName.getText().toString(), getString(R.string.CR)));
         }
-        else{
-            Toast.makeText(context, "User Failed to Create", Toast.LENGTH_LONG).show();
-        }
+
     }
 
 }
