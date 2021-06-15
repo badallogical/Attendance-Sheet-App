@@ -9,12 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.passion.attendancesheet.R;
+import com.passion.attendancesheet.databinding.FragmentAttendanceBinding;
 
 /**
  * It is the panel to take attendance and save, and share  ( as excel )
  */
 public class Attendance extends Fragment {
 
+    FragmentAttendanceBinding binding;
 
     public Attendance() {
         // Required empty public constructor
@@ -28,7 +30,7 @@ public class Attendance extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_attendance, container, false);
+        binding = FragmentAttendanceBinding.inflate( getLayoutInflater() );
+        return binding.getRoot();
     }
 }

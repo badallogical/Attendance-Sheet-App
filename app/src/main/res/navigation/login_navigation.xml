@@ -102,7 +102,7 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_Home_to_attendance"
-            app:destination="@id/attendance" />
+            app:destination="@id/Attendance" />
     </fragment>
     <fragment
         android:id="@+id/importSheet"
@@ -114,7 +114,8 @@
             app:destination="@id/Home" />
     </fragment>
     <fragment
-        android:id="@+id/attendance"
+        android:id="@+id/Attendance"
         android:name="com.passion.attendancesheet.fragments.Attendance"
-        android:label="Attendance" />
+        android:label="Attendance"
+        tools:layout="@layout/fragment_attendance" />
 </navigation>
