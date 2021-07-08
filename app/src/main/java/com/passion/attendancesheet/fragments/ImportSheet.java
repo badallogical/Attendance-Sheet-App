@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -27,6 +28,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.passion.attendancesheet.databinding.FragmentImportSheetBinding;
+import com.passion.attendancesheet.model.AttendanceSheetDao;
+import com.passion.attendancesheet.model.AttendanceSheetViewModel;
+import com.passion.attendancesheet.model.entity.Course;
+import com.passion.attendancesheet.model.entity.Student;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -36,9 +41,11 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import timber.log.Timber;
@@ -48,9 +55,11 @@ public class ImportSheet extends Fragment {
 
     private static final int READ_REQUEST_CODE = 101;
     FragmentImportSheetBinding binding;
+    private AttendanceSheetViewModel viewModel;
 
     public ImportSheet() {
         // Required empty public constructor
+        viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
     }
 
     @Override
@@ -58,7 +67,7 @@ public class ImportSheet extends Fragment {
         super.onStart();
 
         // if sheet already imported, redirect to admin home
-        if( checkIfSheetAvailable() == true ){
+        if (checkIfSheetAvailable() == true) {
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(ImportSheetDirections.actionImportSheetToHome());
         }
@@ -74,7 +83,7 @@ public class ImportSheet extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentImportSheetBinding.inflate( getLayoutInflater() );
+        binding = FragmentImportSheetBinding.inflate(getLayoutInflater());
         return binding.getRoot();
     }
 
@@ -141,6 +150,7 @@ public class ImportSheet extends Fragment {
                 uri = resultData.getData();
                 try {
                     assert uri != null;
+
                     File xl_file = new File(Environment.getExternalStorageDirectory() + "/" + Objects.requireNonNull(uri.getPath()).split(":")[1]);
                     FileInputStream myInput = new FileInputStream(xl_file);
 
@@ -159,168 +169,88 @@ public class ImportSheet extends Fragment {
 
                     Set<String> courses = new HashSet<String>();
                     List<String> teachers_with_courses = new ArrayList<String>();
+                    List<String> subjects = new ArrayList<String>();
 
-                    // verify sheet ???? need to have strong verification
-                    if (CUR_READ_TYPE == 0 || UPDATE_PRIMARY_SHEET == true) {
 
-                        // Read basic Sheet
-                        rowIter = mySheet.rowIterator();
-                        while (rowIter.hasNext()) {
+                    // read course student
+                    String cur_courseReadied = "";
+                    rowIter = mySheet.rowIterator();
+                    List<String> student_list = new ArrayList<>();
+                    boolean course_readied = false;
 
-                            // read
+                    if (rowIter.hasNext()) {
+
+                        cur_row = (HSSFRow) rowIter.next();
+                        if (cur_row != null) {
+                            if ((cur_row.getPhysicalNumberOfCells() == 2) && cur_row.getCell(0).toString().equalsIgnoreCase("course") ) {
+                                // read course name
+                                cur_courseReadied = cur_row.getCell(1).toString();
+
+                                // Read Teachers
+                                cur_row = (HSSFRow) rowIter.next();
+                                if( cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("Teachers")){
+                                    teachers_with_courses = Arrays.asList(cur_row.getCell(1).toString().split("|"));
+                                }
+
+                                // Read Subjects
+                                cur_row = (HSSFRow) rowIter.next();
+                                if( cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("Courses")){
+                                    subjects = Arrays.asList( cur_row.getCell(1).toString().split("|"));
+                                }
+
+                                course_readied = true;
+
+                            } else {
+                                invalidSheetPopup();
+                                return;
+                            }
+                        }
+                    } else {
+                        invalidSheetPopup();
+                        return;
+                    }
+
+                    // if valid
+                    if (course_readied) {
+
+                        while ( rowIter.hasNext() ) {
                             cur_row = (HSSFRow) rowIter.next();
-                            if (cur_row != null) {
-                                String heading = cur_row.getCell(0).toString();
-                                if ( (cur_row.getPhysicalNumberOfCells() == 1) && (heading.equalsIgnoreCase("courses") || heading.equalsIgnoreCase("course"))) {
+                            if (cur_row != null && !cur_row.getCell(0).toString().isEmpty()) {
+                                if (cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("roll") && cur_row.getCell(1).toString().equalsIgnoreCase("name")) {
 
                                     while (rowIter.hasNext()) {
                                         cur_row = (HSSFRow) rowIter.next();
-                                        if (cur_row != null && cur_row.getPhysicalNumberOfCells() == 1 && !cur_row.getCell(0).toString().equalsIgnoreCase("id")) {
-
-                                            // read courses
-                                            courses.add(cur_row.getCell(0).toString());
-                                        } else if( !courses.isEmpty() && (cur_row.getPhysicalNumberOfCells() > 0 )&&cur_row != null && cur_row.getCell(0).toString().equalsIgnoreCase("id")){
-
-                                            // save courses
-                                            sharedPreferenceEditor.putStringSet(getString(R.string.courses), courses).commit();
-
-
-                                            // read teachers with courses
-                                            while (rowIter.hasNext()) {
-                                                cur_row = (HSSFRow) rowIter.next();
-                                                teachers_with_courses.add((int) cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString() + "/" + cur_row.getCell(2));
-                                            }
-
-
-
-                                            Toast.makeText(getContext(), "courses and teacher are readed successfully", Toast.LENGTH_LONG).show();
-
-                                        }
+                                        student_list.add((int) cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString());
                                     }
-                                } else {
-                                    // invalid sheet
-                                    invalidSheetPopup();
-                                    // reset Update
-                                    UPDATE_PRIMARY_SHEET = false;
-                                    return;
-                                }
-                            }
-                        }
-
-                        // show
-                        StringBuilder temp = new StringBuilder();
-                        for (String course : courses) {
-                            temp.append(course).append(",");
-                        }
-                        Timber.i("Debug Output : " + temp.toString());
-
-                        // Delete Existing teacher and CourseWithTeacherRef table
-                        viewModel.deleteTeacherTable();
-                        viewModel.deleteCourseWithTeacherCrossRef();
-
-                        for (String teacherCourse : teachers_with_courses) {
-                            Timber.i("Debug Output Teacher : " + teacherCourse);
-                            // insert to database
-                            teacherCourse = teacherCourse.trim();
-                            String[] info = teacherCourse.split("/");
-                            viewModel.insertTeacher(new Teacher(Integer.parseInt(info[0]), info[1]));
-
-                            // insert all the courses mapping for this teacher
-                            String[] coursesTought = info[2].split(",");
-                            for (String courseTought : coursesTought) {
-                                List<String> semestersWise = Accessory_tool.fetchCourseSemester(courseTought);
-                                for (String courseSemster : semestersWise) {
-                                    viewModel.insertCourseWithTeacherRef(new CourseTeacherCrossRef(courseSemster, Integer.parseInt(info[0])));
-                                }
-                            }
-                        }
-
-                        // reset Update
-                        UPDATE_PRIMARY_SHEET = false;
-
-
-                    } else {
-
-                        // read course student
-                        String cur_courseReadied = "";
-                        rowIter = mySheet.rowIterator();
-                        List<String> student_list = new ArrayList<>();
-                        boolean course_readied = false;
-
-                        if (rowIter.hasNext()) {
-
-                            cur_row = (HSSFRow) rowIter.next();
-                            if (cur_row != null) {
-                                if ((cur_row.getPhysicalNumberOfCells() == 2) && cur_row.getCell(0).toString().equalsIgnoreCase("course") && cur_row.getCell(1).toString().equalsIgnoreCase("semester")) {
-                                    // read course name
-                                    cur_row = (HSSFRow) rowIter.next();
-                                    cur_courseReadied = cur_row.getCell(0).toString() + "-" + (int) cur_row.getCell(1).getNumericCellValue();
-                                    course_readied = true;
                                 } else {
                                     invalidSheetPopup();
                                     return;
                                 }
                             }
-                        } else {
-                            invalidSheetPopup();
-                            return;
                         }
 
-                        // if valid
-                        if (course_readied ) {
-
-                            while (rowIter.hasNext()) {
-                                cur_row = (HSSFRow) rowIter.next();
-                                if (cur_row != null && !cur_row.getCell(0).toString().isEmpty()) {
-                                    if (cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("roll") && cur_row.getCell(1).toString().equalsIgnoreCase("name")) {
-
-                                        while (rowIter.hasNext()) {
-                                            cur_row = (HSSFRow) rowIter.next();
-                                            student_list.add((int) cur_row.getCell(0).getNumericCellValue() + "/" + cur_row.getCell(1).toString());
-                                        }
-                                    }
-                                    else{
-                                        invalidSheetPopup();
-                                        return;
-                                    }
-                                }
-                            }
-
-                            // courses readied successfully
-                            for (String student : student_list) {
-                                String[] student_data = student.split("/");
-                                Timber.i("Debug student list : " + student);
-                                viewModel.insertStudents(new Student(cur_courseReadied, Integer.parseInt(student_data[0]), student_data[1]));
-                            }
-
-                            curCourse = cur_courseReadied;
-                            viewModel.getAllStudents(cur_courseReadied).observe(this, students -> {
-
-                                if(IMPORTING_SHEET){
-                                    if (students.isEmpty()) {
-                                        invalidSheetPopup();
-                                    } else {
-                                        // insert the student list as course added
-                                        viewModel.insertCourses(new Course(curCourse));
-                                    }
-
-                                    IMPORTING_SHEET = false;
-                                }
-
-
-                            });
+                        // Add students
+                        for (String student : student_list) {
+                            String[] student_data = student.split("/");
+                            Timber.i("Debug student list : " + student);
+                            viewModel.addStudent(new Student(  Integer.parseInt(student_data[0]), student_data[1],  viewModel.getCourseId( cur_courseReadied )));
                         }
 
+                        // Add Courses
+//                            if (students.isEmpty()) {
+//                                invalidSheetPopup();
+//                            } else {
+//                                // insert the student list as course added
+//                                viewModel.addCourse(new Course(finalCur_courseReadied, 60));
+//                            }
 
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
-
         }
+
     }
 
     @Override
@@ -341,15 +271,7 @@ public class ImportSheet extends Fragment {
         String msg1 = "You have select different or invalid sheet please select the sheet with Course Students list.";
         String msg0 = "You have selected different sheet please select the basic sheet consist of teacher and course information";
 
-        String msg = "";
-        if( CUR_READ_TYPE == 0 ){
-            // Invalid basic sheet
-            msg = msg0;
-        }
-        else{
-            // Invalid Information Sheet
-            msg = msg1;
-        }
+        String msg = msg1;
 
         new AlertDialog.Builder(getContext())
                 .setTitle("Invalid Sheet")
@@ -362,49 +284,21 @@ public class ImportSheet extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void importSheet(Context context) {
 
-        if (viewModel.sheetRepository.sheetDao.getTeachersCount() == 0) {
-            CUR_READ_TYPE = 0;
+        // Import Student list
+        Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        filePickerIntent.setType("application/vnd.ms-excel");
+        startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
 
-            // Pop up to import courses and teachers
-            context.getMainExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    new AlertDialog.Builder(context)
-                            .setTitle("Import Basic Sheet ")
-                            .setMessage("In order to use this attendance sheet app, you first need to import the basic sheet that consist courses and teachers information ")
-                            .setPositiveButton("Ok", (dialog, which) -> {
-
-                                // Import course and teachers sheet
-                                Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                                filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                                filePickerIntent.setType("application/vnd.ms-excel");
-                                startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
-                            })
-                            .setNegativeButton("cancel", (dialog, which) -> {
-                                // dismiss
-                            }).create().show();
-                }
-            });
-
-        } else {
-            CUR_READ_TYPE = 1;
-
-            // Import Student list
-            Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
-            filePickerIntent.setType("application/vnd.ms-excel");
-            startActivityForResult(filePickerIntent, READ_REQUEST_CODE);
-
-        }
     }
 
 
     // AsyncImport to import the sheet in background
-    class AsyncImport extends AsyncTask<Void, Void, Void>{
+    class AsyncImport extends AsyncTask<Void, Void, Void> {
 
         Context context;
 
-        AsyncImport(Context context){
+        AsyncImport(Context context) {
             this.context = context;
         }
 
