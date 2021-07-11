@@ -59,7 +59,7 @@ public class ImportSheet extends Fragment {
 
     public ImportSheet() {
         // Required empty public constructor
-        viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
+
     }
 
     @Override
@@ -76,6 +76,7 @@ public class ImportSheet extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
 
     }
 
@@ -91,23 +92,22 @@ public class ImportSheet extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Check Permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Ask for permission check
-            if (checkPermission()) {
-                new ImportSheet.AsyncImport(getContext()).execute();
-            } else {
-                requestForPermission();
-            }
-        } else {
-            new ImportSheet.AsyncImport(getContext()).execute();
-        }
 
         binding.importSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Import the sheet from storage.
-
+                // Import the sheet from storage
+                // Check Permissions
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    // Ask for permission check
+                    if (checkPermission()) {
+                        new ImportSheet.AsyncImport(getContext()).execute();
+                    } else {
+                        requestForPermission();
+                    }
+                } else {
+                    new ImportSheet.AsyncImport(getContext()).execute();
+                }
             }
         });
     }

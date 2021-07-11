@@ -34,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         if( currentUser != null  ){
             if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com"))
                 navController.navigate( LoginDirections.actionLoginToAdminActivity( currentUser.getEmail().toString() ));
+
         }
     }
 

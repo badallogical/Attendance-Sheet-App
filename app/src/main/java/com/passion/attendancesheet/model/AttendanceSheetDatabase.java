@@ -38,7 +38,6 @@ public abstract class AttendanceSheetDatabase extends RoomDatabase {
                         .build();
             }
         }
-
         return instance;
     }
 }
