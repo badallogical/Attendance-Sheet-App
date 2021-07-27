@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.passion.attendancesheet.R;
@@ -101,6 +102,9 @@ public class ImportSheet extends Fragment {
             @Override
             public void onClick(View v) {
                 // Import the sheet from storage
+
+                v.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pop_up_animation));
+
                 // Check Permissions
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     // Ask for permission check

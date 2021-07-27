@@ -93,7 +93,39 @@
                 android:id="@+id/today_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 tools:listitem="@layout/today_list_item" />
+
+            <LinearLayout
+                android:id="@+id/no_lecture"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:orientation="vertical"
+                >
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/no_class"
+                    android:layout_gravity="center"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Lecture Marked Yet"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/roboto"
+                    android:textSize="15dp"
+                    />
+
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

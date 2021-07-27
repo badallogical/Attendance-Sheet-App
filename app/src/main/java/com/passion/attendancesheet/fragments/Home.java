@@ -1,9 +1,11 @@
 package com.passion.attendancesheet.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentHomeBinding;
@@ -30,15 +33,14 @@ public class Home extends Fragment {
     FragmentHomeBinding binding;
     AttendanceSheetViewModel viewModel;
 
+    NavController navController;
+
     public Home() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        NavController navController = NavHostFragment.findNavController(this);
-        NavigationUI.setupActionBarWithNavController((AppCompatActivity) getActivity(), navController);
     }
 
     @Override
@@ -56,8 +58,43 @@ public class Home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        NavController navController = NavHostFragment.findNavController(this);
+
         binding.courseName.setText("BBA 5");
         binding.courseStrength.setText("Total Strength : 60");
+
+        if( binding.todayList.getChildCount() == 0 ){
+            binding.noLecture.setVisibility( View.VISIBLE );
+            binding.todayList.setVisibility( View.GONE );
+        }
+        else{
+            binding.noLecture.setVisibility( View.GONE );
+            binding.todayList.setVisibility( View.VISIBLE );
+        }
+
+        binding.buttonMarkAttendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(AnimationUtils.loadAnimation( getContext(), R.anim.pop_up_animation ));
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Prepare Sheet");
+                builder.setView( LayoutInflater.from(getContext()).inflate(R.layout.prepare_sheet_dialog, null));
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        navController.navigate( HomeDirections.actionHomeToAttendance() );
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create().show();
+            }
+        });
+
 
 
 
