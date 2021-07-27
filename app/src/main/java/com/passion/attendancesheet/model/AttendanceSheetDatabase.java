@@ -26,7 +26,7 @@ public abstract class AttendanceSheetDatabase extends RoomDatabase {
     private static volatile AttendanceSheetDatabase instance;
     public abstract AttendanceSheetDao sheetDao();
     private static final int NUMBER_OF_THREADS = 6;
-    static final ExecutorService databaseWriteExecutor =
+    public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     public static AttendanceSheetDatabase getDatabase( Context context ){

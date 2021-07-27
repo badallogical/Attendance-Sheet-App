@@ -18,27 +18,22 @@ public interface AttendanceSheetDao {
 
 
     // Insert Queries
-    @Insert( onConflict = OnConflictStrategy.IGNORE )
+    @Insert( onConflict = OnConflictStrategy.REPLACE )
     void addCourse( Course course );
 
-    @Insert( onConflict = OnConflictStrategy.IGNORE )
+    @Insert( onConflict = OnConflictStrategy.REPLACE )
     void addTeacher(Teacher teacher );
 
-    @Insert( onConflict = OnConflictStrategy.IGNORE )
+    @Insert( onConflict = OnConflictStrategy.REPLACE )
     void addCourseTeacher(TeacherCourseCross teacherCourseCross );
 
-    @Insert( onConflict = OnConflictStrategy.IGNORE )
+    @Insert( onConflict = OnConflictStrategy.REPLACE )
     void addStudent( Student student );
+
+    // Fetch Data
 
     // Fetch Live Data
     @Query("Select * from student where course_id = :courseId ")
-    LiveData<List<Student>> getAllStudent( int courseId );
-
-    // Fetch Data
-    @Query("Select id from course where course_and_sem = :course_name;")
-    int getCourseId( String course_name );
-
-
-
+    LiveData<List<Student>> getAllStudent( String courseId );
 
 }

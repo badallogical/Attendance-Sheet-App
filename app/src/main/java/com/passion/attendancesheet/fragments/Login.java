@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.passion.attendancesheet.LoginBottomSheet;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentLoginBinding;
@@ -24,6 +26,21 @@ import com.passion.attendancesheet.databinding.FragmentLoginBinding;
 public class Login extends Fragment {
 
     private FragmentLoginBinding binding;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        NavController navController = NavHostFragment.findNavController(this);
+        if( currentUser != null  ){
+            if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com"))
+                navController.navigate( LoginDirections.actionLoginToAdminActivity( currentUser.getEmail().toString() ));
+            else
+                navController.navigate( LoginDirections.actionLoginToImportSheet() );
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

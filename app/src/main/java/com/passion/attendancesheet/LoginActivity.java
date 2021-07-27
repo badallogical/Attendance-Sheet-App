@@ -28,14 +28,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if( currentUser != null  ){
-            if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com"))
-                navController.navigate( LoginDirections.actionLoginToAdminActivity( currentUser.getEmail().toString() ));
 
-        }
+
     }
 
     @Override

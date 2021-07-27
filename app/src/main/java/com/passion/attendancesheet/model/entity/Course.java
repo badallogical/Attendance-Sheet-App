@@ -7,10 +7,8 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Course {
 
-    @PrimaryKey( autoGenerate = true )
+    @PrimaryKey
     @NonNull
-    public int id;
-
     public String course_and_sem;
 
     public int strength;
