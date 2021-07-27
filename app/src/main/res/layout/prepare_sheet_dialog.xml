@@ -12,41 +12,36 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp"
         android:gravity="center"
-        >
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <LinearLayout
             android:id="@+id/lecture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:layout_marginHorizontal="16dp"
-            android:layout_gravity="center_horizontal"
-            >
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Lecture"
-            android:layout_weight="1"
-            style="@style/tag_style"
-            />
+            <TextView
+                style="@style/tag_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Lecture" />
 
             <Spinner
                 android:id="@+id/lecture_spinner"
-                android:gravity="center"
                 android:layout_width="0dp"
-                tools:listitem="@layout/spinner_item_layout"
-                android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_weight="2"
                 android:entries="@array/lectures"
-                />
+                android:gravity="center" />
 
         </LinearLayout>
 
@@ -54,31 +49,28 @@
             android:id="@+id/teacher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/lecture"
             android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:gravity="center_vertical"
-            android:layout_marginHorizontal="16dp"
-            android:layout_below="@+id/lecture"
-            >
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Teacher"
                 style="@style/tag_style"
-                />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Teacher" />
 
             <Spinner
                 android:id="@+id/teacher_spinner"
                 android:layout_width="0dp"
-                android:layout_weight="2"
-                tools:listitem=""
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_weight="2"
                 android:spinnerMode="dropdown"
-                />
+                tools:listitem="" />
 
         </LinearLayout>
 
@@ -86,41 +78,41 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp"
             android:layout_below="@+id/teacher"
             android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
 
             >
 
             <TextView
                 android:id="@+id/subject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Subject"
                 style="@style/tag_style"
-                />
-
-            <EditText
-                android:id="@+id/edit_subject"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Subject" />
+
+            <Spinner
+                android:id="@+id/edit_subject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:autofillHints="Subject"
                 android:inputType="textAutoComplete"
                 android:labelFor="@id/subject"
-                android:textSize="14sp"
-                android:autofillHints="Subject" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/missing_subject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Please fill Subject"
                 android:fontFamily="@font/roboto"
-                android:textStyle="bold"
+                android:text="Please fill Subject"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="#f05050"
-                android:visibility="gone"
-                />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </LinearLayout>
 

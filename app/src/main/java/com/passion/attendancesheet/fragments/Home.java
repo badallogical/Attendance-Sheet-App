@@ -18,11 +18,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentHomeBinding;
 import com.passion.attendancesheet.fragments.admin.AdminHomeDirections;
 import com.passion.attendancesheet.model.AttendanceSheetViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * It is the CR home Screen that display the course sheet
@@ -79,17 +84,28 @@ public class Home extends Fragment {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Prepare Sheet");
-                builder.setView( LayoutInflater.from(getContext()).inflate(R.layout.prepare_sheet_dialog, null));
+
+                View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.prepare_sheet_dialog, null);
+                Spinner teacherSpinner = dialogView.findViewById(R.id.teacher_spinner);
+                List<String> tempTeacher = new ArrayList<>();
+                tempTeacher.add("Santosh Sir");
+                tempTeacher.add("Rohit Sir");
+
+
+                builder.setView( dialogView );
+
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         navController.navigate( HomeDirections.actionHomeToAttendance() );
+
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        dialog.dismiss();
                     }
                 }).create().show();
             }

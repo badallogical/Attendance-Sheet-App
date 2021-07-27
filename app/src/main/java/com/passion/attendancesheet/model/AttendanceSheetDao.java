@@ -36,4 +36,8 @@ public interface AttendanceSheetDao {
     @Query("Select * from student where course_id = :courseId ")
     LiveData<List<Student>> getAllStudent( String courseId );
 
+    @Query("Select * from teacher")
+    LiveData<List<Teacher>> getAllTeacher();
+
+
 }
