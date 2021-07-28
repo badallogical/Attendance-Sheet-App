@@ -16,7 +16,12 @@
         <entry key="app/src/main/res/layout/fragment_import_sheet.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/fragment_sign_in.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/fragment_sign_up.xml" value="0.20989583333333334" />
+        <entry key="app/src/main/res/layout/prepare_sheet_dialog.xml" value="0.221875" />
         <entry key="app/src/main/res/layout/student_item.xml" value="0.209375" />
+        <entry key="app/src/main/res/menu/admin_menu.xml" value="0.221875" />
+        <entry key="app/src/main/res/menu/attendance_sheet_menu.xml" value="0.221875" />
+        <entry key="app/src/main/res/menu/cr_menu.xml" value="0.221875" />
+        <entry key="app/src/main/res/menu/main_activity_menu.xml" value="0.221875" />
       </map>
     </option>
   </component>

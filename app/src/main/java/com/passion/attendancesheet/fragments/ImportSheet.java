@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -64,6 +65,7 @@ public class ImportSheet extends Fragment {
     private static final int READ_WRITE_REQUEST_CODE = 101;
     FragmentImportSheetBinding binding;
     private AttendanceSheetViewModel viewModel;
+    NavController navController;
 
     public ImportSheet() {
         // Required empty public constructor
@@ -76,6 +78,8 @@ public class ImportSheet extends Fragment {
 
         // course should be given by the CR
         checkIfSheetAvailable("BBA-5");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
     }
 
     @Override
@@ -125,7 +129,7 @@ public class ImportSheet extends Fragment {
             @Override
             public void onChanged(List<Student> students) {
                 if( students.size() > 0 ){
-                    NavController navController = NavHostFragment.findNavController(ImportSheet.this);
+                    navController = NavHostFragment.findNavController(ImportSheet.this);
                     navController.navigate( ImportSheetDirections.actionImportSheetToNavigation() );
                 }
             }
