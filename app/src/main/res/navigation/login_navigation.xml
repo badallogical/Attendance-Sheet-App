@@ -137,6 +137,18 @@
             android:id="@+id/Attendance"
             android:name="com.passion.attendancesheet.fragments.Attendance"
             android:label="Attendance"
-            tools:layout="@layout/fragment_attendance" />
+            tools:layout="@layout/fragment_attendance" >
+            <argument
+                android:name="course"
+                app:argType="string" />
+            <argument android:name="lecture"
+                app:argType="string" />
+            <argument
+                android:name="subject"
+                app:argType="string" />
+            <argument
+                android:name="teacher"
+                app:argType="string" />
+        </fragment>
     </navigation>
 </navigation>

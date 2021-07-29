@@ -93,24 +93,36 @@ public class Home extends Fragment {
             public void onClick(View v) {
                 v.startAnimation(AnimationUtils.loadAnimation( getContext(), R.anim.pop_up_animation ));
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Prepare Sheet");
-
+                // setup prepare sheet dialog element
                 View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.prepare_sheet_dialog, null);
                 Spinner teacherSpinner = dialogView.findViewById(R.id.teacher_spinner);
                 List<String> tempTeacher = new ArrayList<>();
                 tempTeacher.add("Santosh Sir");
                 tempTeacher.add("Rohit Sir");
+                ArrayAdapter<String> teacherSpinnerAdapter = new ArrayAdapter<String>( getContext(), android.R.layout.simple_spinner_item, tempTeacher ); // Set DropDown data item view
+                teacherSpinnerAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item); // Set DropDown item View
+                teacherSpinner.setAdapter(teacherSpinnerAdapter);
 
+                Spinner subjectSpinner = dialogView.findViewById(R.id.subject_spinner);
+                List<String> tempSubject = new ArrayList<>();
+                tempSubject.add("Cryptography");
+                tempSubject.add("Mobile computing");
+                tempSubject.add("Cyber law");
+                tempSubject.add("E-Commerce");
+                ArrayAdapter<String> subjectSpinnerAdapter = new ArrayAdapter<String>( getContext(), android.R.layout.simple_spinner_item, tempSubject );
+                subjectSpinnerAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item);
+                subjectSpinner.setAdapter( subjectSpinnerAdapter);
 
+                Spinner LectureSpinner = dialogView.findViewById(R.id.lecture_spinner);
+
+                // create prepare sheet dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Prepare Sheet");
                 builder.setView( dialogView );
-
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        navController.navigate( HomeDirections.actionHomeToAttendance() );
-
+                        navController.navigate( HomeDirections.actionHomeToAttendance("BBA 5", LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacherSpinner.getSelectedItem().toString() ));
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 

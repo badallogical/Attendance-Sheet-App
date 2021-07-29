@@ -15,12 +15,14 @@ public class Attendance_sheet {
     @NonNull
     public int id;
 
-    public int course_id;
+    public String course_id;
 
     public String data_and_time;
 
     public int lecture;
 
     public int teacher_id;
+
+    public String subject;
 
 }

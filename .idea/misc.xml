@@ -6,18 +6,21 @@
         <entry key="app/src/main/res/layout/activity_admin.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_attendance2.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/activity_attendance_take.xml" value="0.20989583333333334" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.221875" />
+        <entry key="app/src/main/res/layout/add_course_dialog.xml" value="0.221875" />
         <entry key="app/src/main/res/layout/admin_course_card.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_admin_home.xml" value="0.209375" />
         <entry key="app/src/main/res/layout/fragment_admin_sign_in.xml" value="0.20989583333333334" />
-        <entry key="app/src/main/res/layout/fragment_attendance.xml" value="0.209375" />
+        <entry key="app/src/main/res/layout/fragment_attendance.xml" value="0.221875" />
         <entry key="app/src/main/res/layout/fragment_congratulation.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/fragment_course_sheet.xml" value="0.209375" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.209375" />
-        <entry key="app/src/main/res/layout/fragment_import_sheet.xml" value="0.20989583333333334" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_import_sheet.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_sign_in.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/fragment_sign_up.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/prepare_sheet_dialog.xml" value="0.221875" />
         <entry key="app/src/main/res/layout/student_item.xml" value="0.209375" />
+        <entry key="app/src/main/res/layout/today_list_item.xml" value="0.221875" />
         <entry key="app/src/main/res/menu/admin_menu.xml" value="0.221875" />
         <entry key="app/src/main/res/menu/attendance_sheet_menu.xml" value="0.221875" />
         <entry key="app/src/main/res/menu/cr_menu.xml" value="0.221875" />

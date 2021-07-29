@@ -130,7 +130,7 @@ public class ImportSheet extends Fragment {
             public void onChanged(List<Student> students) {
                 if( students.size() > 0 ){
                     navController = NavHostFragment.findNavController(ImportSheet.this);
-                    navController.navigate( ImportSheetDirections.actionImportSheetToNavigation() );
+                    navController.navigate( ImportSheetDirections.actionImportSheetToNavigation());
                 }
             }
         });
