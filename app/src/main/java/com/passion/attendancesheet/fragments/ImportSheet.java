@@ -219,8 +219,6 @@ public class ImportSheet extends Fragment {
                                     Timber.i(cur_row.getCell(1).toString());
                                 }
 
-
-
                                 // Read Subjects
                                 cur_row = (HSSFRow) rowIter.next();
                                 if( cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("Subjects")){

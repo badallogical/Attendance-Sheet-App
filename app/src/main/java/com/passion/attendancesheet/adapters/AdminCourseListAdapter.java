@@ -87,9 +87,6 @@ public class AdminCourseListAdapter extends RecyclerView.Adapter<AdminCourseList
                 }
             });
 
-
-
-
         }
     }
 

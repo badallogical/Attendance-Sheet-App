@@ -31,7 +31,7 @@ public class TodayListAdapter extends RecyclerView.Adapter<TodayListAdapter.Toda
             TextView teacher;
             TextView present;
             TextView absents;
-            TextView bunds;
+            TextView bunks;
 
         public TodayListViewHolder(@NonNull View itemView) {
             super(itemView);
