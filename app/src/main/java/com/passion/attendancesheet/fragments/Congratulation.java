@@ -60,10 +60,11 @@ public class Congratulation extends Fragment {
         }
         else{
             binding.congratesText.setText(userName.toString() + ", You are now a Class Representative");
+
         }
 
         // Redirect to sign in screen accordingly based on type of user
-        binding.signInBtn.setOnClickListener( new View.OnClickListener(){
+        binding.verifySignInBtn.setOnClickListener( new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -86,7 +87,7 @@ public class Congratulation extends Fragment {
                                 navController.navigate( CongratulationDirections.actionCongratulationToAdminSignIn());
                             }
                             else{
-                                Toast.makeText(getContext(), "Email verified" + currentUser.isEmailVerified() , Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "Failed to send email verification " , Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -95,7 +96,7 @@ public class Congratulation extends Fragment {
                 }
                 else{
 
-                    // navigate to CR Sign IN
+                    // navigate to CR Sign IN ( without email verification )
                     navController.navigate( CongratulationDirections.actionCongratulationToSignIn2());
 
                 }

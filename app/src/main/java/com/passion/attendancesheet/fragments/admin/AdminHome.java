@@ -82,6 +82,8 @@ public class AdminHome extends Fragment implements CourseListClick {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         assert currentUser != null;
+
+        currentUser.reload();
         if( currentUser.isEmailVerified() ){
 
             FirebaseDatabase db = FirebaseDatabase.getInstance();
