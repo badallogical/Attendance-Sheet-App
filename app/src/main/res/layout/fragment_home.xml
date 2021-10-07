@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_home_id"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context=".fragments.Home"
-    android:orientation="vertical">
+   >
+
+    <LinearLayout
+        android:id="@+id/cr_dashboard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -132,7 +145,41 @@
 
     </androidx.cardview.widget.CardView>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/importSheetScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context=".fragments.ImportSheet">
+
+        <ImageView
+            android:layout_width="300sp"
+            android:layout_height="249dp"
+            android:src="@drawable/no_class2"
+            />
+
+        <TextView
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:text="Please import the course sheet, to fire it up."
+            android:textSize="16sp"
+            android:gravity="center"
+            />
+
+        <Button
+            android:id="@+id/importSheet"
+            android:layout_width="200sp"
+            android:layout_height="40sp"
+            android:textSize="16sp"
+            android:text="Import"
+            android:layout_marginTop="50sp"
+            android:background="@drawable/completely_round_button"
+            />
+
+    </LinearLayout>
 
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
