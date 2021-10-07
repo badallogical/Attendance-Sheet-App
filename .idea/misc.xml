@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.228125" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.228125" />
         <entry key="app/src/main/res/layout/activity_admin.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_attendance2.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/activity_attendance_take.xml" value="0.20989583333333334" />
@@ -25,6 +27,7 @@
         <entry key="app/src/main/res/menu/attendance_sheet_menu.xml" value="0.221875" />
         <entry key="app/src/main/res/menu/cr_menu.xml" value="0.221875" />
         <entry key="app/src/main/res/menu/main_activity_menu.xml" value="0.221875" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.228125" />
       </map>
     </option>
   </component>

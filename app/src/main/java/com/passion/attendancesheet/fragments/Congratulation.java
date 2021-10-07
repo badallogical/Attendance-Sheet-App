@@ -81,7 +81,7 @@ public class Congratulation extends Fragment {
                         public void onComplete(@NonNull Task<Void> task) {
                             if( task.isSuccessful() ){
 
-                                Toast.makeText(getContext(), "verification is send to your email", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "Verification link is send to your email", Toast.LENGTH_LONG).show();
 
                                 // navigate to Admin Sign IN
                                 navController.navigate( CongratulationDirections.actionCongratulationToAdminSignIn());

@@ -58,6 +58,13 @@ public class AdminHome extends Fragment implements CourseListClick {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // check email verification and update UI
+        checkEmailUpdateUI();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,94 +85,109 @@ public class AdminHome extends Fragment implements CourseListClick {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        Timber.i("onViewCreated of AdminHOme called");
 
-        assert currentUser != null;
 
-        currentUser.reload();
-        if( currentUser.isEmailVerified() ){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference();
 
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference ref = db.getReference();
+        array = new ArrayList<String>();
+        adapter = new AdminCourseListAdapter( array , getContext() , this );
 
-            array = new ArrayList<String>();
-            adapter = new AdminCourseListAdapter( array , getContext() , this );
+        // TODO : update change in course data
+        /* Child event listener is used to perform action on the event happen to the child just add that listener to the parent refrence
+         * This listener not only called when the data changed but at the start of the app , so its perfect, better then onDataChanged listener as it returen the whole data set.
+         * */
+        ref.child("courses").orderByKey().addChildEventListener(new ChildEventListener() {
 
-            // TODO : update change in course data
-            /* Child event listener is used to perform action on the event happen to the child just add that listener to the parent refrence
-            * This listener not only called when the data changed but at the start of the app , so its perfect, better then onDataChanged listener as it returen the whole data set.
-            * */
-            ref.child("courses").orderByKey().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Timber.d("add child listener called");
+                array.add( snapshot.getValue(String.class));
+                adapter.notifyDataSetChanged();
 
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Timber.d("add child listener called");
-                    array.add( snapshot.getValue(String.class));
-                    adapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), "Course: " + snapshot.getValue(String.class) + " Added", Toast.LENGTH_SHORT ).show();
+            }
 
-                    Toast.makeText(getContext(), "Course: " + snapshot.getValue(String.class) + " Added", Toast.LENGTH_SHORT ).show();
-                }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
 
-                }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Timber.d("remove child event called");
+                array.remove( snapshot.getValue(String.class));
+                adapter.notifyDataSetChanged();
 
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                    Timber.d("remove child event called");
-                    array.remove( snapshot.getValue(String.class));
-                    adapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), "Course: " + snapshot.getValue(String.class) + " Removed", Toast.LENGTH_SHORT).show();
+            }
 
-                    Toast.makeText(getContext(), "Course: " + snapshot.getValue(String.class) + " Removed", Toast.LENGTH_SHORT).show();
-                }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
 
-                }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
-                }
-            });
+        // Fetch course data from firebase
+        //fetchCourse(ref);
 
-            // Fetch course data from firebase
-            //fetchCourse(ref);
+        // setup course list
+        binding.courseList.setAdapter(adapter);
+        binding.courseList.setLayoutManager( new LinearLayoutManager(getContext()));
 
-            // setup course list
-            binding.courseList.setAdapter(adapter);
-            binding.courseList.setLayoutManager( new LinearLayoutManager(getContext()));
 
-            // setup course list swipe listener
-            new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-                @Override
-                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                    return false;
-                }
+        // setup course list swipe listener
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-                @Override
-                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
-                    // removeValue is used to delete just get the reference to the node you want to delete ( remember equalTo is used to check equality in firebase rather then equal
-                   Query query = ref.child("courses").orderByValue().equalTo( adapter.getItem(viewHolder.getAdapterPosition() ) ).limitToFirst(1);
-                   query.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                       @Override
-                       public void onComplete(@NonNull Task<DataSnapshot> task) {
-                           if( task.isSuccessful()){
-                             //  To remove list item , ref.child("courses").child(item_key).removeValue()
-                              ref.child("courses").child(task.getResult().getChildren().iterator().next().getKey() ).removeValue();
-                           }
-                       }
-                   });
-                }
-            }).attachToRecyclerView(binding.courseList);
-        }
-        else{
-            Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_LONG).show();
-        }
+                // removeValue is used to delete just get the reference to the node you want to delete ( remember equalTo is used to check equality in firebase rather then equal
+                Query query = ref.child("courses").orderByValue().equalTo( adapter.getItem(viewHolder.getAdapterPosition() ) ).limitToFirst(1);
+                query.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if( task.isSuccessful()){
+                            //  To remove list item , ref.child("courses").child(item_key).removeValue()
+                            ref.child("courses").child(task.getResult().getChildren().iterator().next().getKey() ).removeValue();
+                        }
+                    }
+                });
+            }
+        }).attachToRecyclerView(binding.courseList);
+
+        // send email verification
+        binding.verifySignInBtn.setOnClickListener( new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+                currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if( task.isSuccessful()){
+                            Toast.makeText(getContext(), "Email Verification Send Successfully", Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Toast.makeText(getContext(), "Failed to send email verification ", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
+            }
+        });
 
         // Add course to firebase
         binding.addCourse.setOnClickListener(new View.OnClickListener() {
@@ -213,6 +235,33 @@ public class AdminHome extends Fragment implements CourseListClick {
                 });
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkEmailUpdateUI();
+    }
+
+    private void checkEmailUpdateUI(){
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        assert currentUser != null;
+
+        Timber.d( "Email Check is called ");
+
+        currentUser.reload();
+        if( currentUser.isEmailVerified() ){
+            binding.addCourse.setVisibility( View.VISIBLE );
+        }
+        else{
+            Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_LONG).show();
+            binding.addCourse.setVisibility( View.GONE );
+            binding.emailVerification.setVisibility( View.VISIBLE );
+        }
+    }
+
 
     private void fetchCourse(DatabaseReference ref) {
         ref.child("courses").orderByKey().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {

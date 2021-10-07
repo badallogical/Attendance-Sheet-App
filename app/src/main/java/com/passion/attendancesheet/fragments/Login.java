@@ -34,7 +34,10 @@ public class Login extends Fragment {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         NavController navController = NavHostFragment.findNavController(this);
+
         if( currentUser != null  ){
+            currentUser.reload();
+
             if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com"))
                 navController.navigate( LoginDirections.actionLoginToAdminActivity( currentUser.getEmail().toString() ));
             else
