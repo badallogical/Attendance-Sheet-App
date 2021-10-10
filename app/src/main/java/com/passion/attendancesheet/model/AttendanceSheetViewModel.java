@@ -38,6 +38,11 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
     }
 
     // Fetch
+
+    public LiveData<Integer> getStudentCount(String courseId ){
+        return mRepository.getStudentCount(courseId);
+    }
+
     public LiveData<List<Student>> getAllStudent(String course_id ){
         return mRepository.getAllStudent( course_id );
     }

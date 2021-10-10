@@ -30,7 +30,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_login_to_importSheet"
-            app:destination="@id/importSheet"
+            app:destination="@id/navigation"
             app:popUpTo="@id/login"
             app:popUpToInclusive="true" />
     </fragment>
@@ -51,7 +51,7 @@
         tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_sign_in_to_importSheet"
-            app:destination="@id/importSheet"
+            app:destination="@id/navigation"
             app:popUpTo="@id/login" />
 
         <action
@@ -108,17 +108,6 @@
             android:name="email"
             app:argType="string" />
     </activity>
-    <fragment
-        android:id="@+id/importSheet"
-        android:name="com.passion.attendancesheet.fragments.ImportSheet"
-        android:label="Import Sheet"
-        tools:layout="@layout/fragment_import_sheet">
-        <action
-            android:id="@+id/action_importSheet_to_navigation"
-            app:destination="@id/navigation"
-            app:popUpTo="@id/login"
-            app:popUpToInclusive="true" />
-    </fragment>
 
     <navigation
         android:id="@+id/navigation"
@@ -133,10 +122,12 @@
                 android:id="@+id/action_Home_to_attendance"
                 app:destination="@id/Attendance" />
             <action
-                android:id="@+id/action_Home_to_login3"
+                android:id="@+id/action_Home_to_ImportSheet"
+                app:destination="@id/ImportSheet" />
+            <action
+                android:id="@+id/action_Home_to_login"
                 app:destination="@id/login"
-                app:popUpTo="@id/login"
-                app:popUpToInclusive="true" />
+                app:popUpTo="@id/login" />
 
         </fragment>
         <fragment
@@ -156,5 +147,10 @@
                 android:name="teacher"
                 app:argType="string" />
         </fragment>
+        <fragment
+            android:id="@+id/ImportSheet"
+            android:name="com.passion.attendancesheet.fragments.ImportSheet"
+            android:label="Import Sheet"
+            tools:layout="@layout/fragment_import_sheet"/>
     </navigation>
 </navigation>

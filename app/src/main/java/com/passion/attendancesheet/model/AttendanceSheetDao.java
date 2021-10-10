@@ -32,9 +32,13 @@ public interface AttendanceSheetDao {
 
     // Fetch Data
 
+    @Query("Select count(*) from student where course_id = :courseId")
+    LiveData<Integer> getStudentCount(String courseId );
+
     // Fetch Live Data
     @Query("Select * from student where course_id = :courseId ")
     LiveData<List<Student>> getAllStudent( String courseId );
+
 
     @Query("Select * from teacher")
     LiveData<List<Teacher>> getAllTeacher();

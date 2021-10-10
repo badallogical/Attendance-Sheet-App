@@ -49,6 +49,9 @@ public class AttendanceSheetRepository {
         });
     }
 
+   LiveData<Integer> getStudentCount(String courseId ){
+        return sheetDao.getStudentCount(courseId);
+    }
 
     // Fetch Live Data
     LiveData<List<Student>> getAllStudent( String course_id ){

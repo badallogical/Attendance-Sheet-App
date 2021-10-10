@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -34,6 +35,8 @@ import com.passion.attendancesheet.model.AttendanceSheetViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * It is the CR home Screen that display the course sheet
  */
@@ -51,6 +54,7 @@ public class Home extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        checkIfSheetAvailable("BBA-5");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
@@ -145,13 +149,27 @@ public class Home extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if( item.getItemId() == R.id.action_Home_to_login3 ){
+        if( item.getItemId() == R.id.action_Home_to_login){
             FirebaseAuth.getInstance().signOut();
             Toast.makeText( getContext(), "Signed Out", Toast.LENGTH_LONG).show();
-            navController.navigate( R.id.action_Home_to_login3 );
+            navController.navigate( R.id.action_Home_to_login );
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkIfSheetAvailable( String course_name ) {
+
+        // Navigate to CR Home is sheet available
+        viewModel.getStudentCount(course_name).observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if( integer == 0 ){
+                    navController.navigate( HomeDirections.actionHomeToImportSheet() );
+                    Toast.makeText(getContext(), "No Sheet found", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }

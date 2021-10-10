@@ -75,17 +75,13 @@ public  class ImportSheet extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        // course should be given by the CR
-        checkIfSheetAvailable("BBA-5");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
+        navController = NavHostFragment.findNavController(this);
 
     }
 
@@ -101,7 +97,7 @@ public  class ImportSheet extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        // Import sheet if successful navigate to CR home in async task postExecution
         binding.importSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,20 +117,11 @@ public  class ImportSheet extends Fragment {
                     new ImportSheet.AsyncImport(getContext()).execute();
                 }
             }
+
         });
     }
 
-    private void checkIfSheetAvailable( String course_name ) {
-        viewModel.getAllStudent(course_name).observe(this, new Observer<List<Student>>() {
-            @Override
-            public void onChanged(List<Student> students) {
-                if( students.size() > 0 ){
-                    navController = NavHostFragment.findNavController(ImportSheet.this);
-                    navController.navigate( ImportSheetDirections.actionImportSheetToNavigation());
-                }
-            }
-        });
-    }
+
 
 
     private boolean checkReadPermission() {
@@ -376,6 +363,10 @@ public  class ImportSheet extends Fragment {
                 viewModel.addCourseTeacher( new TeacherCourseCross( i, course_name ));
             }
 
+            // redirect to previous HOME cr fragment
+             navController.popBackStack();
         }
+
+
     }
 }
