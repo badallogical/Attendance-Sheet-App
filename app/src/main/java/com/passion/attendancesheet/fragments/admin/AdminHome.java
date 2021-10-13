@@ -236,30 +236,31 @@ public class AdminHome extends Fragment implements CourseListClick {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        checkEmailUpdateUI();
-    }
 
     private void checkEmailUpdateUI(){
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-        assert currentUser != null;
+       if( currentUser != null ){
+           Timber.d( "Email Check is called ");
 
-        Timber.d( "Email Check is called ");
+           currentUser.reload();
+           if( currentUser.isEmailVerified() ){
+               binding.addCourse.setVisibility( View.VISIBLE );
+           }
+           else{
+               Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_LONG).show();
+               binding.addCourse.setVisibility( View.GONE );
+               binding.emailVerification.setVisibility( View.VISIBLE );
+           }
+       }
+       else{
+           Toast.makeText(getContext(), "Something went wrong current user is null", Toast.LENGTH_LONG).show();
+            Timber.d("Something went wrong current user is null in adminHome");
+       }
 
-        currentUser.reload();
-        if( currentUser.isEmailVerified() ){
-            binding.addCourse.setVisibility( View.VISIBLE );
-        }
-        else{
-            Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_LONG).show();
-            binding.addCourse.setVisibility( View.GONE );
-            binding.emailVerification.setVisibility( View.VISIBLE );
-        }
+
     }
 
 

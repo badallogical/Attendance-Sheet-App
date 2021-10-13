@@ -42,19 +42,19 @@
         <action
             android:id="@+id/action_adminHome_to_courseCR"
             app:destination="@id/courseCR" />
-
         <action
-            android:id="@+id/action_adminHome_to_loginActivity"
+            android:id="@+id/action_adminHome_to_loginActivity3"
             app:destination="@id/loginActivity"
+            app:launchSingleTop="false"
             app:popUpTo="@id/adminHome"
             app:popUpToInclusive="true" />
 
-    </fragment>
 
+    </fragment>
     <activity
         android:id="@+id/loginActivity"
         android:name="com.passion.attendancesheet.LoginActivity"
-        android:label="Attendance Sheet"
-        tools:layout="@layout/activity_login" >
-    </activity>
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+
 </navigation>

@@ -111,7 +111,7 @@ public class Sign_in extends Fragment {
             NavController navController = NavHostFragment.findNavController(this);
 
             // Open import attendance where if already imported if will redirect to Admin Home
-            navController.navigate( Sign_inDirections.actionSignInToImportSheet());
+            navController.navigate( Sign_inDirections.actionSignInToNavigation());
 
         }
         else{

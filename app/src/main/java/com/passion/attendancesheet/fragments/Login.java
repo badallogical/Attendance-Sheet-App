@@ -15,6 +15,7 @@ import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,7 +42,10 @@ public class Login extends Fragment {
             if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com"))
                 navController.navigate( LoginDirections.actionLoginToAdminActivity( currentUser.getEmail().toString() ));
             else
-                navController.navigate( LoginDirections.actionLoginToImportSheet() );
+                navController.navigate( LoginDirections.actionLoginToNavigation() );
+        }
+        else{
+            Toast.makeText(getContext(), "NO current User", Toast.LENGTH_LONG).show();
         }
     }
 

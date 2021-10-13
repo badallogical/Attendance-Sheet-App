@@ -51,7 +51,8 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch ( item.getItemId() ){
-            case R.id.action_adminHome_to_loginActivity: FirebaseAuth.getInstance().signOut();
+            case R.id.action_adminHome_to_loginActivity3: FirebaseAuth.getInstance().signOut();
+
             Toast.makeText(this, "Signed Out", Toast.LENGTH_LONG).show();
             return NavigationUI.onNavDestinationSelected( item, navController );
         }

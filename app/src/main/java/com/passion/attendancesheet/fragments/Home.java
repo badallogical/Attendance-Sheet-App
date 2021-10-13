@@ -149,10 +149,11 @@ public class Home extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if( item.getItemId() == R.id.action_Home_to_login){
+        if( item.getItemId() == R.id.action_navigation_to_login){
             FirebaseAuth.getInstance().signOut();
             Toast.makeText( getContext(), "Signed Out", Toast.LENGTH_LONG).show();
-            navController.navigate( R.id.action_Home_to_login );
+
+            navController.navigate( HomeDirections.actionNavigationToLogin());
             return true;
         }
 

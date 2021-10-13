@@ -1,6 +1,8 @@
 package com.passion.attendancesheet.fragments.admin;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -129,10 +131,10 @@ public class AdminSignIn extends Fragment {
 
     void updateUI( FirebaseUser user ){
         if( user != null ){
-             navController.navigate( AdminSignInDirections.actionAdminSignInToAdminActivity(user.getEmail()));
-//           Intent intent = new Intent( getContext() , AdminActivity.class );
-//           startActivity( intent );
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("currentUser", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
 
+             navController.navigate( AdminSignInDirections.actionAdminSignInToAdminActivity(user.getEmail()));
         }
     }
 }
