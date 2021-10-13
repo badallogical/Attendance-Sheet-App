@@ -33,6 +33,8 @@ import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentAdminSignInBinding;
 import com.passion.attendancesheet.databinding.FragmentAdminSignUpBinding;
 
+import timber.log.Timber;
+
 public class AdminSignIn extends Fragment {
 
    FragmentAdminSignInBinding binding;
@@ -134,7 +136,9 @@ public class AdminSignIn extends Fragment {
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("currentUser", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
+             Timber.d("Sign in successful user not null ");
              navController.navigate( AdminSignInDirections.actionAdminSignInToAdminActivity(user.getEmail()));
+             getActivity().finish();
         }
     }
 }

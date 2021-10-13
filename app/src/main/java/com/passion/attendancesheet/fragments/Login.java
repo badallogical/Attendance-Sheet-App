@@ -32,21 +32,7 @@ public class Login extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        NavController navController = NavHostFragment.findNavController(this);
 
-        if( currentUser != null  ){
-            currentUser.reload();
-
-            if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com"))
-                navController.navigate( LoginDirections.actionLoginToAdminActivity( currentUser.getEmail().toString() ));
-            else
-                navController.navigate( LoginDirections.actionLoginToNavigation() );
-        }
-        else{
-            Toast.makeText(getContext(), "NO current User", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override

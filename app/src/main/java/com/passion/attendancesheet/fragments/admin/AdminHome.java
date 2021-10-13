@@ -53,6 +53,7 @@ public class AdminHome extends Fragment implements CourseListClick {
     FragmentAdminHomeBinding binding;
     List<String> array;
     AdminCourseListAdapter adapter;
+    FirebaseUser currentUser;
 
     public AdminHome() {
 
@@ -63,7 +64,8 @@ public class AdminHome extends Fragment implements CourseListClick {
         super.onStart();
 
         // check email verification and update UI
-        checkEmailUpdateUI();
+
+        //checkEmailUpdateUI();
     }
 
     @Override
@@ -90,6 +92,14 @@ public class AdminHome extends Fragment implements CourseListClick {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference ref = db.getReference();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser.reload();
+        if( currentUser == null ){
+            Toast.makeText( getContext(), "Current user is null", Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText( getContext(), "Current is not null", Toast.LENGTH_LONG).show();
+        }
 
         array = new ArrayList<String>();
         adapter = new AdminCourseListAdapter( array , getContext() , this );
@@ -171,8 +181,6 @@ public class AdminHome extends Fragment implements CourseListClick {
 
             @Override
             public void onClick(View v) {
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
                 currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -239,9 +247,6 @@ public class AdminHome extends Fragment implements CourseListClick {
 
     private void checkEmailUpdateUI(){
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
        if( currentUser != null ){
            Timber.d( "Email Check is called ");
 
@@ -257,9 +262,8 @@ public class AdminHome extends Fragment implements CourseListClick {
        }
        else{
            Toast.makeText(getContext(), "Something went wrong current user is null", Toast.LENGTH_LONG).show();
-            Timber.d("Something went wrong current user is null in adminHome");
+           Timber.d("Something went wrong current user is null in adminHome");
        }
-
 
     }
 

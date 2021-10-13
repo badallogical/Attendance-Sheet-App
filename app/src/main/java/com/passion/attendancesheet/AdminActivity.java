@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.passion.attendancesheet.fragments.admin.AdminHomeDirections;
 
 
 public class AdminActivity extends AppCompatActivity {
@@ -54,7 +55,9 @@ public class AdminActivity extends AppCompatActivity {
             case R.id.action_adminHome_to_loginActivity3: FirebaseAuth.getInstance().signOut();
 
             Toast.makeText(this, "Signed Out", Toast.LENGTH_LONG).show();
-            return NavigationUI.onNavDestinationSelected( item, navController );
+            navController.navigate(AdminHomeDirections.actionAdminHomeToLoginActivity3());
+            finish();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

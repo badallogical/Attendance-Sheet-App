@@ -15,10 +15,13 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.passion.attendancesheet.fragments.LoginDirections;
+
+import timber.log.Timber;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -40,7 +43,29 @@ public class LoginActivity extends AppCompatActivity {
         // Add up button in navigation button , where navController is provided to navigate back using up button , but the behaviour is not set yet.
         NavigationUI.setupActionBarWithNavController(this, navController);
 
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        NavController navController = ((NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.login_nav_host_fragment)).getNavController();
+
+        if( currentUser != null  ){
+            currentUser.reload();
+
+            if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com")) {
+                navController.navigate(LoginDirections.actionLoginToAdminActivity(currentUser.getEmail()));
+               finish();
+            }
+            else
+                navController.navigate( LoginDirections.actionLoginToNavigation() );
+        }
+        else{
+            Toast.makeText(this, "NO current User", Toast.LENGTH_LONG).show();
+        }
+
+        Timber.i("Login Activity onCreate called and user is checked");
     }
+
+
 
     @Override
     public boolean onSupportNavigateUp() {

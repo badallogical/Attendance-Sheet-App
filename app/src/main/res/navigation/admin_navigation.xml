@@ -46,7 +46,7 @@
             android:id="@+id/action_adminHome_to_loginActivity3"
             app:destination="@id/loginActivity"
             app:launchSingleTop="false"
-            app:popUpTo="@id/adminHome"
+            app:popUpTo="@id/loginActivity"
             app:popUpToInclusive="true" />
 
 
