@@ -67,10 +67,12 @@
         tools:layout="@layout/fragment_congratulation">
         <action
             android:id="@+id/action_congratulation_to_sign_in2"
-            app:destination="@id/sign_in" />
+            app:destination="@id/sign_in"
+            app:popUpTo="@id/login" />
         <action
             android:id="@+id/action_congratulation_to_adminSignIn"
-            app:destination="@id/adminSignIn" />
+            app:destination="@id/adminSignIn"
+            app:popUpTo="@id/login" />
         <argument
             android:name="userName"
             app:argType="string" />

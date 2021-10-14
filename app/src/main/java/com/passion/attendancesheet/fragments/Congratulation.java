@@ -60,7 +60,7 @@ public class Congratulation extends Fragment {
         }
         else{
             binding.congratesText.setText(userName.toString() + ", You are now a Class Representative");
-
+            binding.verifySignInBtn.setText("Sign In");
         }
 
         // Redirect to sign in screen accordingly based on type of user
