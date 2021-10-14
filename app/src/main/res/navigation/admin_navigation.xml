@@ -48,9 +48,8 @@
             app:launchSingleTop="false"
             app:popUpTo="@id/loginActivity"
             app:popUpToInclusive="true" />
-
-
     </fragment>
+
     <activity
         android:id="@+id/loginActivity"
         android:name="com.passion.attendancesheet.LoginActivity"

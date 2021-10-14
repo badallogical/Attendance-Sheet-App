@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.passion.attendancesheet.fragments.admin.AdminHome;
 import com.passion.attendancesheet.fragments.admin.AdminHomeDirections;
 
 
@@ -43,33 +44,10 @@ public class AdminActivity extends AppCompatActivity {
         return navController.navigateUp();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.admin_menu, menu );
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch ( item.getItemId() ){
-            case R.id.action_adminHome_to_loginActivity3: FirebaseAuth.getInstance().signOut();
-
-            Toast.makeText(this, "Signed Out", Toast.LENGTH_LONG).show();
-            navController.navigate(AdminHomeDirections.actionAdminHomeToLoginActivity3());
-            finish();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-//        if( mAuth.getCurrentUser() == null ){
-//            finish();
-//        }
     }
 }

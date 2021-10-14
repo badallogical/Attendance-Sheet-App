@@ -2,6 +2,7 @@ package com.passion.attendancesheet.fragments.admin;
 
 import android.animation.Animator;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -18,6 +20,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +59,8 @@ public class AdminHome extends Fragment implements CourseListClick {
     List<String> array;
     AdminCourseListAdapter adapter;
     FirebaseUser currentUser;
+    Context context;
+    NavController navController;
 
     public AdminHome() {
 
@@ -64,13 +71,15 @@ public class AdminHome extends Fragment implements CourseListClick {
         super.onStart();
 
         // check email verification and update UI
+        Toast.makeText(getContext(), "at Onstart ", Toast.LENGTH_LONG).show();
+        checkEmailUpdateUI();
 
-        //checkEmailUpdateUI();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getContext();
     }
 
     @Override
@@ -78,6 +87,9 @@ public class AdminHome extends Fragment implements CourseListClick {
                              Bundle savedInstanceState) {
         Timber.d("Admin Home Created");
 
+        setHasOptionsMenu(true);
+
+        navController = NavHostFragment.findNavController(this);
         binding = FragmentAdminHomeBinding.inflate(getLayoutInflater());
 
         // Inflate the layout for this fragment
@@ -87,18 +99,19 @@ public class AdminHome extends Fragment implements CourseListClick {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        Timber.i("onViewCreated of AdminHOme called");
 
+
+        Timber.i("onViewCreated of AdminHOme called");
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference ref = db.getReference();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUser.reload();
         if( currentUser == null ){
-            Toast.makeText( getContext(), "Current user is null", Toast.LENGTH_LONG).show();
+            Toast.makeText( context, "Current user is null", Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText( getContext(), "Current is not null", Toast.LENGTH_LONG).show();
+            Toast.makeText( context, "Current is not null", Toast.LENGTH_LONG).show();
         }
 
         array = new ArrayList<String>();
@@ -116,7 +129,7 @@ public class AdminHome extends Fragment implements CourseListClick {
                 array.add( snapshot.getValue(String.class));
                 adapter.notifyDataSetChanged();
 
-                Toast.makeText(getContext(), "Course: " + snapshot.getValue(String.class) + " Added", Toast.LENGTH_SHORT ).show();
+                Toast.makeText(context, "Course: " + snapshot.getValue(String.class) + " Added", Toast.LENGTH_SHORT ).show();
             }
 
             @Override
@@ -130,7 +143,7 @@ public class AdminHome extends Fragment implements CourseListClick {
                 array.remove( snapshot.getValue(String.class));
                 adapter.notifyDataSetChanged();
 
-                Toast.makeText(getContext(), "Course: " + snapshot.getValue(String.class) + " Removed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Course: " + snapshot.getValue(String.class) + " Removed", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -189,7 +202,7 @@ public class AdminHome extends Fragment implements CourseListClick {
                             Toast.makeText(getContext(), "Email Verification Send Successfully", Toast.LENGTH_LONG).show();
                         }
                         else{
-                            Toast.makeText(getContext(), "Failed to send email verification ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Failed to send email verification ", Toast.LENGTH_LONG).show();
 
                         }
                     }
@@ -221,7 +234,7 @@ public class AdminHome extends Fragment implements CourseListClick {
                                         else{
                                             // adding child to the course ref, ( its a way of creating list , on the way remember )
                                             if( array.contains(editCourse.getText().toString().toUpperCase())){
-                                                Toast.makeText(getContext(), "Course Already Existed", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(context, "Course Already Existed", Toast.LENGTH_LONG).show();
                                             }
                                             else {
                                                 ref.push().setValue(editCourse.getText().toString().toUpperCase());
@@ -252,19 +265,28 @@ public class AdminHome extends Fragment implements CourseListClick {
 
            currentUser.reload();
            if( currentUser.isEmailVerified() ){
+               binding.emailVerification.setVisibility( View.GONE );
                binding.addCourse.setVisibility( View.VISIBLE );
+               binding.courseList.setVisibility( View.VISIBLE);
+
+               Toast.makeText(getContext(),"Email Confirmed Successfully", Toast.LENGTH_LONG).show();
            }
            else{
-               Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_LONG).show();
-               binding.addCourse.setVisibility( View.GONE );
+               Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_SHORT).show();
                binding.emailVerification.setVisibility( View.VISIBLE );
+               binding.addCourse.setVisibility( View.GONE );
+               binding.courseList.setVisibility(View.GONE);
            }
        }
        else{
-           Toast.makeText(getContext(), "Something went wrong current user is null", Toast.LENGTH_LONG).show();
+           Toast.makeText(context, "Something went wrong current user is null", Toast.LENGTH_LONG).show();
            Timber.d("Something went wrong current user is null in adminHome");
        }
 
+    }
+
+    public void refresh(){
+        checkEmailUpdateUI();
     }
 
 
@@ -286,6 +308,36 @@ public class AdminHome extends Fragment implements CourseListClick {
     @Override
     public void openCrPanel(String course ) {
         NavHostFragment.findNavController(this).navigate( AdminHomeDirections.actionAdminHomeToCourseCR( course ));
+    }
+
+
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.admin_menu, menu );
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+       if( item.getItemId() ==  R.id.action_adminHome_to_loginActivity3 ) {
+           FirebaseAuth.getInstance().signOut();
+
+           Toast.makeText(getContext(), "Signed Out", Toast.LENGTH_LONG).show();
+           navController.navigate(AdminHomeDirections.actionAdminHomeToLoginActivity3());
+           getActivity().finish();
+           return true;
+       }
+       else if( item.getItemId() == R.id.refresh  ) {
+           refresh();
+           return true;
+       }
+
+       return super.onOptionsItemSelected(item);
     }
 
     @Override
