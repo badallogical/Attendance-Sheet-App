@@ -113,21 +113,8 @@
 
     <navigation
         android:id="@+id/navigation"
-        app:startDestination="@id/Home"
+        app:startDestination="@id/dashboard"
         >
-        <fragment
-            android:id="@+id/Home"
-            android:name="com.passion.attendancesheet.fragments.Home"
-            android:label="Home"
-            tools:layout="@layout/fragment_home">
-            <action
-                android:id="@+id/action_Home_to_attendance"
-                app:destination="@id/Attendance" />
-            <action
-                android:id="@+id/action_Home_to_ImportSheet"
-                app:destination="@id/ImportSheet" />
-
-        </fragment>
         <fragment
             android:id="@+id/Attendance"
             android:name="com.passion.attendancesheet.fragments.Attendance"
@@ -153,7 +140,19 @@
         <action
             android:id="@+id/action_navigation_to_login"
             app:destination="@id/login"
-            app:popUpTo="@id/Home"
+            app:popUpTo="@id/dashboard"
             app:popUpToInclusive="true" />
+        <fragment
+            android:id="@+id/dashboard"
+            android:name="com.passion.attendancesheet.fragments.Dashboard"
+            android:label="Dashboard"
+            tools:layout="@layout/fragment_dashboard">
+            <action
+                android:id="@+id/action_dashboard_to_ImportSheet"
+                app:destination="@id/ImportSheet" />
+            <action
+                android:id="@+id/action_dashboard_to_Attendance"
+                app:destination="@id/Attendance" />
+        </fragment>
     </navigation>
 </navigation>

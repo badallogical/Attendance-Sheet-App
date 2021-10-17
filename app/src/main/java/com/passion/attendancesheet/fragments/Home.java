@@ -14,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,7 +62,6 @@ public class Home extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
 
     }
 
@@ -126,7 +126,7 @@ public class Home extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        navController.navigate( HomeDirections.actionHomeToAttendance("BBA 5", LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacherSpinner.getSelectedItem().toString() ));
+                        navController.navigate( DashboardDirections.actionDashboardToAttendance("BBA 5", LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacherSpinner.getSelectedItem().toString() ));
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 
@@ -141,24 +141,7 @@ public class Home extends Fragment {
 
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        getActivity().getMenuInflater().inflate(R.menu.cr_menu, menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if( item.getItemId() == R.id.action_navigation_to_login){
-            FirebaseAuth.getInstance().signOut();
-            Toast.makeText( getContext(), "Signed Out", Toast.LENGTH_LONG).show();
-
-            navController.navigate( HomeDirections.actionNavigationToLogin());
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private void checkIfSheetAvailable( String course_name ) {
 
@@ -167,7 +150,7 @@ public class Home extends Fragment {
             @Override
             public void onChanged(Integer integer) {
                 if( integer == 0 ){
-                    navController.navigate( HomeDirections.actionHomeToImportSheet() );
+                    navController.navigate( DashboardDirections.actionDashboardToImportSheet() );
                     Toast.makeText(getContext(), "No Sheet found", Toast.LENGTH_LONG).show();
                 }
             }
