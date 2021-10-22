@@ -14,22 +14,25 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.passion.attendancesheet.R;
+import com.passion.attendancesheet.dataclasses.StudentF;
 import com.passion.attendancesheet.model.entity.Student;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.StudentListViewHolder>{
 
     Context context;
-    List<Student> students;
-    List<Integer> student_present;
+    List<Student> students;         // Total Students
+    List<Student> student_present;      // Present Student ONLY
 
     public StudentListAdapter( Context context, List<Student> students ){
         this.context  = context;
         this.students = students;
 
-        student_present = new ArrayList<Integer>();
+        student_present = new ArrayList<Student>();
     }
 
     @NonNull
@@ -45,11 +48,13 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         holder.id.setText(String.valueOf(s.roll_number));
         holder.name.setText(s.name);
 
-        if( student_present.contains( position ) ){
+        if( student_present.contains( students.get(position ) ) ){
             holder.markPresent();
+            Timber.d("already marked present : " + position);
         }
         else{
             holder.markAbsent();
+            Timber.d(" " + position );
         }
     }
 
@@ -58,18 +63,10 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         return students.size();
     }
 
-    public List<Integer> getStudent_present() {
+    public List<Student> getStudentPresent() {
         return student_present;
     }
 
-    public List<String> getPresentStudents(){
-        List<String> studentAttendance = new ArrayList<>();
-        for( int i : student_present ){
-            studentAttendance.add( String.valueOf(i+1) + "/" + students.get( i ).name );
-        }
-
-        return studentAttendance;
-    }
 
 
     public void setStudents(List<Student> students ){
@@ -95,23 +92,31 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
             toggleButton = itemView.findViewById(R.id.toggler);
             presentMark = itemView.findViewById(R.id.present_dot);
 
-            toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if( !isChecked ){
-                        presentMark.setVisibility(View.GONE);
-                        toggleButton.setChecked(false);
-                        student_present.remove( (Object) getAdapterPosition() );
-                    }else{
-                        presentMark.setVisibility(View.VISIBLE);
-                        toggleButton.setChecked(true);
-                        student_present.add( getAdapterPosition() );
+            toggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+                Timber.d("Called Called HA HA HA");
+                if( !isChecked ) {
+                    // NOT CHECK
+                    presentMark.setVisibility(View.GONE);
+
+                    if( student_present.contains( students.get( getAdapterPosition() )) ){
+                        student_present.remove(students.get(getAdapterPosition()));
+                        Timber.d("Adapter position " + getAdapterPosition() + " removed ");
                     }
+
+
+
+                } else{
+                    // CHECK
+                    presentMark.setVisibility(View.VISIBLE);
+
+                    if( student_present.contains( students.get( getAdapterPosition() ))  == false  ) {
+                        Timber.d("Adapter position " + getAdapterPosition() + " added ");
+                        student_present.add(students.get(getAdapterPosition()));
+                    }
+
                 }
             });
-
-
-
         }
 
 

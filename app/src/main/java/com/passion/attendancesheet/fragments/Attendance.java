@@ -32,6 +32,8 @@ import com.passion.attendancesheet.model.entity.Student;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * It is the panel to take attendance and save, and share  ( as excel )
  */
@@ -104,8 +106,12 @@ public class Attendance extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch ( item.getItemId() ){
-            case R.id.send :
-            case R.id.save:
+            case R.id.send :    break;
+            case R.id.save:     List<Student> studentPresent = studentListAdapter.getStudentPresent();
+                                for( Student s : studentPresent ){
+                                    Timber.d( s.name );
+                                }
+                                Timber.d( studentPresent.size() + "" );
         }
 
         return true;

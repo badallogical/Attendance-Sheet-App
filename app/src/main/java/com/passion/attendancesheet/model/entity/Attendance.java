@@ -14,6 +14,7 @@ public class Attendance {
     @NonNull
     public int sheet_id;
 
+    public Integer roll_no;
     public String student_name;
     public String student_status; // Present, Absent, Bunked, Permitted
 
