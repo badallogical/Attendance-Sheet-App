@@ -7,11 +7,12 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Subject {
 
+
     @PrimaryKey
     @NonNull
-    String course_id;
+    public String course_id;
 
-    String subjects;
+    public String subjects;
 
     public Subject( String course_id, String subjects ){
         this.course_id = course_id;

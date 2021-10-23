@@ -27,6 +27,7 @@ import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.StudentListAdapter;
 import com.passion.attendancesheet.databinding.FragmentAttendanceBinding;
 import com.passion.attendancesheet.model.AttendanceSheetViewModel;
+import com.passion.attendancesheet.model.entity.Attendance_sheet;
 import com.passion.attendancesheet.model.entity.Student;
 
 import java.util.ArrayList;
@@ -107,11 +108,20 @@ public class Attendance extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch ( item.getItemId() ){
             case R.id.send :    break;
-            case R.id.save:     List<Student> studentPresent = studentListAdapter.getStudentPresent();
+
+            case R.id.save:
+                                // create and save attendance sheet
+//                                viewModel.addAttendanceSheet( new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , " 00:00:00" ,  ) );
+                List<Student> studentPresent = studentListAdapter.getStudentPresent();
                                 for( Student s : studentPresent ){
                                     Timber.d( s.name );
+//                                    viewModel.
                                 }
                                 Timber.d( studentPresent.size() + "" );
+
+
+
+
         }
 
         return true;

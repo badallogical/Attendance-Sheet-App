@@ -13,12 +13,17 @@ import com.passion.attendancesheet.model.entity.Course;
 import com.passion.attendancesheet.model.entity.Student;
 import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.model.entity.TeacherCourseCross;
+import com.passion.attendancesheet.model.entity.views.TeacherAndCoursesView;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.passion.attendancesheet.model.entity.Subject;
+
+
 @Database( entities = {
-        Teacher.class, Course.class, Student.class, TeacherCourseCross.class, Attendance.class, Attendance_sheet.class},
+        Teacher.class, Course.class, Student.class, TeacherCourseCross.class, Attendance.class, Attendance_sheet.class, Subject.class},
+        views = {TeacherAndCoursesView.class},
         exportSchema = false,
         version = 1)
 public abstract class AttendanceSheetDatabase extends RoomDatabase {

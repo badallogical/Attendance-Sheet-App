@@ -28,10 +28,16 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentHomeBinding;
 import com.passion.attendancesheet.fragments.admin.AdminHomeDirections;
 import com.passion.attendancesheet.model.AttendanceSheetViewModel;
+import com.passion.attendancesheet.utils.Accessory_tool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +54,10 @@ public class Home extends Fragment {
     AttendanceSheetViewModel viewModel;
 
     NavController navController;
+    String courseId = null;
 
     public Home() {
+
     }
 
     @Override
@@ -80,8 +88,40 @@ public class Home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.courseName.setText("BBA 5");
-        binding.courseStrength.setText("Total Strength : 60");
+        // Find the current course for a respective CR from firebase
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        currentUser.reload();
+        db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for( DataSnapshot courses : snapshot.getChildren() ){
+                    for( DataSnapshot crs : courses.getChildren() ){
+                        if(crs.child("email").getValue(String.class).equals(currentUser.getEmail())){
+                            courseId = courses.getKey();
+                            courseId = courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(courseId.split(" ")[1]);
+                            binding.courseName.setText(courseId);
+                            Timber.d("Course ID readed : " + courseId);
+                            break;
+                        }
+                    }
+
+                    if( courseId != null ){
+                        break;
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         if( binding.todayList.getChildCount() == 0 ){
             binding.noLecture.setVisibility( View.VISIBLE );
@@ -99,27 +139,40 @@ public class Home extends Fragment {
 
                 // setup prepare sheet dialog element
                 View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.prepare_sheet_dialog, null);
+
                 Spinner teacherSpinner = dialogView.findViewById(R.id.teacher_spinner);
-                List<String> tempTeacher = new ArrayList<>();
-                tempTeacher.add("Santosh Sir");
-                tempTeacher.add("Rohit Sir");
-                ArrayAdapter<String> teacherSpinnerAdapter = new ArrayAdapter<String>( getContext(), android.R.layout.simple_spinner_item, tempTeacher ); // Set DropDown data item view
-                teacherSpinnerAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item); // Set DropDown item View
-                teacherSpinner.setAdapter(teacherSpinnerAdapter);
+
+
+                viewModel.getCourseTeacher(courseId).observe(getViewLifecycleOwner(), teachers -> {
+
+                    Timber.i( " Teacher list calle d");
+
+                    // setup adapter
+                    ArrayAdapter<String> teacherSpinnerAdapter = new ArrayAdapter<String>( getContext(), android.R.layout.simple_spinner_item , teachers); // Set DropDown data item view
+                    teacherSpinnerAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item); // Set DropDown item View
+                    teacherSpinner.setAdapter(teacherSpinnerAdapter);
+
+                });
+
 
                 Spinner subjectSpinner = dialogView.findViewById(R.id.subject_spinner);
-                List<String> tempSubject = new ArrayList<>();
-                tempSubject.add("Cryptography");
-                tempSubject.add("Mobile computing");
-                tempSubject.add("Cyber law");
-                tempSubject.add("E-Commerce");
-                ArrayAdapter<String> subjectSpinnerAdapter = new ArrayAdapter<String>( getContext(), android.R.layout.simple_spinner_item, tempSubject );
-                subjectSpinnerAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item);
-                subjectSpinner.setAdapter( subjectSpinnerAdapter);
+
+
+                viewModel.getCourseSubject(courseId).observe(getViewLifecycleOwner(), subjects -> {
+
+                    // setup adapter
+                    if( subjects != null ) {
+                        Timber.i( "Subjects : " + subjects );
+                        ArrayAdapter<String> subjectSpinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, subjects.split("\\|"));
+                        subjectSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        subjectSpinner.setAdapter(subjectSpinnerAdapter);
+                    }
+                });
+
 
                 Spinner LectureSpinner = dialogView.findViewById(R.id.lecture_spinner);
 
-                // create prepare sheet dialog
+                // Create prepare sheet dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Prepare Sheet");
                 builder.setView( dialogView );

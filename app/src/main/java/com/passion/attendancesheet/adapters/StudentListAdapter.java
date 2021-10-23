@@ -74,6 +74,10 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         notifyDataSetChanged();
     }
 
+    public List<Student> getStudents(){
+        return students;
+    }
+
     class StudentListViewHolder extends RecyclerView.ViewHolder{
 
         TextView id;
@@ -118,6 +122,8 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
                 }
             });
         }
+
+
 
 
         public TextView getId() {

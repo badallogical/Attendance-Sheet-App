@@ -6,12 +6,16 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.passion.attendancesheet.model.entity.Attendance;
+import com.passion.attendancesheet.model.entity.Attendance_sheet;
 import com.passion.attendancesheet.model.entity.Course;
 import com.passion.attendancesheet.model.entity.Student;
 import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.model.entity.TeacherCourseCross;
 
 import java.util.List;
+
+import com.passion.attendancesheet.model.entity.Subject;
 
 public class AttendanceSheetViewModel extends AndroidViewModel {
 
@@ -37,7 +41,26 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
         mRepository.addCourseTeacher( teacherCourseCross );
     }
 
+    public void addAttendanceSheet(Attendance_sheet sheet ){
+        mRepository.addAttendanceSheet( sheet );
+    }
+
+    public void addAttendance(Attendance attendance ){
+        mRepository.addAttendance( attendance );
+    }
+
+    public void addSubject( Subject subj ){
+       mRepository.addSubject( subj );
+    }
+
     // Fetch
+    public LiveData<String> getCourseSubject( String courseId ){
+        return mRepository.getCourseSubject(courseId);
+    }
+
+    public LiveData<List<String>> getCourseTeacher( String courseId ){
+        return mRepository.getCourseTeacher(courseId);
+    }
 
     public LiveData<Integer> getStudentCount(String courseId ){
         return mRepository.getStudentCount(courseId);

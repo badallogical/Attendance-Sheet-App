@@ -3,6 +3,7 @@ package com.passion.attendancesheet.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -31,6 +32,12 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentImportSheetBinding;
 import com.passion.attendancesheet.model.AttendanceSheetDao;
@@ -57,6 +64,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import com.passion.attendancesheet.model.entity.Subject;
+import com.passion.attendancesheet.utils.Accessory_tool;
+
 import timber.log.Timber;
 
 
@@ -66,6 +76,7 @@ public  class ImportSheet extends Fragment {
     FragmentImportSheetBinding binding;
     private AttendanceSheetViewModel viewModel;
     NavController navController;
+    String CR_courseId = null;
 
     public ImportSheet() {
         // Required empty public constructor
@@ -96,6 +107,39 @@ public  class ImportSheet extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Find the current course for a respective CR from firebase
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        currentUser.reload();
+        db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for( DataSnapshot courses : snapshot.getChildren() ){
+                    for( DataSnapshot crs : courses.getChildren() ){
+                        if(crs.child("email").getValue(String.class).equals(currentUser.getEmail())){
+                            CR_courseId = courses.getKey();
+                            CR_courseId = CR_courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(CR_courseId.split(" ")[1]);
+                            Timber.d("Course ID readed : " + CR_courseId);
+                            break;
+                        }
+                    }
+
+                    if( CR_courseId != null ){
+                        break;
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         // Import sheet if successful navigate to CR home in async task postExecution
         binding.importSheet.setOnClickListener(new View.OnClickListener() {
@@ -181,7 +225,7 @@ public  class ImportSheet extends Fragment {
 
                     Set<String> courses = new HashSet<String>();
                     List<String> teachers = new ArrayList<String>();
-                    List<String> subjects = new ArrayList<String>();
+                    String subjects = null;
 
 
                     // read course student
@@ -199,6 +243,16 @@ public  class ImportSheet extends Fragment {
                                 cur_courseReadied = cur_row.getCell(1).toString();
                                 Timber.i("Course Readed" + cur_courseReadied);
 
+                                if( cur_courseReadied.equals(CR_courseId ) == false ){
+                                    new AlertDialog.Builder(getContext())
+                                            .setTitle("Invalid Sheet")
+                                            .setMessage("Please Import Your Course Sheet")
+                                            .setPositiveButton("OK", ( dialog, which ) -> {
+                                                dialog.dismiss();
+                                            })
+                                            .create().show();
+                                            return;
+                                }
                                 // Read Teachers
                                 cur_row = (HSSFRow) rowIter.next();
                                 if( cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("Teachers")){
@@ -209,7 +263,7 @@ public  class ImportSheet extends Fragment {
                                 // Read Subjects
                                 cur_row = (HSSFRow) rowIter.next();
                                 if( cur_row.getPhysicalNumberOfCells() == 2 && cur_row.getCell(0).toString().equalsIgnoreCase("Subjects")){
-                                    subjects = Arrays.asList( cur_row.getCell(1).toString().split("\\|"));
+                                    subjects =cur_row.getCell(1).toString();
                                     Timber.i( cur_row.getCell(1).toString() );
                                 }
 
@@ -260,7 +314,7 @@ public  class ImportSheet extends Fragment {
 
 
                         // Add students
-                        new AsyncInsertStudentAndTeachersData(viewModel, student_list, teachers).execute( cur_courseReadied );
+                        new AsyncInsertStudentAndTeachersData(viewModel, student_list, teachers, subjects).execute( cur_courseReadied );
 
 
 
@@ -337,12 +391,15 @@ public  class ImportSheet extends Fragment {
         AttendanceSheetViewModel viewModel;
         List<String> student_list;
         List<String> teachers;
+        String subjects;
 
-        AsyncInsertStudentAndTeachersData(AttendanceSheetViewModel viewModel, List<String> student_list, List<String> teachers ){
+        AsyncInsertStudentAndTeachersData(AttendanceSheetViewModel viewModel, List<String> student_list, List<String> teachers, String subjects ){
             this.viewModel = viewModel;
             this.student_list = student_list;
             this.teachers = teachers;
+            this.subjects = subjects;
         }
+
 
         @Override
         protected String doInBackground(String... course_name ) {
@@ -361,7 +418,10 @@ public  class ImportSheet extends Fragment {
             for( int i = 0;i < teachers.size(); i++ ){
                 viewModel.addTeacher( new Teacher( i,  teachers.get(i).trim() ) );
                 viewModel.addCourseTeacher( new TeacherCourseCross( i, course_name ));
+
             }
+
+            viewModel.addSubject( new Subject( course_name, subjects ));
 
             // redirect to previous HOME cr fragment
              navController.popBackStack();

@@ -5,14 +5,18 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
+import com.passion.attendancesheet.model.entity.Attendance;
+import com.passion.attendancesheet.model.entity.Attendance_sheet;
 import com.passion.attendancesheet.model.entity.Course;
 import com.passion.attendancesheet.model.entity.Student;
 import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.model.entity.TeacherCourseCross;
+import com.passion.attendancesheet.model.entity.Subject;
 
 import org.jetbrains.annotations.Async;
 
 import java.util.List;
+
 
 public class AttendanceSheetRepository {
 
@@ -49,11 +53,40 @@ public class AttendanceSheetRepository {
         });
     }
 
-   LiveData<Integer> getStudentCount(String courseId ){
+    void addAttendanceSheet(Attendance_sheet sheet ){
+        AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
+            sheetDao.addAttendanceSheet( sheet );
+        });
+    }
+
+    void addAttendance( Attendance attendance ){
+        AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
+            sheetDao.addAttendance( attendance );
+        });
+    }
+
+    void addSubject( Subject subj ){
+        AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
+            sheetDao.addSubject( subj );
+        });
+    }
+
+
+    // Fetch Live Data
+
+    LiveData<String> getCourseSubject( String courseId ){
+        return sheetDao.getCourseSubject(courseId);
+    }
+
+    LiveData<List<String>> getCourseTeacher( String courseId ){
+        return sheetDao.getCourseTeachers(courseId);
+    }
+
+    LiveData<Integer> getStudentCount(String courseId ){
         return sheetDao.getStudentCount(courseId);
     }
 
-    // Fetch Live Data
+
     LiveData<List<Student>> getAllStudent( String course_id ){
         return sheetDao.getAllStudent(course_id);
     }

@@ -25,4 +25,12 @@ public class Attendance_sheet {
 
     public String subject;
 
+    public Attendance_sheet(  String course_id, String data_and_time, int lecture, int teacher_id, String subject ){
+        this.course_id = course_id;
+        this.data_and_time = data_and_time;
+        this.lecture = lecture;
+        this.teacher_id = teacher_id;
+        this.subject = subject;
+    }
+
 }

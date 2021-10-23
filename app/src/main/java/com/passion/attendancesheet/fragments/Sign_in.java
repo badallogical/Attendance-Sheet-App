@@ -57,8 +57,6 @@ public class Sign_in extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
         binding.submitSignIn.setOnClickListener( new View.OnClickListener(){
 
             @Override
@@ -85,9 +83,6 @@ public class Sign_in extends Fragment {
     }
 
     private void signIn(String email, String password ){
-
-        
-
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
                     @Override
