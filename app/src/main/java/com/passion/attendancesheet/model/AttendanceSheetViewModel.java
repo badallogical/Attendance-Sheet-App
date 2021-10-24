@@ -54,6 +54,15 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
     }
 
     // Fetch
+
+    public LiveData<List<Attendance_sheet>> getAllSheetsByCourseId( String course_id ){
+        return mRepository.getAllSheetsByCourseId(course_id);
+    }
+
+    public LiveData<String> getTeacherNameById( int teacher_id ){
+        return mRepository.getTeacherNameById(teacher_id );
+    }
+
     public LiveData<String> getCourseSubject( String courseId ){
         return mRepository.getCourseSubject(courseId);
     }

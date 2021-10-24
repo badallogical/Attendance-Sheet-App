@@ -56,6 +56,7 @@ public class AttendanceSheetRepository {
     void addAttendanceSheet(Attendance_sheet sheet ){
         AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
             sheetDao.addAttendanceSheet( sheet );
+
         });
     }
 
@@ -73,6 +74,14 @@ public class AttendanceSheetRepository {
 
 
     // Fetch Live Data
+
+    LiveData<List<Attendance_sheet>> getAllSheetsByCourseId( String course_id ){
+        return sheetDao.getAllSheetsByCourseId(course_id);
+    }
+
+    LiveData<String> getTeacherNameById( int teacher_id ){
+        return sheetDao.getTeacherNameById(teacher_id);
+    }
 
     LiveData<String> getCourseSubject( String courseId ){
         return sheetDao.getCourseSubject(courseId);

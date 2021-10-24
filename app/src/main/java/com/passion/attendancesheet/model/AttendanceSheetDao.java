@@ -46,10 +46,16 @@ public interface AttendanceSheetDao {
 
     // Fetch Data
 
+    @Query("Select * from Attendance_sheet where course_id =:course_id order by id desc")
+    LiveData<List<Attendance_sheet>> getAllSheetsByCourseId( String course_id );
+
+    @Query("Select name from teacher where id = :teacher_id ")
+    LiveData<String> getTeacherNameById( int teacher_id );
+
     @Query("Select subjects from Subject where course_id = :courseId ")
     LiveData<String> getCourseSubject( String courseId );
 
-    @Query("Select teacher_name from TeacherAndCoursesView where course_id = :course_id ")
+    @Query("Select teacher_id || ',' || teacher_name AS teacher from TeacherAndCoursesView where course_id = :course_id ")
     LiveData<List<String>> getCourseTeachers( String course_id );
 
     @Query("Select count(*) from student where course_id = :courseId")

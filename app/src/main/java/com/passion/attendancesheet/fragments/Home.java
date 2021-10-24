@@ -40,7 +40,9 @@ import com.passion.attendancesheet.model.AttendanceSheetViewModel;
 import com.passion.attendancesheet.utils.Accessory_tool;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -143,12 +145,18 @@ public class Home extends Fragment {
                 Spinner teacherSpinner = dialogView.findViewById(R.id.teacher_spinner);
 
 
+                Map<String, Integer> teacher_id_map = new HashMap<String, Integer>();
                 viewModel.getCourseTeacher(courseId).observe(getViewLifecycleOwner(), teachers -> {
 
                     Timber.i( " Teacher list calle d");
 
                     // setup adapter
-                    ArrayAdapter<String> teacherSpinnerAdapter = new ArrayAdapter<String>( getContext(), android.R.layout.simple_spinner_item , teachers); // Set DropDown data item view
+                    List<String> teacher_name = new ArrayList<>();
+                    for( String t : teachers ){
+                        teacher_name.add( t.split(",")[1] );
+                        teacher_id_map.put( t.split(",")[1], Integer.parseInt(t.split(",")[0]));
+                    }
+                    ArrayAdapter<String> teacherSpinnerAdapter = new ArrayAdapter<String>( getContext(), android.R.layout.simple_spinner_item , teacher_name); // Set DropDown data item view
                     teacherSpinnerAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item); // Set DropDown item View
                     teacherSpinner.setAdapter(teacherSpinnerAdapter);
 
@@ -179,7 +187,7 @@ public class Home extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        navController.navigate( DashboardDirections.actionDashboardToAttendance("BBA 5", LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacherSpinner.getSelectedItem().toString() ));
+                        navController.navigate( DashboardDirections.actionDashboardToAttendance("BBA 5", LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacher_id_map.get( teacherSpinner.getSelectedItem().toString()).toString() +","+ teacherSpinner.getSelectedItem().toString() ));
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 
