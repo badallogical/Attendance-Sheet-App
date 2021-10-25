@@ -38,7 +38,7 @@
                 />
 
             <TextView
-                android:id="@+id/lecure_no"
+                android:id="@+id/lecture_no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Lecture 1"

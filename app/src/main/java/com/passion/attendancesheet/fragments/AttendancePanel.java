@@ -30,6 +30,7 @@ import com.passion.attendancesheet.model.AttendanceSheetViewModel;
 import com.passion.attendancesheet.model.entity.Attendance_sheet;
 import com.passion.attendancesheet.model.entity.Student;
 import com.passion.attendancesheet.model.entity.Attendance;
+import com.passion.attendancesheet.utils.Accessory_tool;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public class AttendancePanel extends Fragment {
             case R.id.send :    break;
 
             case R.id.save:     saveSheet();
+                                break;
 
 
 
@@ -126,14 +128,17 @@ public class AttendancePanel extends Fragment {
     }
 
     private void saveSheet() {
-        // create attendance sheet
-        viewModel.addAttendanceSheet( new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , "00:00:00" , Integer.parseInt(args.getLecture()) , Integer.parseInt(args.getTeacher().split(",")[0] ) , args.getSubject()));
 
         // get Current data and time
         String dateTime = new SimpleDateFormat("MMM dd, yyyy-hh:mm a", Locale.US).format(Calendar.getInstance().getTime());
 
+        Timber.d( args.getLecture() + " , " + args.getTeacher().split(",")[0]  );
+        // create attendance sheet
+        viewModel.addAttendanceSheet( new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , dateTime , Accessory_tool.getIntFromRoman(args.getLecture()) , Integer.parseInt( args.getTeacher().split(",")[0] ) , args.getSubject()));
+
+
         // Get Newly inserted sheet id
-        viewModel.getAllSheetsByCourseId( args.getCourse()).observe( getViewLifecycleOwner(), sheets -> {
+        viewModel.getAllSheetsByCourseId( args.getCourse() ).observe( getViewLifecycleOwner(), sheets -> {
             if( sheets.size() != 0 ){
                 int sheet_id = sheets.get(0).id;
 
@@ -142,8 +147,6 @@ public class AttendancePanel extends Fragment {
                 for( Student s : studentPresent ){
                     viewModel.addAttendance( new Attendance(sheet_id, s.roll_number, s.name, "Present") );
                 }
-
-                studentListAdapter.notifyDataSetChanged();
 
             }
         });

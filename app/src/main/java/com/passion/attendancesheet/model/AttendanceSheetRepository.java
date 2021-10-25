@@ -12,6 +12,7 @@ import com.passion.attendancesheet.model.entity.Student;
 import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.model.entity.TeacherCourseCross;
 import com.passion.attendancesheet.model.entity.Subject;
+import com.passion.attendancesheet.model.entity.views.TeacherAndCoursesView;
 
 import org.jetbrains.annotations.Async;
 
@@ -87,7 +88,7 @@ public class AttendanceSheetRepository {
         return sheetDao.getCourseSubject(courseId);
     }
 
-    LiveData<List<String>> getCourseTeacher( String courseId ){
+    LiveData<List<TeacherAndCoursesView>> getCourseTeacher(String courseId ){
         return sheetDao.getCourseTeachers(courseId);
     }
 
@@ -100,7 +101,13 @@ public class AttendanceSheetRepository {
         return sheetDao.getAllStudent(course_id);
     }
 
+    // DELETE
 
+    void deleteSheetById( int id ){
+        AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
+            sheetDao.deleteSheetById(id);
+        });
+    }
 
 
 }

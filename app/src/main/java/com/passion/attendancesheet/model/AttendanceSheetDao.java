@@ -2,6 +2,7 @@ package com.passion.attendancesheet.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -13,6 +14,7 @@ import com.passion.attendancesheet.model.entity.Student;
 import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.model.entity.TeacherCourseCross;
 import com.passion.attendancesheet.model.entity.Subject;
+import com.passion.attendancesheet.model.entity.views.TeacherAndCoursesView;
 
 import java.util.List;
 
@@ -55,8 +57,8 @@ public interface AttendanceSheetDao {
     @Query("Select subjects from Subject where course_id = :courseId ")
     LiveData<String> getCourseSubject( String courseId );
 
-    @Query("Select teacher_id || ',' || teacher_name AS teacher from TeacherAndCoursesView where course_id = :course_id ")
-    LiveData<List<String>> getCourseTeachers( String course_id );
+    @Query("Select *  from TeacherAndCoursesView where course_id = :course_id ")
+    LiveData<List<TeacherAndCoursesView>> getCourseTeachers(String course_id );
 
     @Query("Select count(*) from student where course_id = :courseId")
     LiveData<Integer> getStudentCount(String courseId );
@@ -68,6 +70,14 @@ public interface AttendanceSheetDao {
 
     @Query("Select * from teacher")
     LiveData<List<Teacher>> getAllTeacher();
+
+    // DELETE
+
+    @Delete
+    public abstract void deleteSheet(Attendance_sheet s);
+
+    @Query("Delete from Attendance_sheet where id =:id")
+    void deleteSheetById( int id );
 
 
 

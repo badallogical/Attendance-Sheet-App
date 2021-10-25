@@ -16,6 +16,7 @@ import com.passion.attendancesheet.model.entity.TeacherCourseCross;
 import java.util.List;
 
 import com.passion.attendancesheet.model.entity.Subject;
+import com.passion.attendancesheet.model.entity.views.TeacherAndCoursesView;
 
 public class AttendanceSheetViewModel extends AndroidViewModel {
 
@@ -67,7 +68,7 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
         return mRepository.getCourseSubject(courseId);
     }
 
-    public LiveData<List<String>> getCourseTeacher( String courseId ){
+    public LiveData<List<TeacherAndCoursesView>> getCourseTeacher(String courseId ){
         return mRepository.getCourseTeacher(courseId);
     }
 
@@ -77,6 +78,12 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
 
     public LiveData<List<Student>> getAllStudent(String course_id ){
         return mRepository.getAllStudent( course_id );
+    }
+
+    // DELETE
+
+    public void deleteSheetById( int id ){
+        mRepository.deleteSheetById(id);
     }
 
 }

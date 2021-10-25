@@ -9,6 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -16,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.passion.attendancesheet.adapters.HistoryListAdapter;
 import com.passion.attendancesheet.databinding.FragmentHistoryBinding;
 import com.passion.attendancesheet.model.AttendanceSheetViewModel;
 import com.passion.attendancesheet.utils.Accessory_tool;
@@ -72,9 +76,39 @@ public class History extends Fragment {
                 }
 
                 viewModel = new ViewModelProvider(History.this).get( AttendanceSheetViewModel.class );
+                HistoryListAdapter adapter = new HistoryListAdapter( getContext() );
+                binding.historyList.setLayoutManager( new LinearLayoutManager(getContext()));
+                binding.historyList.setAdapter( adapter );
+
                 viewModel.getAllSheetsByCourseId(courseId).observe( getViewLifecycleOwner(), sheets -> {
                     // setup adapter
+                    if( sheets.size() > 0 ){
+                        binding.noHistory.setVisibility(View.GONE);
+                        binding.historyList.setVisibility(View.VISIBLE);
+
+                        adapter.setHistories( sheets );
+                    }
+                    else{
+                        binding.noHistory.setVisibility(View.VISIBLE);
+                        binding.historyList.setVisibility(View.GONE);
+                    }
+
                 });
+
+                // on swipe delete history
+                new ItemTouchHelper(new ItemTouchHelper.SimpleCallback( 0, ItemTouchHelper.LEFT ){
+                    @Override
+                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                        int sheet_id = ((HistoryListAdapter.HistoryListViewHolder) viewHolder ).getSheet_id();
+                        viewModel.deleteSheetById(sheet_id);
+
+                    }
+                }).attachToRecyclerView(binding.historyList);
 
             }
 
