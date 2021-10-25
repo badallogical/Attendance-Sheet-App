@@ -131,6 +131,9 @@
             <argument
                 android:name="teacher"
                 app:argType="string" />
+            <argument
+                android:name="mode"
+                app:argType="string" />
         </fragment>
         <fragment
             android:id="@+id/ImportSheet"

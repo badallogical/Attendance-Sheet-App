@@ -57,8 +57,12 @@ public class Home extends Fragment {
     FragmentHomeBinding binding;
     AttendanceSheetViewModel viewModel;
 
+
     NavController navController;
     String courseId = null;
+
+    FirebaseDatabase db = FirebaseDatabase.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public Home() {
 
@@ -75,6 +79,8 @@ public class Home extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // set Data persistence
+        db.setPersistenceEnabled(true);
     }
 
     @Override
@@ -93,8 +99,6 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Find the current course for a respective CR from firebase
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         currentUser.reload();
@@ -102,9 +106,9 @@ public class Home extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for( DataSnapshot courses : snapshot.getChildren() ){
-                    for( DataSnapshot crs : courses.getChildren() ){
-                        if(crs.child("email").getValue(String.class).equals(currentUser.getEmail())){
+                for( DataSnapshot courses : snapshot.getChildren() ) {
+                    for (DataSnapshot crs : courses.getChildren()) {
+                        if (crs.child("email").getValue(String.class).equals(currentUser.getEmail())) {
                             courseId = courses.getKey();
                             courseId = courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(courseId.split(" ")[1]);
                             binding.courseName.setText(courseId);
@@ -113,7 +117,7 @@ public class Home extends Fragment {
                         }
                     }
 
-                    if( courseId != null ){
+                    if (courseId != null) {
                         break;
                     }
                 }
@@ -189,7 +193,7 @@ public class Home extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        navController.navigate( DashboardDirections.actionDashboardToAttendance(courseId, LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacher_id_map.get( teacherSpinner.getSelectedItem().toString()) ));
+                        navController.navigate( DashboardDirections.actionDashboardToAttendance(courseId, LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacher_id_map.get( teacherSpinner.getSelectedItem().toString()) , getResources().getString(R.string.normal) ));
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 

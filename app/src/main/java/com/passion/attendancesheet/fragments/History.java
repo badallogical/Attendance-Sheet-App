@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,9 +21,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.HistoryListAdapter;
 import com.passion.attendancesheet.databinding.FragmentHistoryBinding;
 import com.passion.attendancesheet.model.AttendanceSheetViewModel;
+import com.passion.attendancesheet.model.entity.Attendance_sheet;
 import com.passion.attendancesheet.utils.Accessory_tool;
 
 import timber.log.Timber;
@@ -30,15 +34,19 @@ import timber.log.Timber;
 /**
  * Display the attendance sheets take so far
  */
-public class History extends Fragment {
+public class History extends Fragment implements HistoryListAdapter.HistoryItemClick {
 
 
     FragmentHistoryBinding binding;
     AttendanceSheetViewModel viewModel;
 
+    NavController navController;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        navController = NavHostFragment.findNavController(this);
 
         binding = FragmentHistoryBinding.inflate( getLayoutInflater() );
         return binding.getRoot();
@@ -49,10 +57,11 @@ public class History extends Fragment {
 
 
         // Find the current course for a respective CR from firebase
-
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
+            // data persistence
 
         currentUser.reload();
         db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -76,7 +85,7 @@ public class History extends Fragment {
                 }
 
                 viewModel = new ViewModelProvider(History.this).get( AttendanceSheetViewModel.class );
-                HistoryListAdapter adapter = new HistoryListAdapter( getContext() );
+                HistoryListAdapter adapter = new HistoryListAdapter( getContext(), History.this );
                 binding.historyList.setLayoutManager( new LinearLayoutManager(getContext()));
                 binding.historyList.setAdapter( adapter );
 
@@ -121,4 +130,11 @@ public class History extends Fragment {
 
 
     }
+
+    @Override
+    public void openEditAttendance(Attendance_sheet sheet, String mode) {
+        viewModel.getTeacherNameById( sheet.teacher_id ).observe( getViewLifecycleOwner(), teacher_name -> {
+            navController.navigate(DashboardDirections.actionDashboardToAttendance(sheet.course_id, Accessory_tool.getRomanFromInt(sheet.lecture), sheet.subject, sheet.teacher_id + "," + teacher_name, mode));
+        });
+       }
 }

@@ -1,7 +1,6 @@
 package com.passion.attendancesheet.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +21,18 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     Context context;
     List<Attendance_sheet> sheets = new ArrayList<>();
 
-    public HistoryListAdapter(Context context){
+    HistoryItemClick historyItemClick;
+
+    public HistoryListAdapter(Context context, HistoryItemClick historyItemClick){
         this.context = context;
+        this.historyItemClick = historyItemClick;
     }
 
     @NonNull
     @Override
     public HistoryListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.history_item, parent, false );
-        return new HistoryListViewHolder(v , context );
+        return new HistoryListViewHolder(v , context, historyItemClick );
     }
 
     @Override
@@ -71,7 +73,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         TextView time;
         int sheet_id;
 
-        public HistoryListViewHolder(@NonNull View itemView, Context context ) {
+        public HistoryListViewHolder(@NonNull View itemView, Context context , HistoryItemClick historyItemClick) {
             super(itemView);
             date = itemView.findViewById(R.id.date);
             course = itemView.findViewById(R.id.course_name);
@@ -88,6 +90,9 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 //                    intent.putExtra( AttendanceActivity.MODE, context.getResources().getString(R.string.edit));
 //                    intent.putExtra( AttendanceActivity.COURSE, sheet_id);
 //                    context.startActivity(intent);
+
+                      historyItemClick.openEditAttendance( ( Attendance_sheet)date.getTag(), context.getResources().getString(R.string.edit)  );
+
                 }
             });
         }
@@ -98,4 +103,8 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     }
 
 
+    public static interface HistoryItemClick {
+        void openEditAttendance(Attendance_sheet sheet, String mode);
+    }
 }
+
