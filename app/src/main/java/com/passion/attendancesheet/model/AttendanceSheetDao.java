@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.passion.attendancesheet.model.entity.Attendance;
 import com.passion.attendancesheet.model.entity.Attendance_sheet;
@@ -43,10 +44,16 @@ public interface AttendanceSheetDao {
     @Insert( onConflict = OnConflictStrategy.REPLACE )
     void addAttendance(Attendance attendance );
 
+    @Update( onConflict = OnConflictStrategy.REPLACE)
+    void updateAttendance( Attendance attendance );
+
     @Insert( onConflict = OnConflictStrategy.REPLACE)
     void addSubject( Subject Subj );
 
     // Fetch Data
+
+    @Query("Select * from Attendance where sheet_id = :sheet_id order by roll_no asc")
+    LiveData<List<Attendance>> getStudentsAttendance( int sheet_id );
 
     @Query("Select * from Attendance_sheet where course_id =:course_id order by id desc")
     LiveData<List<Attendance_sheet>> getAllSheetsByCourseId( String course_id );
@@ -74,7 +81,7 @@ public interface AttendanceSheetDao {
     // DELETE
 
     @Delete
-    public abstract void deleteSheet(Attendance_sheet s);
+    void removeAttendance( Attendance attendance );
 
     @Query("Delete from Attendance_sheet where id =:id")
     void deleteSheetById( int id );

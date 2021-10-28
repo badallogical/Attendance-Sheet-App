@@ -67,6 +67,12 @@ public class AttendanceSheetRepository {
         });
     }
 
+    void updateAttendance( Attendance attendance){
+        AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
+            sheetDao.updateAttendance( attendance );
+        });
+    }
+
     void addSubject( Subject subj ){
         AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
             sheetDao.addSubject( subj );
@@ -75,6 +81,10 @@ public class AttendanceSheetRepository {
 
 
     // Fetch Live Data
+
+    LiveData<List<Attendance>> getStudentsAttendance( int sheet_id ){
+        return sheetDao.getStudentsAttendance(sheet_id);
+    }
 
     LiveData<List<Attendance_sheet>> getAllSheetsByCourseId( String course_id ){
         return sheetDao.getAllSheetsByCourseId(course_id);
@@ -102,6 +112,13 @@ public class AttendanceSheetRepository {
     }
 
     // DELETE
+
+
+    void removeAttendance( Attendance attendance ){
+        AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
+            sheetDao.removeAttendance(attendance);
+        });
+    }
 
     void deleteSheetById( int id ){
         AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {

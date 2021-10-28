@@ -53,6 +53,7 @@ public class Dashboard extends Fragment {
         viewPager2 = view.findViewById(R.id.viewpager2);
         viewPager2.setAdapter( adapter );
 
+
         new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
@@ -39,6 +40,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         navController = ((NavHostFragment)getSupportFragmentManager().findFragmentById(R.id.login_nav_host_fragment)).getNavController();
+
+        // AppbarConfiguration
+//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+//                R.id.fragment_home_id,
+//                R.id.adminHome
+//        ).build();
 
         // Add up button in navigation button , where navController is provided to navigate back using up button , but the behaviour is not set yet.
         NavigationUI.setupActionBarWithNavController(this, navController);

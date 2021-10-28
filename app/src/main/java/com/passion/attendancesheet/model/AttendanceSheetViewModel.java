@@ -46,8 +46,13 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
         mRepository.addAttendanceSheet( sheet );
     }
 
+
     public void addAttendance(Attendance attendance ){
         mRepository.addAttendance( attendance );
+    }
+
+    public void updateAttendance(Attendance attendance){
+        mRepository.updateAttendance(attendance);
     }
 
     public void addSubject( Subject subj ){
@@ -55,6 +60,10 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
     }
 
     // Fetch
+
+    public LiveData<List<Attendance>> getStudentsAttendance( int sheet_id ){
+        return mRepository.getStudentsAttendance(sheet_id);
+    }
 
     public LiveData<List<Attendance_sheet>> getAllSheetsByCourseId( String course_id ){
         return mRepository.getAllSheetsByCourseId(course_id);
@@ -81,6 +90,10 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
     }
 
     // DELETE
+
+    public void removeAttendance( Attendance attendance ){
+        mRepository.removeAttendance(attendance);
+    }
 
     public void deleteSheetById( int id ){
         mRepository.deleteSheetById(id);

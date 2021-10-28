@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -79,8 +80,6 @@ public class Home extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // set Data persistence
-        db.setPersistenceEnabled(true);
     }
 
     @Override
@@ -193,7 +192,7 @@ public class Home extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        navController.navigate( DashboardDirections.actionDashboardToAttendance(courseId, LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacher_id_map.get( teacherSpinner.getSelectedItem().toString()) , getResources().getString(R.string.normal) ));
+                        navController.navigate( DashboardDirections.actionDashboardToAttendance(courseId, LectureSpinner.getSelectedItem().toString(),subjectSpinner.getSelectedItem().toString(), teacher_id_map.get( teacherSpinner.getSelectedItem().toString()) , getString(R.string.normal) ,-1));
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 

@@ -11,6 +11,9 @@ import androidx.compose.ui.graphics.Paint;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.tabs.TabLayout;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.StudentListAdapter;
 import com.passion.attendancesheet.databinding.FragmentAttendanceBinding;
@@ -51,6 +55,12 @@ public class AttendancePanel extends Fragment {
     StudentListAdapter studentListAdapter;
     AttendancePanelArgs args;
 
+    NavController navController;
+
+    String mode;
+
+
+
     public AttendancePanel() {
         // Required empty public constructor
     }
@@ -58,6 +68,9 @@ public class AttendancePanel extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        navController = NavHostFragment.findNavController(this);
+
         viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
         setHasOptionsMenu(true);
     }
@@ -74,19 +87,32 @@ public class AttendancePanel extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         args = AttendancePanelArgs.fromBundle( getArguments() );
 
+        // Prepare Header
         binding.courseName.setText(args.getCourse());
         binding.lecture.setText(args.getLecture());
         binding.subject.setText(args.getSubject());
         binding.teacher.setText(args.getTeacher().split(",")[1]);
 
+        mode = args.getMode();
+
+        // Prepare Student List based on mode
         studentListAdapter = new StudentListAdapter(getContext(), new ArrayList<Student>());
-        viewModel.getAllStudent("BBA-5").observe(getViewLifecycleOwner(), new Observer<List<Student>>() {
-            @Override
-            public void onChanged(List<Student> students) {
-                studentListAdapter.setStudents(students);
-                studentListAdapter.notifyDataSetChanged();
-            }
-        });
+        if( args.getMode().equals(getString(R.string.normal))) {
+            viewModel.getAllStudent(args.getCourse()).observe(getViewLifecycleOwner(), students -> {
+                studentListAdapter.setStudents(students, args.getMode());
+            });
+        }else if( args.getMode().equals(getString(R.string.edit))){
+            viewModel.getStudentsAttendance(args.getSheetId()).observe( getViewLifecycleOwner(), attendances -> {
+                    List<Student> studentList = new ArrayList<>();
+                    for( Attendance a : attendances ){
+                        studentList.add( new Student(a.roll_no, a.student_name, args.getCourse()));
+                    }
+                    studentListAdapter.setStudentsPresentAsList( studentList , args.getMode() );
+                });
+        }
+
+
+
         binding.studentList.setAdapter(studentListAdapter);
         binding.studentList.setLayoutManager( new LinearLayoutManager(getContext()));
 
@@ -112,15 +138,37 @@ public class AttendancePanel extends Fragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        if( mode.equals(getString(R.string.edit))){
+            menu.findItem(R.id.edit).setVisible(true);
+            menu.findItem(R.id.save).setVisible(false);
+            menu.findItem(R.id.send).setVisible(true);
+        }
+        else{
+            menu.findItem(R.id.edit).setVisible(false);
+            menu.findItem(R.id.save).setVisible(true);
+            menu.findItem(R.id.send).setVisible(true);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch ( item.getItemId() ){
+            case R.id.edit:
+                studentListAdapter.setMode( getString(R.string.editToNormal ));
+                mode = getString(R.string.editToNormal );
+                getActivity().invalidateOptionsMenu();
+                viewModel.getAllStudent( args.getCourse() ).observe( getViewLifecycleOwner(), students -> {
+                    studentListAdapter.setStudentsAndPresent(students);
+                });
+
+                //navController.navigate( AttendancePanelDirections.actionAttendanceSelf(args.getCourse(), args.getLecture(),args.getSubject(),args.getTeacher(), getString(R.string.editToNormal), args.getSheetId() ));
+                                break;
+
             case R.id.send :    break;
 
             case R.id.save:     saveSheet();
                                 break;
-
-
-
 
         }
 
@@ -133,7 +181,9 @@ public class AttendancePanel extends Fragment {
         String dateTime = new SimpleDateFormat("MMM dd, yyyy-hh:mm a", Locale.US).format(Calendar.getInstance().getTime());
 
         Timber.d( args.getLecture() + " , " + args.getTeacher().split(",")[0]  );
+
         // create attendance sheet
+        if( mode.equals(getString(R.string.normal)))
         viewModel.addAttendanceSheet( new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , dateTime , Accessory_tool.getIntFromRoman(args.getLecture()) , Integer.parseInt( args.getTeacher().split(",")[0] ) , args.getSubject()));
 
 
@@ -144,20 +194,22 @@ public class AttendancePanel extends Fragment {
 
                 // save all attendance now
                 List<Student> studentPresent = studentListAdapter.getStudentPresent();
+                List<Student> studentAbsent = studentListAdapter.getStudentAbsent();
                 for( Student s : studentPresent ){
                     viewModel.addAttendance( new Attendance(sheet_id, s.roll_number, s.name, "Present") );
                 }
 
+                // remove attendance ( if removed in edit )
+                for( Student s : studentAbsent ){
+                    viewModel.removeAttendance( new Attendance(sheet_id, s.roll_number, s.name, "Present"));
+                }
+
+
             }
+
+            navController.navigate(AttendancePanelDirections.actionAttendanceToDashboard());
+
         });
-
-
-//        List<Student> studentPresent = studentListAdapter.getStudentPresent();
-//        for( Student s : studentPresent ){
-//            Timber.d( s.name );
-////
-//        }
-//        Timber.d( studentPresent.size() + "" );
 
     }
 }

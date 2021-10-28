@@ -10,6 +10,7 @@
         android:id="@+id/history_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         tools:listitem="@layout/history_item"
         />
 
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <ImageView
