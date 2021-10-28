@@ -1,5 +1,6 @@
 package com.passion.attendancesheet.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -65,6 +66,8 @@ public class Home extends Fragment {
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
+    Context context;
+
     public Home() {
 
     }
@@ -72,7 +75,6 @@ public class Home extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        checkIfSheetAvailable("BBA-5");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
@@ -97,7 +99,7 @@ public class Home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Find the current course for a respective CR from firebase
+        // Find the current course for a respective CR from firebase and prepare header
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         currentUser.reload();
@@ -110,7 +112,7 @@ public class Home extends Fragment {
                         if (crs.child("email").getValue(String.class).equals(currentUser.getEmail())) {
                             courseId = courses.getKey();
                             courseId = courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(courseId.split(" ")[1]);
-                            binding.courseName.setText(courseId);
+                            checkIfSheetAvailable(courseId);
                             Timber.d("Course ID readed : " + courseId);
                             break;
                         }
@@ -128,6 +130,9 @@ public class Home extends Fragment {
 
             }
         });
+
+
+
 
 
         if( binding.todayList.getChildCount() == 0 ){
@@ -215,9 +220,15 @@ public class Home extends Fragment {
         viewModel.getStudentCount(course_name).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                if( integer == 0 ){
+                if( integer == null || integer == 0 ){
                     navController.navigate( DashboardDirections.actionDashboardToImportSheet() );
                     Toast.makeText(getContext(), "No Sheet found", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    binding.courseName.setText(course_name);
+                    viewModel.getStudentCount(course_name).observe( getViewLifecycleOwner(), strength -> {
+                        binding.courseStrength.setText( "Total Strength : " + strength );
+                    });
                 }
             }
         });

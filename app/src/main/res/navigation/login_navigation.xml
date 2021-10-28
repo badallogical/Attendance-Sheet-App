@@ -142,11 +142,6 @@
             <argument
                 android:name="sheet_id"
                 app:argType="integer" />
-            <action
-                android:id="@+id/action_Attendance_self"
-                app:destination="@id/Attendance"
-                app:popUpTo="@id/Attendance"
-                app:popUpToInclusive="true" />
         </fragment>
         <fragment
             android:id="@+id/ImportSheet"

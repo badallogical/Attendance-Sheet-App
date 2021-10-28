@@ -61,7 +61,6 @@ public class History extends Fragment implements HistoryListAdapter.HistoryItemC
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-            // data persistence
 
         currentUser.reload();
         db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {

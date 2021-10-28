@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             >
 
             <TextView
@@ -75,7 +75,7 @@
                 android:fontFamily="@font/roboto"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="#000"
-                tools:text="06:30 PM"
+                tools:text="06:30 PM ( updated )"
                 />
 
 

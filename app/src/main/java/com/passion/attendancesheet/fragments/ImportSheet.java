@@ -403,7 +403,7 @@ public  class ImportSheet extends Fragment {
 
         @Override
         protected String doInBackground(String... course_name ) {
-            viewModel.addCourse(new Course(course_name[0], 60));
+            viewModel.addCourse(new Course(course_name[0], student_list.size()));
             return course_name[0];
         }
 
