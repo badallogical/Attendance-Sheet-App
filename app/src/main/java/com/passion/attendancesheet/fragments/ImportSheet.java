@@ -86,6 +86,7 @@ public  class ImportSheet extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Timber.d("Onstart");
     }
 
     @Override
@@ -109,36 +110,39 @@ public  class ImportSheet extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Find the current course for a respective CR from firebase
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        FirebaseDatabase db = FirebaseDatabase.getInstance();
+//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//
+//        currentUser.reload();
+//        db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for( DataSnapshot courses : snapshot.getChildren() ){
+//                    for( DataSnapshot crs : courses.getChildren() ){
+//                        if(crs.child("email").getValue(String.class).equals(currentUser.getEmail())){
+//                            CR_courseId = courses.getKey();
+//                            CR_courseId = CR_courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(CR_courseId.split(" ")[1]);
+//                            Timber.d("Course ID readed : " + CR_courseId);
+//                            break;
+//                        }
+//                    }
+//
+//                    if( CR_courseId != null ){
+//                        break;
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
-        currentUser.reload();
-        db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for( DataSnapshot courses : snapshot.getChildren() ){
-                    for( DataSnapshot crs : courses.getChildren() ){
-                        if(crs.child("email").getValue(String.class).equals(currentUser.getEmail())){
-                            CR_courseId = courses.getKey();
-                            CR_courseId = CR_courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(CR_courseId.split(" ")[1]);
-                            Timber.d("Course ID readed : " + CR_courseId);
-                            break;
-                        }
-                    }
-
-                    if( CR_courseId != null ){
-                        break;
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        // get Course ID
+        CR_courseId = ImportSheetArgs.fromBundle(getArguments()).getCourseId();
 
 
         // Import sheet if successful navigate to CR home in async task postExecution

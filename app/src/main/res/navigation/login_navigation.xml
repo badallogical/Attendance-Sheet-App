@@ -147,7 +147,11 @@
             android:id="@+id/ImportSheet"
             android:name="com.passion.attendancesheet.fragments.ImportSheet"
             android:label="Import Sheet"
-            tools:layout="@layout/fragment_import_sheet"/>
+            tools:layout="@layout/fragment_import_sheet">
+            <argument
+                android:name="course_id"
+                app:argType="string" />
+        </fragment>
         <action
             android:id="@+id/action_navigation_to_login"
             app:destination="@id/login"

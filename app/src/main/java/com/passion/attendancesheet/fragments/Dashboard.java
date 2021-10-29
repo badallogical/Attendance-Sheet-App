@@ -21,10 +21,18 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentDashboardBinding;
+import com.passion.attendancesheet.utils.Accessory_tool;
 
 import java.util.Objects;
+
+import timber.log.Timber;
 
 public class Dashboard extends Fragment {
 
@@ -34,12 +42,50 @@ public class Dashboard extends Fragment {
     FragmentDashboardBinding binding;
     NavController navController;
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         binding = FragmentDashboardBinding.inflate(getLayoutInflater());
         navController = NavHostFragment.findNavController(this);
+
+        // get the current courses
+//        FirebaseDatabase  db = FirebaseDatabase.getInstance();
+//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//
+//        db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for( DataSnapshot courses : snapshot.getChildren() ) {
+//                    for (DataSnapshot crs : courses.getChildren()) {
+//                        if (crs.child("email").getValue(String.class).equals(currentUser.getEmail())) {
+//                            courseId = courses.getKey();
+//                            courseId = courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(courseId.split(" ")[1]);
+//                            checkIfSheetAvailable(courseId);
+//                            Timber.d("Course ID readed : " + courseId);
+//                            break;
+//                        }
+//                    }
+//
+//                    if (courseId != null) {
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+
+
+
+
         return binding.getRoot();
     }
 
@@ -84,5 +130,11 @@ public class Dashboard extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Timber.d("OnDestroy");
     }
 }

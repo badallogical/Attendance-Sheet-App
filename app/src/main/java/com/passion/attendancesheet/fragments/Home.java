@@ -62,6 +62,7 @@ public class Home extends Fragment {
 
     NavController navController;
     String courseId = null;
+    int strength = -1;
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -75,35 +76,13 @@ public class Home extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
-        navController = NavHostFragment.findNavController(this);
-        binding = FragmentHomeBinding.inflate(getLayoutInflater());
-        return binding.getRoot();
-
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        Timber.d("onStart");
 
         // Find the current course for a respective CR from firebase and prepare header
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         currentUser.reload();
-        db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
+        db.getReference().child("crs").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -131,9 +110,49 @@ public class Home extends Fragment {
             }
         });
 
+        Timber.d("OnCreateView");
+        if( courseId == null ){
+            Timber.d("course id is null ");
+        }
+        else{
+            checkIfSheetAvailable(courseId);
+        }
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Timber.d("OnCreate");
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
 
+        Timber.d("onCreateView");
+        viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
+        navController = NavHostFragment.findNavController(this);
+        binding = FragmentHomeBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if( strength == -1 ){
+            view.setVisibility(View.GONE);
+
+        }
+        else{
+            view.setVisibility(View.VISIBLE);
+
+        }
 
         if( binding.todayList.getChildCount() == 0 ){
             binding.noLecture.setVisibility( View.VISIBLE );
@@ -216,12 +235,16 @@ public class Home extends Fragment {
 
     private void checkIfSheetAvailable( String course_name ) {
 
+        if( course_name == null || course_name.isEmpty() ){
+            Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT ).show();
+        }
+
         // Navigate to CR Home is sheet available
-        viewModel.getStudentCount(course_name).observe(this, new Observer<Integer>() {
+        viewModel.getStudentCount(course_name).observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if( integer == null || integer == 0 ){
-                    navController.navigate( DashboardDirections.actionDashboardToImportSheet() );
+                    navController.navigate( DashboardDirections.actionDashboardToImportSheet(course_name) );
                     Toast.makeText(getContext(), "No Sheet found", Toast.LENGTH_LONG).show();
                 }
                 else{
@@ -230,7 +253,15 @@ public class Home extends Fragment {
                         binding.courseStrength.setText( "Total Strength : " + strength );
                     });
                 }
+
+                Timber.d("check if sheet Avaiable called");
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Timber.d("OnDestroy");
     }
 }
