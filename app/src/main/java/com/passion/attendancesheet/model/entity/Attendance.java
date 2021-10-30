@@ -14,13 +14,19 @@ public class Attendance {
 
     public int roll_no;
     public String student_name;
-    public String student_status; // Present, Absent, Bunked, Permitted
+    public String student_status;   // Present, Absent, Bunked, Permitted
+
+    public String reason;   // Give Reason if Permitted
 
     public Attendance( int sheet_id, int roll_no, String student_name, String student_status  ){
         this.sheet_id = sheet_id;
         this.roll_no = roll_no;
         this.student_name = student_name;
         this.student_status = student_status;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
 }

@@ -95,6 +95,7 @@ public class AttendancePanel extends Fragment {
 
         mode = args.getMode();
 
+
         // Prepare Student List based on mode
         studentListAdapter = new StudentListAdapter(getContext(), new ArrayList<Student>());
         if( args.getMode().equals(getString(R.string.normal))) {

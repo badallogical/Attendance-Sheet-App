@@ -27,7 +27,8 @@
         <entry key="app/src/main/res/layout/history_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/prepare_sheet_dialog.xml" value="0.221875" />
         <entry key="app/src/main/res/layout/student_item.xml" value="0.209375" />
-        <entry key="app/src/main/res/layout/today_list_item.xml" value="0.221875" />
+        <entry key="app/src/main/res/layout/today_list_expandable_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/today_list_item.xml" value="0.25" />
         <entry key="app/src/main/res/menu/admin_menu.xml" value="0.221875" />
         <entry key="app/src/main/res/menu/attendance_sheet_menu.xml" value="0.221875" />
         <entry key="app/src/main/res/menu/cr_menu.xml" value="0.221875" />

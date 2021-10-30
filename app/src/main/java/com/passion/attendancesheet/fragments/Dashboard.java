@@ -14,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
@@ -28,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentDashboardBinding;
+import com.passion.attendancesheet.model.AttendanceSheetViewModel;
 import com.passion.attendancesheet.utils.Accessory_tool;
 
 import java.util.Objects;
@@ -42,7 +46,18 @@ public class Dashboard extends Fragment {
     FragmentDashboardBinding binding;
     NavController navController;
 
+    String courseId = null;
+    int strength = -1;
+    AttendanceSheetViewModel viewModel;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity)(getActivity())).getSupportActionBar().setElevation(0);
+
+    }
 
     @Nullable
     @Override
@@ -50,41 +65,7 @@ public class Dashboard extends Fragment {
         setHasOptionsMenu(true);
         binding = FragmentDashboardBinding.inflate(getLayoutInflater());
         navController = NavHostFragment.findNavController(this);
-
-        // get the current courses
-//        FirebaseDatabase  db = FirebaseDatabase.getInstance();
-//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//
-//        db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for( DataSnapshot courses : snapshot.getChildren() ) {
-//                    for (DataSnapshot crs : courses.getChildren()) {
-//                        if (crs.child("email").getValue(String.class).equals(currentUser.getEmail())) {
-//                            courseId = courses.getKey();
-//                            courseId = courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(courseId.split(" ")[1]);
-//                            checkIfSheetAvailable(courseId);
-//                            Timber.d("Course ID readed : " + courseId);
-//                            break;
-//                        }
-//                    }
-//
-//                    if (courseId != null) {
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-
-
-
+        viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
 
         return binding.getRoot();
     }
@@ -92,25 +73,71 @@ public class Dashboard extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        ((AppCompatActivity)(getActivity())).getSupportActionBar().setElevation(0);
+        // hide tab and view Pager while loading
+        if( courseId == null && strength <= 0 )
+        binding.tabAndViewPager.setVisibility(View.GONE);
 
-        tabLayout = view.findViewById(R.id.tabLayout);
-        adapter = new DashboardAdapter(this);
-        viewPager2 = view.findViewById(R.id.viewpager2);
-        viewPager2.setAdapter( adapter );
+        // Get the current courses
+        FirebaseDatabase  db = FirebaseDatabase.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-
-        new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
+        db.getReference().child("crs").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                     if( position == 0 ){
-                         tab.setText("Home");
-                     }
-                     else{
-                         tab.setText("History");
-                     }
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for( DataSnapshot courses : snapshot.getChildren() ) {
+                    for (DataSnapshot crs : courses.getChildren()) {
+                        if (crs.child("email").getValue(String.class).equals(currentUser.getEmail())) {
+                            courseId = courses.getKey();
+                            courseId = courseId.split(" ")[0] + "-" + Accessory_tool.getIntFromRoman(courseId.split(" ")[1]);
+
+                            Toast.makeText(getContext(), "Course : " + courseId, Toast.LENGTH_LONG).show();
+
+                            // check if sheet import or not based on strength
+                            checkIfSheetAvailable(courseId);
+                            break;
+                        }
+                    }
+                }
             }
-        }).attach();
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+    }
+
+    private void prepareDashboard(){
+
+        View view = binding.getRoot();
+
+        if( courseId != null && strength > 0 ) {
+
+            binding.tabAndViewPager.setVisibility(View.VISIBLE);
+            binding.lottieAnimationView.cancelAnimation();
+            binding.lottieAnimationView.setVisibility(View.GONE);
+
+            tabLayout = view.findViewById(R.id.tabLayout);
+            adapter = new DashboardAdapter(this, courseId, strength);
+            viewPager2 = view.findViewById(R.id.viewpager2);
+            viewPager2.setAdapter(adapter);
+
+            Timber.d("Sheet Prepared");
+
+
+            new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+                if (position == 0) {
+                    tab.setText("Home");
+                } else {
+                    tab.setText("History");
+                }
+            }).attach();
+
+        }
     }
 
     @Override
@@ -130,6 +157,39 @@ public class Dashboard extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkIfSheetAvailable( String course_name ) {
+
+        Timber.d("check if sheet Available called");
+
+        if( course_name == null || course_name.isEmpty() ){
+            Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT ).show();
+            return;
+        }
+
+        // Check if sheet imported if yes , Navigate to CR Home is sheet available, other wise go to ImportSheet
+        viewModel.getStudentCount(course_name).observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer str) {
+                if( str == null || str == 0 ){
+                    navController.navigate( DashboardDirections.actionDashboardToImportSheet(course_name));
+                    Toast.makeText(getContext(), "No Sheet found of " + course_name, Toast.LENGTH_LONG).show();
+                    Timber.d("course readied %s", course_name);
+
+                }
+                else{
+
+                    // Prepare DashBoard
+                    Timber.d("Prepare Dashboard called");
+                    strength = str;
+                    prepareDashboard();
+
+                }
+
+
+            }
+        });
     }
 
     @Override

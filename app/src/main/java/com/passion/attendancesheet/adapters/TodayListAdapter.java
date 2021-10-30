@@ -36,7 +36,6 @@ public class TodayListAdapter extends RecyclerView.Adapter<TodayListAdapter.Toda
         public TodayListViewHolder(@NonNull View itemView) {
             super(itemView);
 
-
         }
     }
 }

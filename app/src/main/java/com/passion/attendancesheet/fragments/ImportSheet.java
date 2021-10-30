@@ -92,6 +92,9 @@ public  class ImportSheet extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
         navController = NavHostFragment.findNavController(this);
 
@@ -247,7 +250,7 @@ public  class ImportSheet extends Fragment {
                                 cur_courseReadied = cur_row.getCell(1).toString();
                                 Timber.i("Course Readed" + cur_courseReadied);
 
-                                if( cur_courseReadied.equals(CR_courseId ) == false ){
+                                if( cur_courseReadied.equals(CR_courseId) == false ){
                                     new AlertDialog.Builder(getContext())
                                             .setTitle("Invalid Sheet")
                                             .setMessage("Please Import Your Course Sheet")
