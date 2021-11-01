@@ -71,6 +71,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
         if( mode.equals( context.getString(R.string.edit ))){
             this.students = students_present;
+            this.student_present = students_present;
             Timber.d("students presents set to students, student present is " + students_present.size());
         }
 //        else if( mode.equals( context.getString(R.string.editToNormal))){

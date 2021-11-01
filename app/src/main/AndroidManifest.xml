@@ -18,6 +18,17 @@
         android:theme="@style/AppTheme"
         tools:ignore="HardcodedDebugMode">
 
+        <provider
+            android:authorities="com.passion.attendancesheet"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path"/>
+
+        </provider>
+
         <activity android:name=".AdminActivity"
             android:windowSoftInputMode="adjustPan"
             ></activity>
