@@ -15,112 +15,137 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:paddingStart="16dp">
+
+
 
             <TextView
-                android:id="@+id/lecture_no"
+                android:id="@+id/today_lecture_no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
-                android:textSize="16dp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Lecture 1" />
 
+
             <TextView
-                android:id="@+id/teacher_name"
+                android:id="@+id/att_subject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/today_lecture_no"
+                app:layout_constraintTop_toTopOf="@id/today_lecture_no"
+                tools:text="Data Mining" />
+
+            <TextView
+                android:id="@+id/today_teacher_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:textColor="#000"
-                android:textSize="16dp"
+                android:textSize="12sp"
+                app:layout_constraintTop_toBottomOf="@id/scores"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lecture_no"
+                app:layout_constraintEnd_toEndOf="parent"
                 tools:text="by Rohit Sir" />
 
 
-            <ImageView
-                android:id="@+id/present_icon"
+            <LinearLayout
+                android:id="@+id/scores"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/present_dot"
-                app:layout_constraintBottom_toBottomOf="@+id/presnet_score"
-                app:layout_constraintEnd_toStartOf="@+id/presnet_score"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="@id/att_subject"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/att_subject"
+                app:layout_constraintStart_toStartOf="@+id/att_subject">
 
-            <TextView
-                android:id="@+id/presnet_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:textColor="#000"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toStartOf="@+id/absent_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="34/90" />
+                <ImageView
+                    android:id="@+id/present_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/present_dot"
+                    tools:layout_editor_absoluteY="10dp" />
 
-            <ImageView
-                android:id="@+id/absent_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/absent_dot"
-                app:layout_constraintBottom_toBottomOf="@+id/absent_score"
-                app:layout_constraintEnd_toStartOf="@+id/absent_score"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/presnet_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="10dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="34/90" />
 
-            <TextView
-                android:id="@+id/absent_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:textColor="#000"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="34/90" />
+                <ImageView
+                    android:id="@+id/absent_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/absent_dot"
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:src="@drawable/ic_round_warning_24"
-                app:layout_constraintBottom_toBottomOf="@+id/bunks_score"
-                app:layout_constraintEnd_toStartOf="@+id/bunks_score" />
+                    />
 
-            <TextView
-                android:id="@+id/bunks_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginRight="10dp"
-                android:textColor="#000"
-                android:textSize="16dp"
-                app:layout_constraintStart_toEndOf="@+id/present_icon"
-                app:layout_constraintTop_toBottomOf="@+id/presnet_score"
-                tools:text="34/90" />
+                <TextView
+                    android:id="@+id/absent_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="10dp"
+                    android:textStyle="bold"
+                    tools:text="34/90" />
 
-            <ImageView
-                android:id="@+id/expand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/arrow_down_float"
-                app:layout_constraintBottom_toBottomOf="@+id/bunks_score"
-                app:layout_constraintEnd_toEndOf="@+id/absent_score" />
+            </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="10dp"-->
+<!--                android:src="@drawable/ic_round_warning_24"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/bunks_score"-->
+<!--                app:layout_constraintEnd_toStartOf="@+id/bunks_score" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/bunks_score"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="10dp"-->
+<!--                android:layout_marginTop="12dp"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                android:textColor="#000"-->
+<!--                android:textSize="16sp"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/present_score"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/presnet_score"-->
+<!--                tools:text="34/90" />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/expand"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:src="@android:drawable/arrow_down_float"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/bunks_score"-->
+<!--                app:layout_constraintEnd_toEndOf="@+id/absent_score" />-->
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bunker_list"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/today_list_expandable_item"

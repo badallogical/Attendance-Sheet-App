@@ -1,24 +1,17 @@
 package com.passion.attendancesheet.fragments;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.RectF;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.compose.ui.graphics.Paint;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.tabs.TabLayout;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.StudentListAdapter;
 import com.passion.attendancesheet.databinding.FragmentAttendanceBinding;
@@ -39,7 +31,6 @@ import com.passion.attendancesheet.utils.Accessory_tool;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -88,10 +79,10 @@ public class AttendancePanel extends Fragment {
         args = AttendancePanelArgs.fromBundle( getArguments() );
 
         // Prepare Header
-        binding.courseName.setText(args.getCourse());
-        binding.lecture.setText(args.getLecture());
-        binding.subject.setText(args.getSubject());
-        binding.teacher.setText(args.getTeacher().split(",")[1]);
+        binding.attCourseName.setText(args.getCourse());
+        binding.attLecture.setText(args.getLecture());
+        binding.attSubject.setText(args.getSubject());
+        binding.attTeacher.setText(args.getTeacher().split(",")[1]);
 
         mode = args.getMode();
 
@@ -181,36 +172,45 @@ public class AttendancePanel extends Fragment {
         // get Current data and time
         String dateTime = new SimpleDateFormat("MMM dd, yyyy-hh:mm a", Locale.US).format(Calendar.getInstance().getTime());
 
-        Timber.d( args.getLecture() + " , " + args.getTeacher().split(",")[0]  );
+//        Timber.d( args.getLecture() + " , " + args.getTeacher().split(",")[0]  );
 
         // create attendance sheet
-        if( mode.equals(getString(R.string.normal)))
-        viewModel.addAttendanceSheet( new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , dateTime , Accessory_tool.getIntFromRoman(args.getLecture()) , Integer.parseInt( args.getTeacher().split(",")[0] ) , args.getSubject()));
+//        if( mode.equals(getString(R.string.normal)))
+//        viewModel.addAttendanceSheet( new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , dateTime , Accessory_tool.getIntFromRoman(args.getLecture()) , Integer.parseInt( args.getTeacher().split(",")[0] ) , args.getSubject()));
 
+        Attendance_sheet sheet =  new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , dateTime , Accessory_tool.getIntFromRoman(args.getLecture()) , Integer.parseInt( args.getTeacher().split(",")[0] ) , args.getSubject());
 
         // Get Newly inserted sheet id
-        viewModel.getAllSheetsByCourseId( args.getCourse() ).observe( getViewLifecycleOwner(), sheets -> {
-            if( sheets.size() != 0 ){
-                int sheet_id = sheets.get(0).id;
-
-                // save all attendance now
-                List<Student> studentPresent = studentListAdapter.getStudentPresent();
-                List<Student> studentAbsent = studentListAdapter.getStudentAbsent();
-                for( Student s : studentPresent ){
-                    viewModel.addAttendance( new Attendance(sheet_id, s.roll_number, s.name, "Present") );
-                }
-
-                // remove attendance ( if removed in edit )
-                for( Student s : studentAbsent ){
-                    viewModel.removeAttendance( new Attendance(sheet_id, s.roll_number, s.name, "Present"));
-                }
-
-
-            }
-
+//        viewModel.getAllSheetsByCourseId( args.getCourse() ).observe( getViewLifecycleOwner(), sheets -> {
+//            if( sheets.size() != 0 ){
+//                int sheet_id = sheets.get(0).id;
+//
+//
+//
+//                if( studentPresent.size() == 0 ){
+//                    Timber.d("student present 0 ");
+//                }
+//                Timber.d("student present " + studentPresent.size());
+//
+//                for( Student s : studentPresent ){
+//                    viewModel.addAttendance( new Attendance(sheet_id, s.roll_number, s.name, "Present") );
+//                }
+//
+//                // Update Current Attendance Sheet
+//                viewModel.updateSheetTotalPresentAndAbsent( sheet_id, studentPresent.size(), studentListAdapter.getStudents().size() - studentPresent.size() );
+//
+//                // remove attendance ( if removed in edit )
+//                for( Student s : studentAbsent ){
+//                    viewModel.removeAttendance( new Attendance(sheet_id, s.roll_number, s.name, "Present"));
+//                }
+//
+//
+//            }
+            // save all attendance now
+            List<Student> studentPresent = studentListAdapter.getStudentPresent();
+            List<Student> studentAbsent = studentListAdapter.getStudentMarkedAbsent();
+            viewModel.saveAttendanceSheetWithAttendance(sheet, studentPresent , studentAbsent, mode);
             navController.navigate(AttendancePanelDirections.actionAttendanceToDashboard());
 
-        });
-
+        }
     }
-}

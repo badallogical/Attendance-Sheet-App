@@ -1,6 +1,5 @@
 package com.passion.attendancesheet.fragments.admin;
 
-import android.animation.Animator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,27 +8,19 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,7 +33,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.AdminCourseListAdapter;
 import com.passion.attendancesheet.adapters.CourseListClick;
@@ -227,7 +217,7 @@ public class AdminHome extends Fragment implements CourseListClick {
                                         FirebaseDatabase db = FirebaseDatabase.getInstance();
                                         DatabaseReference ref = db.getReference("courses");
 
-                                        EditText editCourse = (EditText)custom_layout.findViewById(R.id.course_name);
+                                        EditText editCourse = (EditText)custom_layout.findViewById(R.id.att_course_name);
                                         if( editCourse.getText().toString().trim().isEmpty() ){
                                             editCourse.setError("Empty Field");
                                         }

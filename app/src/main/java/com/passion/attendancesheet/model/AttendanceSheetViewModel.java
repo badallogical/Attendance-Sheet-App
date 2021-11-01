@@ -99,4 +99,15 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
         mRepository.deleteSheetById(id);
     }
 
+    // UPDATE
+
+    public void updateSheetTotalPresentAndAbsent( int sheet_id, int presents , int absents ){
+        mRepository.updateSheetTotalPresentAndAbsent(sheet_id, presents, absents);
+    }
+
+    // TRANSACTION
+    public void saveAttendanceSheetWithAttendance(Attendance_sheet sheet, List<Student> presents , List<Student> markedAbsent, String mode){
+        mRepository.saveAttendanceSheetWithAttendance(sheet, presents, markedAbsent, mode);
+    }
+
 }

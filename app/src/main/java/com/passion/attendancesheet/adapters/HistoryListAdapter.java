@@ -76,8 +76,8 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         public HistoryListViewHolder(@NonNull View itemView, Context context , HistoryItemClick historyItemClick) {
             super(itemView);
             date = itemView.findViewById(R.id.date);
-            course = itemView.findViewById(R.id.course_name);
-            lecture = itemView.findViewById(R.id.lecture_no);
+            course = itemView.findViewById(R.id.att_course_name);
+            lecture = itemView.findViewById(R.id.today_lecture_no);
             time = itemView.findViewById(R.id.time);
 
             itemView.setOnClickListener(new View.OnClickListener() {

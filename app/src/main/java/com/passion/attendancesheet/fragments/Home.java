@@ -15,6 +15,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -36,9 +37,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.R;
+import com.passion.attendancesheet.adapters.TodayListAdapter;
 import com.passion.attendancesheet.databinding.FragmentHomeBinding;
 import com.passion.attendancesheet.fragments.admin.AdminHomeDirections;
 import com.passion.attendancesheet.model.AttendanceSheetViewModel;
+import com.passion.attendancesheet.model.entity.Attendance_sheet;
 import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.model.entity.views.TeacherAndCoursesView;
 import com.passion.attendancesheet.utils.Accessory_tool;
@@ -99,18 +102,40 @@ public class Home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.courseName.setText( courseId );
-        binding.courseStrength.setText( "Total Strength : " + strength );
+        binding.headerCourseName.setText( courseId );
+        binding.headerCourseStrength.setText( "Total Strength : " + strength );
 
 
-        if( binding.todayList.getChildCount() == 0 ){
-            binding.noLecture.setVisibility( View.VISIBLE );
-            binding.todayList.setVisibility( View.GONE );
-        }
-        else{
-            binding.noLecture.setVisibility( View.GONE );
-            binding.todayList.setVisibility( View.VISIBLE );
-        }
+        // Prepare Today List
+        viewModel.getAllSheetsByCourseId(courseId).observe( getViewLifecycleOwner(), sheets -> {
+
+            Timber.d("preparing today list " + sheets.size());
+
+            TodayListAdapter adapter = new TodayListAdapter(getContext(), strength);
+            binding.todayList.setAdapter( adapter);
+            binding.todayList.setLayoutManager( new LinearLayoutManager(getContext()));
+            List<String> teachers = new ArrayList<>();
+            for(Attendance_sheet s : sheets ){
+               viewModel.getTeacherNameById(s.teacher_id).observe(getViewLifecycleOwner(), teacher_name -> {
+                   teachers.add(teacher_name);
+                   Timber.d(teacher_name);
+                   adapter.setTodaySheet( sheets, teachers );
+               });
+            }
+
+
+
+            if( sheets.size() == 0 ){
+                binding.noLecture.setVisibility( View.VISIBLE );
+                binding.todayList.setVisibility( View.GONE );
+            }
+            else{
+                binding.noLecture.setVisibility( View.GONE );
+                binding.todayList.setVisibility( View.VISIBLE );
+            }
+        });
+
+
 
         binding.buttonMarkAttendance.setOnClickListener( new View.OnClickListener() {
             @Override

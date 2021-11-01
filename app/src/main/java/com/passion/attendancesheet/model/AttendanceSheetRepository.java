@@ -1,7 +1,6 @@
 package com.passion.attendancesheet.model;
 
 import android.app.Application;
-import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
@@ -13,8 +12,6 @@ import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.model.entity.TeacherCourseCross;
 import com.passion.attendancesheet.model.entity.Subject;
 import com.passion.attendancesheet.model.entity.views.TeacherAndCoursesView;
-
-import org.jetbrains.annotations.Async;
 
 import java.util.List;
 
@@ -126,5 +123,20 @@ public class AttendanceSheetRepository {
         });
     }
 
+
+    // UPDATE
+
+    void updateSheetTotalPresentAndAbsent( int sheet_id, int presents , int absents ){
+        AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
+            sheetDao.updateSheetTotalPresentAndAbsent(sheet_id, presents, absents );
+        });
+    }
+
+    // TRANSACTION
+    void saveAttendanceSheetWithAttendance(Attendance_sheet sheet, List<Student> presents, List<Student> markedAbsent, String mode ){
+        AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
+            sheetDao.saveAttendanceSheetWithAttendance( sheet, presents, markedAbsent, mode);
+        });
+    }
 
 }

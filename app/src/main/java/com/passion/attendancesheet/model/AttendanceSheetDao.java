@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.passion.attendancesheet.model.entity.Attendance;
@@ -19,6 +20,7 @@ import com.passion.attendancesheet.model.entity.views.TeacherAndCoursesView;
 
 import java.util.List;
 
+import timber.log.Timber;
 
 
 @Dao
@@ -88,5 +90,44 @@ public interface AttendanceSheetDao {
 
 
 
+    // UPDATE
+
+    @Query("Update attendance_sheet SET presents = :presents , absents = :absents where id = :sheet_id")
+    void updateSheetTotalPresentAndAbsent( int sheet_id, int presents , int absents );
+
+
+    @Query("Select id from Attendance_sheet where course_id = :course_id order by id desc limit 1 ")
+    int getLastSheetId( String course_id );
+
+    @Query("Select strength from course where course_and_sem = :course_id ")
+    int getCourseStrength( String course_id );
+
+    // TRANSACTION
+    @Transaction
+    default void saveAttendanceSheetWithAttendance(Attendance_sheet sheet, List<Student> presents, List<Student> markedAbsent, String mode){
+
+        if( mode.equals("NORMAL"))
+            addAttendanceSheet(sheet);
+
+        int sheet_id = getLastSheetId(sheet.course_id);
+        Timber.d("Sheet id " + sheet_id );
+        for( Student s : presents ){
+            addAttendance( new Attendance(sheet_id, s.roll_number, s.name, "Present") );
+            Timber.d( "Student : " + s.name );
+        }
+
+        int course_strength =getCourseStrength(sheet.course_id);
+
+        // update
+        updateSheetTotalPresentAndAbsent( sheet_id, presents.size(), course_strength - presents.size() );
+
+        if( markedAbsent != null ){
+            for( Student s : markedAbsent ){
+                removeAttendance(new Attendance(sheet_id, s.roll_number, s.name, "Present")  );
+            }
+        }
+
+        Timber.d("Sheet saved Successfully");
+    }
 
 }

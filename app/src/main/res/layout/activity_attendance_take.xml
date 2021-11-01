@@ -23,7 +23,7 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/course_name"
+                android:id="@+id/att_course_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -35,7 +35,7 @@
                 tools:text="BCA" />
 
             <TextView
-                android:id="@+id/lecture"
+                android:id="@+id/att_lecture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="III Lecture "
@@ -46,7 +46,7 @@
                 />
 
             <TextView
-                android:id="@+id/subject"
+                android:id="@+id/att_subject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
@@ -56,7 +56,7 @@
                 />
 
             <TextView
-                android:id="@+id/teacher"
+                android:id="@+id/att_teacher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="By L.S Awasthi"

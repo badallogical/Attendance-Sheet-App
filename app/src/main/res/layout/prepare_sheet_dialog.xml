@@ -17,7 +17,7 @@
         android:padding="10dp">
 
         <LinearLayout
-            android:id="@+id/lecture"
+            android:id="@+id/att_lecture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -46,10 +46,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/teacher"
+            android:id="@+id/att_teacher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lecture"
+            android:layout_below="@+id/att_lecture"
             android:layout_centerHorizontal="true"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
@@ -78,7 +78,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/teacher"
+            android:layout_below="@+id/att_teacher"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
@@ -86,7 +86,7 @@
             >
 
             <TextView
-                android:id="@+id/subject"
+                android:id="@+id/att_subject"
                 style="@style/tag_style"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                 android:layout_weight="2"
                 android:autofillHints="Subject"
                 android:inputType="textAutoComplete"
-                android:labelFor="@id/subject"
+                android:labelFor="@id/att_subject"
                 android:textSize="14sp" />
 
             <TextView

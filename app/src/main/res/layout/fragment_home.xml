@@ -35,7 +35,7 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/course_name"
+                    android:id="@+id/header_course_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat"
@@ -48,7 +48,7 @@
                     tools:text="BCA 5" />
 
                 <TextView
-                    android:id="@+id/course_strength"
+                    android:id="@+id/header_course_strength"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
@@ -57,7 +57,7 @@
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/course_name"
+                    app:layout_constraintTop_toBottomOf="@+id/header_course_name"
                     tools:text="Total Strength : 90 " />
 
                 <Button
@@ -71,7 +71,7 @@
                     android:text="Mark Attendance"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/course_strength" />
+                    app:layout_constraintTop_toBottomOf="@+id/header_course_strength" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -94,11 +94,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
+                    android:paddingVertical="5dp"
                     android:paddingStart="16dp"
                     android:text="Today"
+                    android:textStyle="bold"
                     android:textColor="#000"
-                    android:textSize="25sp" />
+                    android:textSize="18sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/today_list"

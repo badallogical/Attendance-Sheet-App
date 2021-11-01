@@ -12,7 +12,6 @@ import androidx.room.PrimaryKey;
 public class Attendance_sheet {
 
     @PrimaryKey( autoGenerate = true )
-    @NonNull
     public int id;
 
     public String course_id;
@@ -24,6 +23,10 @@ public class Attendance_sheet {
     public int teacher_id;
 
     public String subject;
+
+    public int presents;
+
+    public int absents;
 
     public Attendance_sheet(  String course_id, String data_and_time, int lecture, int teacher_id, String subject ){
         this.course_id = course_id;

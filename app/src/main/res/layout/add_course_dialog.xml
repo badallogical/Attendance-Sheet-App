@@ -5,7 +5,7 @@
     android:orientation="horizontal">
 
     <EditText
-        android:id="@+id/course_name"
+        android:id="@+id/att_course_name"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"

@@ -4,17 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.passion.attendancesheet.R;
-import com.passion.attendancesheet.dataclasses.StudentF;
 import com.passion.attendancesheet.model.entity.Student;
 
 import java.util.ArrayList;
@@ -28,14 +25,14 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     List<Student> students;         // Total Students
     List<Student> student_present;      // Present Student ONLY
     String mode;
-    List<Student> student_absent;
+    List<Student> student_marked_absent;
 
     public StudentListAdapter( Context context, List<Student> students ){
         this.context  = context;
         this.students = students;
 
         student_present = new ArrayList<Student>();
-        student_absent = new ArrayList<Student>();
+        student_marked_absent = new ArrayList<Student>();
     }
 
     @NonNull
@@ -93,7 +90,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         return student_present;
     }
 
-    public List<Student> getStudentAbsent(){ return student_absent; }
+    public List<Student> getStudentMarkedAbsent(){ return student_marked_absent; }
 
     public void setStudents(List<Student> students , String mode){
         this.students = students;
@@ -171,7 +168,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
                         Timber.d("Adapter position " + getAdapterPosition() + " removed ");
 
                         if( mode.equals(context.getString(R.string.editToNormal))){
-                            student_absent.add( students.get(getAdapterPosition()) );
+                            student_marked_absent.add( students.get(getAdapterPosition()) );
                         }
                     }
 

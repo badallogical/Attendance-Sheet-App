@@ -54,7 +54,7 @@ public class Dashboard extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity)(getActivity())).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ((AppCompatActivity)(getActivity())).getSupportActionBar().setElevation(0);
 
     }

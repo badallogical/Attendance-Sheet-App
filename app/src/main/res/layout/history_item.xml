@@ -28,7 +28,7 @@
             >
 
             <TextView
-                android:id="@+id/course_name"
+                android:id="@+id/att_course_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="BCA VI"
@@ -38,7 +38,7 @@
                 />
 
             <TextView
-                android:id="@+id/lecture_no"
+                android:id="@+id/today_lecture_no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Lecture 1"
