@@ -23,6 +23,8 @@ import com.passion.attendancesheet.LoginBottomSheet;
 import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.databinding.FragmentLoginBinding;
 
+import timber.log.Timber;
+
 
 public class Login extends Fragment {
 
@@ -56,25 +58,31 @@ public class Login extends Fragment {
         // Get the navController using fragment
         NavController navController = NavHostFragment.findNavController( this );
 
-        // Sign In
-        binding.signInBtn.setOnClickListener(new View.OnClickListener(){
+        // Check if User Existed Already and wait until loginActivity does something
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if( mAuth.getCurrentUser() != null ){
+            Timber.d("User is null");
+            binding.lottieAnimationView.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onClick(View v) {
-                LoginBottomSheet bottomSheet = new LoginBottomSheet( navController , 0);
-                bottomSheet.show( getParentFragmentManager() , "signInSheet");
-            }
+            binding.clgLogo.setEnabled(false);
+            binding.signInBtn.setVisibility(View.GONE);
+            binding.signUpBtn.setVisibility(View.GONE);
+        }
+
+
+
+
+        // Sign In
+        binding.signInBtn.setOnClickListener(v -> {
+            LoginBottomSheet bottomSheet = new LoginBottomSheet( navController , 0);
+            bottomSheet.show( getParentFragmentManager() , "signInSheet");
         });
 
         // Sign - Up
-        binding.signUpBtn.setOnClickListener(new View.OnClickListener(){
+        binding.signUpBtn.setOnClickListener(v -> {
+            LoginBottomSheet bottomSheet = new LoginBottomSheet(navController,1);
+            bottomSheet.show( getParentFragmentManager() , "SignUpSheet");
 
-            @Override
-            public void onClick(View v) {
-                LoginBottomSheet bottomSheet = new LoginBottomSheet(navController,1);
-                bottomSheet.show( getParentFragmentManager() , "SignUpSheet");
-
-            }
         });
     }
 }

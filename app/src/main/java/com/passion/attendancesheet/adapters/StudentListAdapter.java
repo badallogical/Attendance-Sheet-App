@@ -107,9 +107,8 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         this.mode = mode;
     }
 
-    public void setStudentsAndPresent( List<Student> studentList){
-        student_present.clear();
-        this.student_present.addAll(this.students);
+    public void setStudentsAndPresent( List<Student> studentList ){
+
         this.students = studentList;
 
         Timber.d("mode - " + this.mode);
@@ -122,12 +121,6 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
             Timber.d("student - %s", student.name);
         }
 
-        if( student_present.get(0).equals( studentList.get(0)) ){
-            Timber.d("student are same");
-        }
-        else{
-            Timber.d("student not same");
-        }
         notifyDataSetChanged();
     }
 

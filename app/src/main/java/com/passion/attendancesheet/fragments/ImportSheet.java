@@ -430,8 +430,8 @@ public  class ImportSheet extends Fragment {
 
             viewModel.addSubject( new Subject( course_name, subjects ));
 
-            // redirect to previous HOME cr fragment
-             navController.popBackStack();
+            // redirect to HOME cr fragment
+            navController.navigate( ImportSheetDirections.actionImportSheetToDashboard());
         }
 
 
