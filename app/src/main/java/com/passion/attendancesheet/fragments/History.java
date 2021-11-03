@@ -21,7 +21,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.passion.attendancesheet.R;
 import com.passion.attendancesheet.adapters.HistoryListAdapter;
 import com.passion.attendancesheet.databinding.FragmentHistoryBinding;
 import com.passion.attendancesheet.model.AttendanceSheetViewModel;
@@ -133,8 +132,7 @@ public class History extends Fragment implements HistoryListAdapter.HistoryItemC
 
     @Override
     public void openEditAttendance(Attendance_sheet sheet, String mode) {
-        viewModel.getTeacherNameById( sheet.teacher_id ).observe( getViewLifecycleOwner(), teacher_name -> {
-            navController.navigate(DashboardDirections.actionDashboardToAttendance(sheet.course_id, Accessory_tool.getRomanFromInt(sheet.lecture), sheet.subject, sheet.teacher_id + "," + teacher_name, mode, sheet.id));
-        });
+        navController.navigate(DashboardDirections.actionDashboardToAttendance(sheet.course_id, Accessory_tool.getRomanFromInt(sheet.lecture), sheet.subject, sheet.teacher.teacher_id + "," + sheet.teacher.name, mode, sheet.id));
+
        }
 }

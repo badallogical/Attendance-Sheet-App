@@ -39,6 +39,7 @@ import com.passion.attendancesheet.model.AttendanceSheetViewModel;
 import com.passion.attendancesheet.model.entity.Attendance_sheet;
 import com.passion.attendancesheet.model.entity.Student;
 import com.passion.attendancesheet.model.entity.Attendance;
+import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.utils.Accessory_tool;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -206,7 +207,7 @@ public class AttendancePanel extends Fragment {
 //        if( mode.equals(getString(R.string.normal)))
 //        viewModel.addAttendanceSheet( new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , dateTime , Accessory_tool.getIntFromRoman(args.getLecture()) , Integer.parseInt( args.getTeacher().split(",")[0] ) , args.getSubject()));
 
-        Attendance_sheet sheet = new Attendance_sheet(studentListAdapter.getStudents().get(0).course_id, dateTime, Accessory_tool.getIntFromRoman(args.getLecture()), Integer.parseInt(args.getTeacher().split(",")[0]), args.getSubject());
+        Attendance_sheet sheet = new Attendance_sheet(studentListAdapter.getStudents().get(0).course_id, dateTime, Accessory_tool.getIntFromRoman(args.getLecture()), new Teacher(Integer.parseInt(args.getTeacher().split(",")[0]) , args.getTeacher().split(",")[1]), args.getSubject());
 
         // Get Newly inserted sheet id
 //        viewModel.getAllSheetsByCourseId( args.getCourse() ).observe( getViewLifecycleOwner(), sheets -> {

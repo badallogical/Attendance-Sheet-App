@@ -9,17 +9,17 @@ public class Teacher {
 
     @PrimaryKey
     @NonNull
-    public int id;
+    public int teacher_id;
 
     public String name;
 
-    public Teacher( int id, String name ){
-        this.id = id;
+    public Teacher(int teacher_id, String name ){
+        this.teacher_id = teacher_id;
         this.name = name;
     }
 
     @Override
     public String toString() {
-        return id + "," + name;
+        return teacher_id + "," + name;
     }
 }

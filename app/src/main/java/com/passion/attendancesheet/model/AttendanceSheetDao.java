@@ -60,7 +60,7 @@ public interface AttendanceSheetDao {
     @Query("Select * from Attendance_sheet where course_id =:course_id order by id desc")
     LiveData<List<Attendance_sheet>> getAllSheetsByCourseId( String course_id );
 
-    @Query("Select name from teacher where id = :teacher_id ")
+    @Query("Select name from teacher where teacher_id = :teacher_id ")
     LiveData<String> getTeacherNameById( int teacher_id );
 
     @Query("Select subjects from Subject where course_id = :courseId ")
