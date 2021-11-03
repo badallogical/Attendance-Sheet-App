@@ -61,8 +61,8 @@ public class AdminHome extends Fragment implements CourseListClick {
         super.onStart();
 
         // check email verification and update UI
-        Toast.makeText(getContext(), "at Onstart ", Toast.LENGTH_LONG).show();
-        checkEmailUpdateUI();
+       // Toast.makeText(getContext(), "at Onstart ", Toast.LENGTH_LONG).show();
+
 
     }
 
@@ -97,6 +97,9 @@ public class AdminHome extends Fragment implements CourseListClick {
         DatabaseReference ref = db.getReference();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUser.reload();
+
+
+
         if( currentUser == null ){
             Toast.makeText( context, "Current user is null", Toast.LENGTH_LONG).show();
         }
@@ -119,6 +122,8 @@ public class AdminHome extends Fragment implements CourseListClick {
                 array.add( snapshot.getValue(String.class));
                 adapter.notifyDataSetChanged();
 
+                binding.emptyCourses.setVisibility(View.GONE);
+
                 Toast.makeText(context, "Course: " + snapshot.getValue(String.class) + " Added", Toast.LENGTH_SHORT ).show();
             }
 
@@ -134,6 +139,10 @@ public class AdminHome extends Fragment implements CourseListClick {
                 adapter.notifyDataSetChanged();
 
                 Toast.makeText(context, "Course: " + snapshot.getValue(String.class) + " Removed", Toast.LENGTH_SHORT).show();
+
+                if(  array.size() == 0 ){
+                    binding.emptyCourses.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -153,6 +162,8 @@ public class AdminHome extends Fragment implements CourseListClick {
         // setup course list
         binding.courseList.setAdapter(adapter);
         binding.courseList.setLayoutManager( new LinearLayoutManager(getContext()));
+        checkEmailUpdateUI();
+
 
 
         // setup course list swipe listener
@@ -255,17 +266,30 @@ public class AdminHome extends Fragment implements CourseListClick {
 
            currentUser.reload();
            if( currentUser.isEmailVerified() ){
+
+               Timber.d("Email is verified");
+
                binding.emailVerification.setVisibility( View.GONE );
                binding.addCourse.setVisibility( View.VISIBLE );
                binding.courseList.setVisibility( View.VISIBLE);
 
                Toast.makeText(getContext(),"Email Confirmed Successfully", Toast.LENGTH_LONG).show();
+
+               if( ((AdminCourseListAdapter)(binding.courseList.getAdapter())).getItemCount() == 0 ){
+                   binding.emptyCourses.setVisibility(View.VISIBLE);
+               }
+               else{
+                   binding.emptyCourses.setVisibility(View.GONE);
+               }
+
            }
            else{
-               Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_SHORT).show();
+               Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_LONG).show();
+               Timber.d("Email not verified");
                binding.emailVerification.setVisibility( View.VISIBLE );
                binding.addCourse.setVisibility( View.GONE );
                binding.courseList.setVisibility(View.GONE);
+               binding.emptyCourses.setVisibility(View.GONE);
            }
        }
        else{

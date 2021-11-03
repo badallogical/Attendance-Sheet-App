@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                             navController.navigate( LoginDirections.actionLoginToNavigation() );
                     }
                     else{
-                        Toast.makeText( getApplicationContext(), "NO current User", Toast.LENGTH_LONG).show();
+                        //Toast.makeText( getApplicationContext(), "No current User", Toast.LENGTH_LONG).show();
                     }
 
                     Timber.i("Login Activity onCreate called and user is checked");
