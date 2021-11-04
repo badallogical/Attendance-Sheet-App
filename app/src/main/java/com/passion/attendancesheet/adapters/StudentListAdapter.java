@@ -170,7 +170,11 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
                     // CHECK
                     presentMark.setVisibility(View.VISIBLE);
 
-                    if( student_present.contains( students.get( getAdapterPosition() ))  == false  ) {
+                    if( student_marked_absent.contains( students.get( getAdapterPosition())) ){
+                        student_marked_absent.remove( students.get( getAdapterPosition() ));
+                    }
+
+                    if( !(student_present.contains( students.get( getAdapterPosition() )) )   ) {
                         Timber.d("Adapter position " + getAdapterPosition() + " added ");
                         student_present.add(students.get(getAdapterPosition()));
                     }

@@ -111,9 +111,9 @@ public class AttendanceSheetRepository {
     // DELETE
 
 
-    void removeAttendance( Attendance attendance ){
+    void removeAttendance( int sheet_id, int roll_no  ){
         AttendanceSheetDatabase.databaseWriteExecutor.execute( () -> {
-            sheetDao.removeAttendance(attendance);
+            sheetDao.removeAttendance( sheet_id , roll_no );
         });
     }
 

@@ -212,48 +212,45 @@ public class AdminHome extends Fragment implements CourseListClick {
         });
 
         // Add course to firebase
-        binding.addCourse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.addCourse.setOnClickListener( v -> {
 
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
-                        View custom_layout = LayoutInflater.from(getContext()).inflate(R.layout.add_course_dialog, null );
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+                    View custom_layout = LayoutInflater.from(getContext()).inflate(R.layout.add_course_dialog, null );
 
-                        // create and show dialog
-                        dialogBuilder.setView( custom_layout )
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // TODO:
-                                        FirebaseDatabase db = FirebaseDatabase.getInstance();
-                                        DatabaseReference ref = db.getReference("courses");
+                    // create and show dialog
+                    dialogBuilder.setView( custom_layout )
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // TODO:
+                                    FirebaseDatabase db1 = FirebaseDatabase.getInstance();
+                                    DatabaseReference ref1 = db1.getReference("courses");
 
-                                        EditText editCourse = (EditText)custom_layout.findViewById(R.id.att_course_name);
-                                        if( editCourse.getText().toString().trim().isEmpty() ){
-                                            editCourse.setError("Empty Field");
-                                        }
-                                        else{
-                                            // adding child to the course ref, ( its a way of creating list , on the way remember )
-                                            if( array.contains(editCourse.getText().toString().toUpperCase())){
-                                                Toast.makeText(context, "Course Already Existed", Toast.LENGTH_LONG).show();
-                                            }
-                                            else {
-                                                ref.push().setValue(editCourse.getText().toString().toUpperCase());
-                                            }
-                                        }
-
+                                    EditText editCourse = (EditText)custom_layout.findViewById(R.id.att_course_name);
+                                    if( editCourse.getText().toString().trim().isEmpty() ){
+                                        editCourse.setError("Empty Field");
                                     }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
+                                    else{
+                                        // adding child to the course ref, ( its a way of creating list , on the way remember )
+                                        if( array.contains(editCourse.getText().toString().toUpperCase())){
+                                            Toast.makeText(context, "Course Already Existed", Toast.LENGTH_LONG).show();
+                                        }
+                                        else {
+                                            ref1.push().setValue(editCourse.getText().toString().toUpperCase());
+                                        }
                                     }
-                                })
-                                .setTitle("Add Course")
-                                .create().show();
 
-                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setTitle("Add Course")
+                            .create().show();
+
                 });
 
     }

@@ -91,8 +91,8 @@ public class AttendanceSheetViewModel extends AndroidViewModel {
 
     // DELETE
 
-    public void removeAttendance( Attendance attendance ){
-        mRepository.removeAttendance(attendance);
+    public void removeAttendance( int sheet_id, int roll_no ){
+        mRepository.removeAttendance( sheet_id, roll_no );
     }
 
     public void deleteSheetById( int id ){
