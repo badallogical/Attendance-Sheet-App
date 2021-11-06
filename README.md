@@ -8,3 +8,5 @@ Daily Attendance Report
 Notify Bunks Activities
 Share Attendace to Teacher as Excel file
 Provide a nice looking UI, which make it Fun :)
+
+visit to watch Demo : https://www.linkedin.com/posts/badal-b83542136_android-androiddevelopment-mvvm-activity-6862652066662244352-jUXJ
