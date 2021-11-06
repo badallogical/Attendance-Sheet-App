@@ -27,6 +27,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Environment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -94,7 +96,6 @@ public  class ImportSheet extends Fragment {
         super.onCreate(savedInstanceState);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
         viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
         navController = NavHostFragment.findNavController(this);
 
@@ -373,7 +374,6 @@ public  class ImportSheet extends Fragment {
 
     }
 
-
     // AsyncImport to import the sheet in background
     class AsyncImport extends AsyncTask<Void, Void, Void> {
 
@@ -430,8 +430,8 @@ public  class ImportSheet extends Fragment {
 
             viewModel.addSubject( new Subject( course_name, subjects ));
 
-            // redirect to previous HOME cr fragment
-             navController.popBackStack();
+            // redirect to HOME cr fragment
+            navController.navigate( ImportSheetDirections.actionImportSheetToDashboard());
         }
 
 

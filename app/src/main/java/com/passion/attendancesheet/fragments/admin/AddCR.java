@@ -11,6 +11,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
@@ -63,6 +65,8 @@ public class AddCR extends Fragment {
         binding.register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                v.startAnimation(AnimationUtils.loadAnimation( getContext(), R.anim.pop_up_animation ) );
 
                 AddCRArgs args = AddCRArgs.fromBundle( getArguments() );
 

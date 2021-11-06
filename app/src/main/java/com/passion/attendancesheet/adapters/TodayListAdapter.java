@@ -19,7 +19,6 @@ public class TodayListAdapter extends RecyclerView.Adapter<TodayListAdapter.Toda
 
     Context context;
     List<Attendance_sheet> todaySheet;
-    List<String> teachers;
     int courseTotalStrength;
 
     public TodayListAdapter( Context context , int courseTotalStrength ){
@@ -37,11 +36,10 @@ public class TodayListAdapter extends RecyclerView.Adapter<TodayListAdapter.Toda
     @Override
     public void onBindViewHolder(@NonNull TodayListViewHolder holder, int position) {
         Attendance_sheet sheet = todaySheet.get( position );
-        String teacher = teachers.get( position );
 
         holder.lecture.setText( "Lecture " + String.valueOf( sheet.lecture ) );
         holder.subject.setText( sheet.subject );
-        holder.teacher.setText( "By " + teacher );
+        holder.teacher.setText( "By " + sheet.teacher.name );
         holder.present.setText( String.valueOf(sheet.presents) );
         holder.absents.setText( String.valueOf(sheet.absents) );
 
@@ -55,9 +53,8 @@ public class TodayListAdapter extends RecyclerView.Adapter<TodayListAdapter.Toda
             return 0;
     }
 
-    public void setTodaySheet( List<Attendance_sheet> todaySheet , List<String> teachers){
+    public void setTodaySheet( List<Attendance_sheet> todaySheet ){
         this.todaySheet = todaySheet;
-        this.teachers = teachers;
         notifyDataSetChanged();
     }
 

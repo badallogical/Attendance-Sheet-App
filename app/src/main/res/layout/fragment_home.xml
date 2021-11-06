@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
     tools:context=".fragments.Home"
    >
 
@@ -64,10 +63,10 @@
                     android:id="@+id/button_mark_attendance"
                     android:layout_width="200dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="35dp"
                     android:background="@drawable/button_style"
                     android:fontFamily="@font/reem_kufi"
-                    android:paddingHorizontal="16dp"
+                    android:paddingHorizontal="10dp"
                     android:text="Mark Attendance"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -114,16 +114,9 @@ public class Home extends Fragment {
             TodayListAdapter adapter = new TodayListAdapter(getContext(), strength);
             binding.todayList.setAdapter( adapter);
             binding.todayList.setLayoutManager( new LinearLayoutManager(getContext()));
-            List<String> teachers = new ArrayList<>();
-            for(Attendance_sheet s : sheets ){
-               viewModel.getTeacherNameById(s.teacher_id).observe(getViewLifecycleOwner(), teacher_name -> {
-                   teachers.add(teacher_name);
-                   Timber.d(teacher_name);
-                   adapter.setTodaySheet( sheets, teachers );
-               });
-            }
 
-
+            // update sheets
+            adapter.setTodaySheet( sheets);
 
             if( sheets.size() == 0 ){
                 binding.noLecture.setVisibility( View.VISIBLE );

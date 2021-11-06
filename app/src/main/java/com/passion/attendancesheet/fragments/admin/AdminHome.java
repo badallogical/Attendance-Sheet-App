@@ -61,8 +61,8 @@ public class AdminHome extends Fragment implements CourseListClick {
         super.onStart();
 
         // check email verification and update UI
-        Toast.makeText(getContext(), "at Onstart ", Toast.LENGTH_LONG).show();
-        checkEmailUpdateUI();
+       // Toast.makeText(getContext(), "at Onstart ", Toast.LENGTH_LONG).show();
+
 
     }
 
@@ -97,6 +97,9 @@ public class AdminHome extends Fragment implements CourseListClick {
         DatabaseReference ref = db.getReference();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUser.reload();
+
+
+
         if( currentUser == null ){
             Toast.makeText( context, "Current user is null", Toast.LENGTH_LONG).show();
         }
@@ -119,6 +122,8 @@ public class AdminHome extends Fragment implements CourseListClick {
                 array.add( snapshot.getValue(String.class));
                 adapter.notifyDataSetChanged();
 
+                binding.emptyCourses.setVisibility(View.GONE);
+
                 Toast.makeText(context, "Course: " + snapshot.getValue(String.class) + " Added", Toast.LENGTH_SHORT ).show();
             }
 
@@ -134,6 +139,10 @@ public class AdminHome extends Fragment implements CourseListClick {
                 adapter.notifyDataSetChanged();
 
                 Toast.makeText(context, "Course: " + snapshot.getValue(String.class) + " Removed", Toast.LENGTH_SHORT).show();
+
+                if(  array.size() == 0 ){
+                    binding.emptyCourses.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -153,6 +162,8 @@ public class AdminHome extends Fragment implements CourseListClick {
         // setup course list
         binding.courseList.setAdapter(adapter);
         binding.courseList.setLayoutManager( new LinearLayoutManager(getContext()));
+        checkEmailUpdateUI();
+
 
 
         // setup course list swipe listener
@@ -201,48 +212,45 @@ public class AdminHome extends Fragment implements CourseListClick {
         });
 
         // Add course to firebase
-        binding.addCourse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.addCourse.setOnClickListener( v -> {
 
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
-                        View custom_layout = LayoutInflater.from(getContext()).inflate(R.layout.add_course_dialog, null );
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+                    View custom_layout = LayoutInflater.from(getContext()).inflate(R.layout.add_course_dialog, null );
 
-                        // create and show dialog
-                        dialogBuilder.setView( custom_layout )
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // TODO:
-                                        FirebaseDatabase db = FirebaseDatabase.getInstance();
-                                        DatabaseReference ref = db.getReference("courses");
+                    // create and show dialog
+                    dialogBuilder.setView( custom_layout )
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // TODO:
+                                    FirebaseDatabase db1 = FirebaseDatabase.getInstance();
+                                    DatabaseReference ref1 = db1.getReference("courses");
 
-                                        EditText editCourse = (EditText)custom_layout.findViewById(R.id.att_course_name);
-                                        if( editCourse.getText().toString().trim().isEmpty() ){
-                                            editCourse.setError("Empty Field");
-                                        }
-                                        else{
-                                            // adding child to the course ref, ( its a way of creating list , on the way remember )
-                                            if( array.contains(editCourse.getText().toString().toUpperCase())){
-                                                Toast.makeText(context, "Course Already Existed", Toast.LENGTH_LONG).show();
-                                            }
-                                            else {
-                                                ref.push().setValue(editCourse.getText().toString().toUpperCase());
-                                            }
-                                        }
-
+                                    EditText editCourse = (EditText)custom_layout.findViewById(R.id.att_course_name);
+                                    if( editCourse.getText().toString().trim().isEmpty() ){
+                                        editCourse.setError("Empty Field");
                                     }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
+                                    else{
+                                        // adding child to the course ref, ( its a way of creating list , on the way remember )
+                                        if( array.contains(editCourse.getText().toString().toUpperCase())){
+                                            Toast.makeText(context, "Course Already Existed", Toast.LENGTH_LONG).show();
+                                        }
+                                        else {
+                                            ref1.push().setValue(editCourse.getText().toString().toUpperCase());
+                                        }
                                     }
-                                })
-                                .setTitle("Add Course")
-                                .create().show();
 
-                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setTitle("Add Course")
+                            .create().show();
+
                 });
 
     }
@@ -255,17 +263,30 @@ public class AdminHome extends Fragment implements CourseListClick {
 
            currentUser.reload();
            if( currentUser.isEmailVerified() ){
+
+               Timber.d("Email is verified");
+
                binding.emailVerification.setVisibility( View.GONE );
                binding.addCourse.setVisibility( View.VISIBLE );
                binding.courseList.setVisibility( View.VISIBLE);
 
                Toast.makeText(getContext(),"Email Confirmed Successfully", Toast.LENGTH_LONG).show();
+
+               if( ((AdminCourseListAdapter)(binding.courseList.getAdapter())).getItemCount() == 0 ){
+                   binding.emptyCourses.setVisibility(View.VISIBLE);
+               }
+               else{
+                   binding.emptyCourses.setVisibility(View.GONE);
+               }
+
            }
            else{
-               Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_SHORT).show();
+               Toast.makeText(getContext(), "Email is not verified", Toast.LENGTH_LONG).show();
+               Timber.d("Email not verified");
                binding.emailVerification.setVisibility( View.VISIBLE );
                binding.addCourse.setVisibility( View.GONE );
                binding.courseList.setVisibility(View.GONE);
+               binding.emptyCourses.setVisibility(View.GONE);
            }
        }
        else{

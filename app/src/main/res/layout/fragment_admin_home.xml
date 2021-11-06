@@ -8,14 +8,25 @@
     tools:context=".fragments.admin.AdminHome">
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/course_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="-44dp"
-        tools:layout_editor_absoluteY="251dp"
-        tools:listitem="@layout/admin_course_card"/>
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-184dp"
+        tools:listitem="@layout/admin_course_card" />
+
+    <ImageView
+        android:id="@+id/empty_courses"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:visibility="gone"
+        android:src="@drawable/college"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="TODO" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_course"

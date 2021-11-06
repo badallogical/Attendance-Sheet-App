@@ -39,6 +39,7 @@ import com.passion.attendancesheet.model.AttendanceSheetViewModel;
 import com.passion.attendancesheet.model.entity.Attendance_sheet;
 import com.passion.attendancesheet.model.entity.Student;
 import com.passion.attendancesheet.model.entity.Attendance;
+import com.passion.attendancesheet.model.entity.Teacher;
 import com.passion.attendancesheet.utils.Accessory_tool;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -135,20 +136,6 @@ public class AttendancePanel extends Fragment {
         binding.studentList.setAdapter(studentListAdapter);
         binding.studentList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Student list swipe Functioning
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-            }
-
-        }).attachToRecyclerView(binding.studentList);
-
     }
 
     @Override
@@ -206,7 +193,14 @@ public class AttendancePanel extends Fragment {
 //        if( mode.equals(getString(R.string.normal)))
 //        viewModel.addAttendanceSheet( new Attendance_sheet( studentListAdapter.getStudents().get(0).course_id , dateTime , Accessory_tool.getIntFromRoman(args.getLecture()) , Integer.parseInt( args.getTeacher().split(",")[0] ) , args.getSubject()));
 
-        Attendance_sheet sheet = new Attendance_sheet(studentListAdapter.getStudents().get(0).course_id, dateTime, Accessory_tool.getIntFromRoman(args.getLecture()), Integer.parseInt(args.getTeacher().split(",")[0]), args.getSubject());
+        Attendance_sheet sheet;
+        if (mode.equals(getString(R.string.normal))) {
+            sheet = new Attendance_sheet(studentListAdapter.getStudents().get(0).course_id, dateTime, Accessory_tool.getIntFromRoman(args.getLecture()), new Teacher(Integer.parseInt(args.getTeacher().split(",")[0]), args.getTeacher().split(",")[1]), args.getSubject());
+        }
+        else{
+            sheet = new Attendance_sheet(studentListAdapter.getStudents().get(0).course_id, dateTime, Accessory_tool.getIntFromRoman(args.getLecture()), new Teacher(Integer.parseInt(args.getTeacher().split(",")[0]), args.getTeacher().split(",")[1]), args.getSubject());
+            sheet.id = args.getSheetId();
+        }
 
         // Get Newly inserted sheet id
 //        viewModel.getAllSheetsByCourseId( args.getCourse() ).observe( getViewLifecycleOwner(), sheets -> {

@@ -20,6 +20,10 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.passion.attendancesheet.fragments.LoginDirections;
 
 import timber.log.Timber;
@@ -41,35 +45,46 @@ public class LoginActivity extends AppCompatActivity {
 
         navController = ((NavHostFragment)getSupportFragmentManager().findFragmentById(R.id.login_nav_host_fragment)).getNavController();
 
-        // AppbarConfiguration
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.fragment_home_id,
-//                R.id.adminHome
-//        ).build();
-
         // Add up button in navigation button , where navController is provided to navigate back using up button , but the behaviour is not set yet.
         NavigationUI.setupActionBarWithNavController(this, navController);
 
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        NavController navController = ((NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.login_nav_host_fragment)).getNavController();
+        // Identify the Current User
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        db.getReference().child("admin").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if( snapshot.exists() ){
+                    String admin_email = snapshot.child("email").getValue(String.class);
 
-        if( currentUser != null  ){
-            currentUser.reload();
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
+                    NavController navController = ((NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.login_nav_host_fragment)).getNavController();
 
-            if(currentUser.getEmail().equals("0i0am1a1programmer@gmail.com")) {
-                navController.navigate(LoginDirections.actionLoginToAdminActivity(currentUser.getEmail()));
-               finish();
+                    if( currentUser != null  ){
+                        currentUser.reload();
+
+                        if(currentUser.getEmail().equals(admin_email)) {
+                            navController.navigate(LoginDirections.actionLoginToAdminActivity(currentUser.getEmail()));
+                            finish();
+                        }
+                        else
+                            navController.navigate( LoginDirections.actionLoginToNavigation() );
+                    }
+                    else{
+                        //Toast.makeText( getApplicationContext(), "No current User", Toast.LENGTH_LONG).show();
+                    }
+
+                    Timber.i("Login Activity onCreate called and user is checked");
+                }
             }
-            else
-                navController.navigate( LoginDirections.actionLoginToNavigation() );
-        }
-        else{
-            Toast.makeText(this, "NO current User", Toast.LENGTH_LONG).show();
-        }
 
-        Timber.i("Login Activity onCreate called and user is checked");
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
 
