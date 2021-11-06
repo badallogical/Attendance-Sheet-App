@@ -5,7 +5,7 @@ Class Representative is the only authorised person to use this app, that is prov
 
 Course-wise Attendance
 Daily Attendance Report
-Notify Bunks Activities
+Notify Bunks Activities ( to be added )
 Share Attendace to Teacher as Excel file
 Provide a nice looking UI, which make it Fun :)
 
