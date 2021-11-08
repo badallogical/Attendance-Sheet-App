@@ -29,6 +29,7 @@ import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -96,6 +97,7 @@ public  class ImportSheet extends Fragment {
         super.onCreate(savedInstanceState);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        setHasOptionsMenu(true);
         viewModel = new ViewModelProvider(this).get( AttendanceSheetViewModel.class );
         navController = NavHostFragment.findNavController(this);
 
@@ -435,5 +437,25 @@ public  class ImportSheet extends Fragment {
         }
 
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.cr_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if( item.getItemId() == R.id.action_navigation_to_login){
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText( getContext(), "Signed Out", Toast.LENGTH_LONG).show();
+
+            navController.navigate( ImportSheetDirections.actionNavigationToLogin() );
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
