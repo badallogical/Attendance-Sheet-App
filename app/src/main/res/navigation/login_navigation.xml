@@ -160,7 +160,7 @@
         <action
             android:id="@+id/action_navigation_to_login"
             app:destination="@id/login"
-            app:popUpTo="@id/dashboard"
+            app:popUpTo="@id/navigation"
             app:popUpToInclusive="true" />
         <fragment
             android:id="@+id/dashboard"
